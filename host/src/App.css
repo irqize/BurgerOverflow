@@ -36,3 +36,7 @@
     transform: rotate(360deg);
   }
 }
+
+#gameContainer{
+  background-color: #c09ada;
+}

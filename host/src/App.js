@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import "./App.css";
 import { io } from "socket.io-client";
+import GameContainer from "./components/GameContainer";
 
 function App() {
   const [socket, setSocket] = useState(null);
@@ -49,7 +50,7 @@ function App() {
           <button onClick={authenticate}>Authenticate</button>
         </>
       ) : (
-        "Authenticated"
+        <GameContainer/>
       )}
 
       {error ? <p style={{color: 'red'}}>{error}</p> : ''}
