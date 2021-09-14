@@ -2,6 +2,10 @@ import { useRef, useState, useEffect } from "react";
 import { Canvas, useFrame  } from "react-three-fiber";
 import { OrbitControls, Stars }   from "@react-three/drei";
 import { Physics, usePlane, useBox, } from "@react-three/cannon";
+import { useLoader } from "@react-three/fiber";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { Suspense } from "react";
+
 
 
 
@@ -22,7 +26,14 @@ const GameContainer = () =>{
     //     )
     // }
 
-
+    const Model = () => {
+      const gltf = useLoader(GLTFLoader, "./untitled.gltf");
+      return (
+        <>
+          <primitive object={gltf.scene} scale={0.4} />
+        </>
+      );
+    };
   
 
 
@@ -61,7 +72,7 @@ const GameContainer = () =>{
 
   return (
    <Canvas style={{ height: "50vh", width: "50vw", background:"#272727"}}> 
-  
+  <Suspense fallback={null}>
       <OrbitControls />
       {/* used for moving the camera */}
       <Stars />
@@ -72,19 +83,19 @@ const GameContainer = () =>{
 
       <spotLight position={[15, 15, 15]} angle={0.5} />
       {/* adds a spotlight towards from a position towards a direction */}
-
+      <Model/>
       <Physics>
           {/* adds physic motor (gravity etc) */}
 
         <Box position={[0,0,5]} color={"red"}/>
         {/* position=[x,y,z] */}
-        <Box position={[1,1,0]} color= {"green"}/>
+        {/*<Box position={[1,1,0]} color= {"green"}/>*/}
         <Box position={[5,5,5]} color= {"blue"}/>
         
         
         <Plane />
       </Physics>
-
+      </Suspense>
    </Canvas>
   );
 }
