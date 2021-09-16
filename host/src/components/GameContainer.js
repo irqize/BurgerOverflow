@@ -12,7 +12,7 @@ const Model = () => {
   const gltf = useLoader(GLTFLoader, "./untitled.gltf");
   return (
     <>
-      <primitive object={gltf.scene} scale={0.4} rotation={[0, -Math.PI / 2, 0]} />
+      <primitive object={gltf.scene} scale={0.4} rotation={[-Math.PI / 2, 0, 0]} />
     </>
   );
 };
@@ -75,17 +75,17 @@ const [z, setZ] = useState(0)
   }, [])
 
   useEffect(() => {
-    setX(gyroData?.alpha ? gyroData?.alpha : 0);
-    setY(gyroData?.beta ? gyroData?.beta : 0)
-    setZ(gyroData?.gamma ? gyroData?.gamma : 0)
+    setY(gyroData?.alpha ? gyroData?.alpha : 0);
+    setX(gyroData?.beta ? gyroData?.beta : 0)
+    setZ(gyroData?.gamma ? -gyroData?.gamma : 0)
   }, [gyroData])
   
 
 
   return (<>
-    {/* <input type='number' value={x} onChange={e => setX(e.target.value)} />
+    <input type='number' value={x} onChange={e => setX(e.target.value)} />
     <input type='number' value={y} onChange={e => setY(e.target.value)} />
-    <input type='number' value={z} onChange={e => setZ(e.target.value)} /> */}
+    <input type='number' value={z} onChange={e => setZ(e.target.value)} />
     <Canvas style={{ height: "100vh", width: "100vw", background: "#272727" }}>
       <Suspense fallback={null}>
         <OrbitControls />
