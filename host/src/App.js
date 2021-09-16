@@ -8,54 +8,47 @@ function App() {
 
   const [authenticated, setAuthenticated] = useState(false);
 
-  const [password, setPassword] = useState('');
+  const [password, setPassword] = useState("");
 
   const [error, setError] = useState(null);
-
-  const [data, setData] = useState(null);
-
 
   useEffect(() => {
     const newSocket = io("http://localhost:8080");
     setSocket(newSocket);
 
-    newSocket.on('error', e => setError(e));
+    newSocket.on("error", (e) => setError(e));
 
     return () => newSocket.close();
   }, []);
-
-
 
   const authenticate = () => {
     if (!socket) return;
 
     socket.emit("authorization", "host", password);
-    socket.on("joined", role => {
+    socket.on("joined", (role) => {
       console.log("joined", role);
       setError(null);
       setAuthenticated(true);
 
-      socket.on('data', data => setData(data))
-
     });
   };
-
-  
 
   return (
     <main>
       {!authenticated ? (
         <>
-          <input value={password} type='password' onChange={(e) => setPassword(e.target.value)} />
+          <input
+            value={password}
+            type="password"
+            onChange={(e) => setPassword(e.target.value)}
+          />
           <button onClick={authenticate}>Authenticate</button>
         </>
       ) : (
-        <GameContainer/>
+        <GameContainer socket={socket} />
       )}
 
-      {error ? <p style={{color: 'red'}}>{error}</p> : ''}
-      {data ? <p>{data}</p> : ''}
-
+      {error ? <p style={{ color: "red" }}>{error}</p> : ""}
     </main>
   );
 }

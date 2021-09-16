@@ -18,10 +18,9 @@ function App() {
     return () => newSocket.close();
   }, []);
 
-  const handleOrientation = (event) => {
-    console.log(event.alpha + " : " + event.beta + " : " + event.gamma);
-    setGyroData(event.alpha + " : " + event.beta + " : " + event.gamma);
-    socket.emit('data', event.alpha + " : " + event.beta + " : " + event.gamma)
+  const handleOrientation = ({alpha, beta, gamma}) => {
+    setGyroData({alpha, beta, gamma});
+    socket.emit('data', {alpha, beta, gamma})
   };
 
   const startGyro = () => {
@@ -66,7 +65,7 @@ function App() {
       {!gyroAllowed && !gyroData && (
         <button onClick={startGyro}>Start gyro</button>
       )}
-      {gyroData}
+      {JSON.stringify(gyroData)}
     </main>
   );
 }
