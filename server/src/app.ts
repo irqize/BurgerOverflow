@@ -1,17 +1,16 @@
-import express from "express";
-import http from "http";
+import https from "https";
 import cors from "cors";
 import { Server } from "socket.io";
 import { port } from "./config";
-import fs from 'fs';
+import fs from "fs";
 
-// var privateKey  = fs.readFileSync(__dirname +  '/ssl/key.key', 'utf8');
-// var certificate = fs.readFileSync(__dirname +  '/ssl/crt.crt', 'utf8');
+const privateKey  = fs.readFileSync(__dirname +  '/ssl/key.key', 'utf8');
+const certificate = fs.readFileSync(__dirname +  '/ssl/crt.crt', 'utf8');
 
-const app = express();
-app.use(cors());
-
-const server = http.createServer(app);
+const server = https.createServer({
+  key: privateKey,
+  cert: certificate
+});
 const io = new Server(server, {
   cors: {
     origin: "*",
@@ -19,46 +18,41 @@ const io = new Server(server, {
   },
 });
 
-app.get("/", (req, res) => {
-  res.json({
-    error: false,
-  });
-});
-
 server.listen(port, () => {
   console.log("⚡️ Started server on port " + port);
 });
 
 const roomFull = false;
-io.on("connection", socket => {
-  console.log('Connection established')
+io.on("connection", (socket) => {
+  console.log("Connection established");
   socket.on("authorization", (mode, password) => {
-    console.log('Authorization attempt');
-    console.log('Mode: ', mode);
-    console.log('Password: ', password);
+    console.log("Authorization attempt");
+    console.log("Mode: ", mode);
+    console.log("Password: ", password);
     if (mode === "client") {
-      if (roomFull) return socket.emit('error', 'The room is full');
+      if (roomFull) return socket.emit("error", "The room is full");
 
-      socket.emit('joined', 'client')
-      socket.join('client');
+      socket.emit("joined", "client");
+      socket.join("client");
     }
 
     if (mode === "host") {
-      if (password !== 'password') return socket.emit('error', 'The password is wrong');
+      if (password !== "password")
+        return socket.emit("error", "The password is wrong");
 
-      socket.emit('joined', 'host')
-      socket.join('host');
+      socket.emit("joined", "host");
+      socket.join("host");
     }
   });
 
-  socket.on('data', data => {
-    if(socket.rooms.has('client')) {
-      console.log(data)
-      io.to('host').emit('data', data);
+  socket.on("data", (data) => {
+    if (socket.rooms.has("client")) {
+      console.log(data);
+      io.to("host").emit("data", data);
     }
-  })
+  });
 });
 
-io.of('client').on('data', (data) => {
+io.of("client").on("data", (data) => {
   console.log(data);
-})
+});

@@ -7,7 +7,7 @@
     "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
     "build": "tsc",
     "clean": "rimraf dist/",
-    "compile": "tsc && node dist/app.js && npm run copy-files",
+    "compile": "npm run clean && tsc && npm run copy-files && node dist/app.js ",
     "copy-files": "copyfiles -u 1 src/**/* dist",
     "start": "nodemon -e ts --exec \"npm run compile\"",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -17,8 +17,6 @@
   "dependencies": {
     "cors": "^2.8.5",
     "debug": "^4.3.2",
-    "express": "^4.17.1",
-    "express-winston": "^4.2.0",
     "nodemon": "^2.0.12",
     "socket.io": "^4.2.0",
     "winston": "^3.3.3"
