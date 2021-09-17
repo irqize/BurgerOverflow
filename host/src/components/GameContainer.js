@@ -12,7 +12,7 @@ const Model = () => {
   const gltf = useLoader(GLTFLoader, "./untitled.gltf");
   return (
     <>
-      <primitive object={gltf.scene} scale={0.4} rotation={[-Math.PI / 2, 0, 0]} />
+      <primitive object={gltf.scene} scale={0.4} rotation={[0, 0, 0]} />
     </>
   );
 };
@@ -75,9 +75,9 @@ const [z, setZ] = useState(0)
   }, [])
 
   useEffect(() => {
-    setY(gyroData?.alpha ? gyroData?.alpha : 0);
-    setX(gyroData?.beta ? gyroData?.beta : 0)
-    setZ(gyroData?.gamma ? -gyroData?.gamma : 0)
+    setZ(gyroData?.alpha ? (gyroData?.alpha>180 ? gyroData?.alpha-360 : gyroData?.alpha):0);
+    setX((gyroData?.beta ? gyroData?.beta : 0)-90)
+    setY(gyroData?.gamma ? (gyroData?.gamma>180 ? 360-gyroData?.gamma : -gyroData?.gamma):0)
   }, [gyroData])
   
 
