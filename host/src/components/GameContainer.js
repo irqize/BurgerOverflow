@@ -12,7 +12,7 @@ const Model = () => {
   const gltf = useLoader(GLTFLoader, "./untitled.gltf");
   return (
     <>
-      <primitive object={gltf.scene} scale={0.4} rotation={[0, 0, 0]} />
+      <primitive object={gltf.scene} scale={0.4} rotation={[-Math.PI / 2, 0, 0]} />
     </>
   );
 };
@@ -65,9 +65,9 @@ const GameContainer = ({socket}) => {
   const [gyroData, setGyroData] = useState(null);
 console.log(gyroData);
 
-const [x, setX] = useState(0)
-const [y, setY] = useState(0)
-const [z, setZ] = useState(0)
+const [alpha, setAlpha] = useState(0)
+const [beta, setBeta] = useState(0)
+const [gamma, setGamma] = useState(0)
 
   useEffect(() => {
     socket.on("data", (data) => setGyroData(data));
@@ -75,17 +75,17 @@ const [z, setZ] = useState(0)
   }, [])
 
   useEffect(() => {
-    setZ(gyroData?.alpha ? (gyroData?.alpha>180 ? gyroData?.alpha-360 : gyroData?.alpha):0);
-    setX((gyroData?.beta ? gyroData?.beta : 0)-90)
-    setY(gyroData?.gamma ? (gyroData?.gamma>180 ? 360-gyroData?.gamma : -gyroData?.gamma):0)
+    setAlpha(gyroData?.alpha ? gyroData?.alpha:0);
+    setBeta(gyroData?.beta ? gyroData?.beta : 0)
+    setGamma(gyroData?.gamma ? gyroData?.gamma:0)
   }, [gyroData])
   
 
 
   return (<>
-    <input type='number' value={x} onChange={e => setX(e.target.value)} />
-    <input type='number' value={y} onChange={e => setY(e.target.value)} />
-    <input type='number' value={z} onChange={e => setZ(e.target.value)} />
+    <input type='number' value={alpha.toFixed(2)} onChange={e => setAlpha(e.target.value)} />
+    <input type='number' value={beta.toFixed(2)} onChange={e => setBeta(e.target.value)} />
+    <input type='number' value={gamma.toFixed(2)} onChange={e => setGamma(e.target.value)} />
     <Canvas style={{ height: "100vh", width: "100vw", background: "#272727" }}>
       <Suspense fallback={null}>
         <OrbitControls />
@@ -98,7 +98,7 @@ const [z, setZ] = useState(0)
 
         <spotLight position={[15, 15, 15]} angle={0.5} />
         {/* adds a spotlight towards from a position towards a direction */}
-        <group rotation={[degreesToRadians(x),degreesToRadians(y),degreesToRadians(z)]}>
+        <group rotation={[degreesToRadians(beta),degreesToRadians(alpha),degreesToRadians(-gamma),"YXZ"]}>
         {/* [(gyroData?.alpha ? degreesToRadians(gyroData?.alpha) : 0),(gyroData?.beta ? degreesToRadians(gyroData?.beta) : 0) ,(gyroData?.gamma ? degreesToRadians(gyroData?.gamma) : 0) ] */}
           <Model  />
         </group>
