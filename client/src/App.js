@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import "./App.css";
+import "./Client.css";
 import { io } from "socket.io-client";
 
 function App() {
@@ -11,6 +12,7 @@ function App() {
   const [gyroData, setGyroData] = useState(null);
 
 
+
   useEffect(() => {
     const newSocket = io("https://" + document.location.hostname + ":8080");
     setSocket(newSocket);
@@ -18,25 +20,28 @@ function App() {
     return () => newSocket.close();
   }, []);
 
+ 
   const handleOrientation = ({alpha, beta, gamma}) => {
     setGyroData({alpha, beta, gamma});
     socket.emit('data', {alpha, beta, gamma})
   };
+  
 
   const startGyro = () => {
-    if (typeof DeviceOrientationEvent.requestPermission === "function") {
-      DeviceOrientationEvent.requestPermission()
-        .then((state) => {
-          if (state === "granted") {
-            window.addEventListener("deviceorientation", handleOrientation);
-            setGyroAllowed(true);
-          }
-        })
-        .catch((e) => console.error(e));
-    } else {
+    // if (typeof DeviceOrientationEvent.requestPermission === "function") {
+    //   DeviceOrientationEvent.requestPermission()
+    //     .then((state) => {
+    //       if (state === "granted") {
+    //         window.addEventListener("deviceorientation", handleOrientation);
+    //         setGyroAllowed(true);
+    //       }
+    //     })
+    //     .catch((e) => console.error(e));
+    // } else {
       window.addEventListener("deviceorientation", handleOrientation);
+      // document.body.addEventListener("deviceorientation", handleOrientation);
       setGyroAllowed(true);
-    }
+    // }
   };
 
   const authenticate = () => {
@@ -47,25 +52,52 @@ function App() {
       console.log("joined");
       setAuthenticated(true);
 
-      startGyro();
+      // startGyro();
     });
   };
 
-  
 
   return (
     <main>
-      {!authenticated ? (
-        <>
-          <button onClick={authenticate}>Authenticate</button>
-        </>
-      ) : (
-        "Authenticated"
-      )}
-      {!gyroAllowed && !gyroData && (
-        <button onClick={startGyro}>Start gyro</button>
-      )}
-      {JSON.stringify(gyroData)}
+        <div className="titleTopBar" >
+          Burger OverFlow
+        </div>
+        <div className="mainContainer">
+
+          <div className="buttonContainer">
+              {!authenticated ? (
+              <>
+                <button className="authButton" onClick={authenticate} >Click to authenticate</button>
+              </>
+            ) : (
+              <div className="authMessage">You are authenticated ✓</div>
+            )}
+
+            <div>
+            {(!gyroAllowed && !gyroData) ? 
+              <button className="gyroButton" onClick={startGyro}>Start gyro</button>
+                  : 
+              <div className="gyroData">
+                <b>Gyro sensor feedback</b>
+                <br/>{
+                  gyroData? 
+                  <div>
+                    <b>Alpha:</b> {gyroData.alpha} 
+                    <br/><b>Beta:</b> {gyroData.beta}
+                    <br/><b>Gamma:</b> {gyroData.gamma}
+                  </div>
+          
+                  : <div>No input - for desktop, please use the <a href="https://developer.chrome.com/docs/devtools/device-mode/#orientation">Web Tools simulation</a>
+                    </div>
+                  
+                  }
+              </div>}
+          
+              
+              
+              </div>
+          </div>
+      </div>
     </main>
   );
 }
