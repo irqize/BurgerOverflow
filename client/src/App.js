@@ -28,20 +28,20 @@ function App() {
   
 
   const startGyro = () => {
-    // if (typeof DeviceOrientationEvent.requestPermission === "function") {
-    //   DeviceOrientationEvent.requestPermission()
-    //     .then((state) => {
-    //       if (state === "granted") {
-    //         window.addEventListener("deviceorientation", handleOrientation);
-    //         setGyroAllowed(true);
-    //       }
-    //     })
-    //     .catch((e) => console.error(e));
-    // } else {
+    if (typeof DeviceOrientationEvent?.requestPermission === "function") {
+      DeviceOrientationEvent.requestPermission()
+        .then((state) => {
+          if (state === "granted") {
+            window.addEventListener("deviceorientation", handleOrientation);
+            setGyroAllowed(true);
+          }
+        })
+        .catch((e) => console.error(e));
+    } else {
       window.addEventListener("deviceorientation", handleOrientation);
       // document.body.addEventListener("deviceorientation", handleOrientation);
       setGyroAllowed(true);
-    // }
+    }
   };
 
   const authenticate = () => {
