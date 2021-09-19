@@ -14,7 +14,7 @@ function App() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const newSocket = io("http://localhost:8080");
+    const newSocket = io("https://" + document.location.hostname + ":8080");
     setSocket(newSocket);
 
     newSocket.on("error", (e) => setError(e));
