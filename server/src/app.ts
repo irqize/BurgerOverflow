@@ -22,7 +22,7 @@ server.listen(port, () => {
   console.log("⚡️ Started server on port " + port);
 });
 
-const roomFull = false;
+let roomFull = false;
 io.on("connection", (socket) => {
   console.log("Connection established");
   socket.on("authorization", (mode, password) => {
@@ -30,15 +30,28 @@ io.on("connection", (socket) => {
     console.log("Mode: ", mode);
     console.log("Password: ", password);
     if (mode === "client") {
-      if (roomFull) return socket.emit("error", "The room is full");
+      if (roomFull) {
+        socket.emit("error", "The room is full");
+        return socket.disconnect();
+      }
 
+      roomFull = true;
       socket.emit("joined", "client");
       socket.join("client");
+      io.to("host").emit("user", "connected");
+
+      socket.on('disconnect', () => {
+        roomFull = false;
+        io.to("host").emit("user", "disconnected");
+      })
     }
 
     if (mode === "host") {
       if (password !== "password")
         return socket.emit("error", "The password is wrong");
+
+      if(roomFull) io.to("host").emit("user", "connected");
+      else io.to("host").emit("user", "disconnected");
 
       socket.emit("joined", "host");
       socket.join("host");

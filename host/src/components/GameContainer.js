@@ -63,7 +63,6 @@ const GameContainer = ({socket}) => {
   // }
 
   const [gyroData, setGyroData] = useState(null);
-console.log(gyroData);
 
 const [alpha, setAlpha] = useState(0)
 const [beta, setBeta] = useState(0)
@@ -83,9 +82,9 @@ const [gamma, setGamma] = useState(0)
 
 
   return (<>
-    <input type='number' value={alpha.toFixed(2)} onChange={e => setAlpha(e.target.value)} />
+    {/* <input type='number' value={alpha.toFixed(2)} onChange={e => setAlpha(e.target.value)} />
     <input type='number' value={beta.toFixed(2)} onChange={e => setBeta(e.target.value)} />
-    <input type='number' value={gamma.toFixed(2)} onChange={e => setGamma(e.target.value)} />
+    <input type='number' value={gamma.toFixed(2)} onChange={e => setGamma(e.target.value)} /> */}
     <Canvas style={{ height: "100vh", width: "100vw", background: "#272727" }}>
       <Suspense fallback={null}>
         <OrbitControls />

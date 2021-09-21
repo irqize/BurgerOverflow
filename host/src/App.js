@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import "./App.css";
 import { io } from "socket.io-client";
 import GameContainer from "./components/GameContainer";
+import SplashScreen from "./components/SplashScreen";
 
 
 function App() {
@@ -12,6 +13,8 @@ function App() {
   const [password, setPassword] = useState("");
 
   const [error, setError] = useState(null);
+
+  const [userConnected, setUserConnected] = useState(false);
 
   useEffect(() => {
     const newSocket = io("https://" + document.location.hostname + ":8080");
@@ -32,7 +35,13 @@ function App() {
       setAuthenticated(true);
 
     });
+
+    socket.on('user', state => {
+      if(state === 'connected') setUserConnected(true);
+      else setUserConnected(false);
+    })
   };
+
 
   return (
     <main>
@@ -46,7 +55,7 @@ function App() {
           <button onClick={authenticate}>Authenticate</button>
         </>
       ) : (
-        <GameContainer socket={socket} />
+          userConnected ? <GameContainer socket={socket} /> : <SplashScreen />
       )}
 
       {error ? <p style={{ color: "red" }}>{error}</p> : ""}
