@@ -9,7 +9,7 @@
     "clean": "rimraf dist/",
     "compile": "npm run clean && tsc && npm run copy-files && node dist/app.js ",
     "copy-files": "copyfiles -u 1 src/**/* dist",
-    "start": "nodemon -e ts --exec \"npm run compile\"",
+    "start": "nodemon -e --exec \"npm run compile\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
