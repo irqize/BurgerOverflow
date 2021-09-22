@@ -5,8 +5,12 @@ import { Physics, usePlane, useBox } from "@react-three/cannon";
 import { useLoader } from "@react-three/fiber";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { Suspense } from "react";
+import Floor from "./Floor"
+import Wall from "./Wall"
+import Box from "./Box"
+import Spatula from "./Spatula"
 
-const degreesToRadians = angle => (angle*Math.PI)/180
+const degreesToRadians = angle => (angle * Math.PI) / 180
 
 const Model = () => {
   const gltf = useLoader(GLTFLoader, "./untitled.gltf");
@@ -17,36 +21,35 @@ const Model = () => {
   );
 };
 
-const Plane = () => {
-  const [ref] = usePlane(() => ({
-    rotation: [-Math.PI / 2, 0, 0],
-  }));
-  return (
-    <mesh ref={ref} rotation={[-Math.PI / 2, 0, 0]}>
-      <planeBufferGeometry attach="geometry" args={[100, 100]} />
-      <meshLambertMaterial attach="material" color="lightblue" />
-    </mesh>
-  );
-};  
+// const Plane = () => {
+//   const [ref] = usePlane(() => ({
+//     rotation: [-Math.PI / 2, 0, 0],
+//   }));
+//   return (
+//     <mesh ref={ref} rotation={[-Math.PI / 2, 0, 0]}>
+//       <planeBufferGeometry attach="geometry" args={[100, 100]} />
+//       <meshLambertMaterial attach="material" color="lightblue" />
+//     </mesh>
+//   );
+// };
 
-const Box = ({ color, ...props }) => {
-  const { position } = props;
-  const [ref, api] = useBox(() => ({ mass: 1, position: position }));
-  return (
-    <mesh
-      onClick={() => {
-        api.velocity.set(0, 2, 0);
-      }}
-      ref={ref}
-      position={position}
-    >
-      <boxBufferGeometry attach="geometry" />
-      <meshLambertMaterial attach="material" color={color} />
-    </mesh>
-  );
-};
+// function Box() {
+//   const [ref, api] = useBox(() => ({ mass: 1, position: [0, 0, 0] }));
+//   return (
+//     <mesh
+//       // onClick={() => {
+//       //   api.velocity.set(0, 2, 0);
+//       // }}
+//       ref={ref}
+//       position={[0, 0, 0]}
+//     >
+//       <boxBufferGeometry attach="geometry" />
+//       <meshLambertMaterial attach="material" color="hotpink" />
+//     </mesh>
+//   );
+// }
 
-const GameContainer = ({socket}) => {
+const GameContainer = ({ socket }) => {
   // const Spatula = () =>{
   //     //the spatula to be
   //     const mesh = useRef();
@@ -63,10 +66,9 @@ const GameContainer = ({socket}) => {
   // }
 
   const [gyroData, setGyroData] = useState(null);
-
-const [alpha, setAlpha] = useState(0)
-const [beta, setBeta] = useState(0)
-const [gamma, setGamma] = useState(0)
+  const [alpha, setAlpha] = useState(0)
+  const [beta, setBeta] = useState(0)
+  const [gamma, setGamma] = useState(0)
 
   useEffect(() => {
     socket.on("data", (data) => setGyroData(data));
@@ -74,11 +76,11 @@ const [gamma, setGamma] = useState(0)
   }, [])
 
   useEffect(() => {
-    setAlpha(gyroData?.alpha ? gyroData?.alpha:0);
+    setAlpha(gyroData?.alpha ? gyroData?.alpha : 0);
     setBeta(gyroData?.beta ? gyroData?.beta : 0)
-    setGamma(gyroData?.gamma ? gyroData?.gamma:0)
+    setGamma(gyroData?.gamma ? gyroData?.gamma : 0)
   }, [gyroData])
-  
+
 
 
   return (<>
@@ -86,22 +88,39 @@ const [gamma, setGamma] = useState(0)
     <input type='number' value={beta.toFixed(2)} onChange={e => setBeta(e.target.value)} />
     <input type='number' value={gamma.toFixed(2)} onChange={e => setGamma(e.target.value)} /> */}
     <Canvas style={{ height: "100vh", width: "100vw", background: "#272727" }}>
-      <Suspense fallback={null}>
-        <OrbitControls />
-        {/* used for moving the camera */}
-        <Stars />
-        {/* 3D background */}
+      {/* <Suspense fallback={null}> */}
+      {/* <OrbitControls /> */}
+      {/* used for moving the camera */}
+      {/* <Stars /> */}
+      {/* 3D background */}
 
-        <ambientLight intensity={0.1} />
-        {/* adds ambient light to the canvas */}
+      <ambientLight intensity={0.2} />
+      {/* adds ambient light to the canvas */}
 
-        <spotLight position={[15, 15, 15]} angle={0.5} />
-        {/* adds a spotlight towards from a position towards a direction */}
-        <group rotation={[degreesToRadians(beta),degreesToRadians(alpha),degreesToRadians(-gamma),"YXZ"]}>
-        {/* [(gyroData?.alpha ? degreesToRadians(gyroData?.alpha) : 0),(gyroData?.beta ? degreesToRadians(gyroData?.beta) : 0) ,(gyroData?.gamma ? degreesToRadians(gyroData?.gamma) : 0) ] */}
-          <Model  />
-        </group>
-      </Suspense>
+      <spotLight position={[10, 10, 10]} angle={0.5} />
+      {/* <Physics> */}
+      {/* <Box />
+        <Plane /> */}
+      {/* </Physics> */}
+      {/* <Box color={"#FFC300"}/> */}
+      {/* adds a spotlight towards from a position towards a direction */}
+      {//<group rotation={[degreesToRadians(beta),degreesToRadians(alpha),degreesToRadians(-gamma),"YXZ"]}>
+        //{/* [(gyroData?.alpha ? degreesToRadians(gyroData?.alpha) : 0),(gyroData?.beta ? degreesToRadians(gyroData?.beta) : 0) ,(gyroData?.gamma ? degreesToRadians(gyroData?.gamma) : 0) ] */}
+        //  <Model  />
+        //</group>
+      }
+      <group rotation={[degreesToRadians(beta), degreesToRadians(alpha), degreesToRadians(-gamma), "YXZ"]}>
+        {[(gyroData?.alpha ? degreesToRadians(gyroData?.alpha) : 0), (gyroData?.beta ? degreesToRadians(gyroData?.beta) : 0), (gyroData?.gamma ? degreesToRadians(gyroData?.gamma) : 0)]}
+        
+        {/* <Box position={[0, 0, 0]} color={"#FFC300"} /> */}
+        <Spatula position={0,0,0}/>
+
+      </group>
+      {/* <Box position={[0, 0, 0]} color={"#FFC300"} /> */}
+      <Wall />
+      <Floor />
+
+      {/* </Suspense> */}
     </Canvas></>
   );
 };

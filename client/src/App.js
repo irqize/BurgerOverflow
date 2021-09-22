@@ -83,9 +83,11 @@ function App() {
                 <br/>{
                   gyroData? 
                   <div>
-                    <b>Alpha:</b> {gyroData.alpha} 
-                    <br/><b>Beta:</b> {gyroData.beta}
-                    <br/><b>Gamma:</b> {gyroData.gamma}
+                    <b>Alpha:</b> {Math.round(gyroData.alpha)} 
+                    <br/><b>Beta:</b> {Math.round(gyroData.beta)}
+                    <br/><b>Gamma:</b> {Math.round(gyroData.gamma)}
+                    <br/>
+                    <button onClick={()=>handleOrientation(0,0,0)}>Re-calibrate</button>
                   </div>
           
                   : <div>No input - for desktop, please use the <a href="https://developer.chrome.com/docs/devtools/device-mode/#orientation">Web Tools simulation</a>
