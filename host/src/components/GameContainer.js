@@ -9,6 +9,7 @@ import Floor from "./Floor"
 import Wall from "./Wall"
 import Box from "./Box"
 import Spatula from "./Spatula"
+import Lane from "./Lane"
 
 const degreesToRadians = angle => (angle * Math.PI) / 180
 
@@ -81,6 +82,14 @@ const GameContainer = ({ socket }) => {
     setGamma(gyroData?.gamma ? gyroData?.gamma : 0)
   }, [gyroData])
 
+  const chooseLane = (alpha, x1, x2) => {
+    //function to return true if alpha is within a decided range
+
+    //left  ??
+    //middle    ??
+    //left   ??
+  }
+
 
 
   return (<>
@@ -111,11 +120,15 @@ const GameContainer = ({ socket }) => {
       }
       <group rotation={[degreesToRadians(beta), degreesToRadians(alpha), degreesToRadians(-gamma), "YXZ"]}>
         {[(gyroData?.alpha ? degreesToRadians(gyroData?.alpha) : 0), (gyroData?.beta ? degreesToRadians(gyroData?.beta) : 0), (gyroData?.gamma ? degreesToRadians(gyroData?.gamma) : 0)]}
-        
+
         {/* <Box position={[0, 0, 0]} color={"#FFC300"} /> */}
-        <Spatula position={0,0,0}/>
+        <Spatula position={0, 0, 0} />
 
       </group>
+      <Lane position={[-1.5, 0, -1]} args={[1, 10]} opacity={0.2} color={"#FC62FC"} />
+      {/* position = {[x,y,z]}, args={[width,height]} */}
+      <Lane position={[0, 0, -1]} args={[1, 10]} opacity={1} color={"#FCF762"} />
+      <Lane position={[1.5, 0, -1]} args={[1, 10]} opacity={0.2} color={"#62FCE6"} />
       {/* <Box position={[0, 0, 0]} color={"#FFC300"} /> */}
       <Wall />
       <Floor />
