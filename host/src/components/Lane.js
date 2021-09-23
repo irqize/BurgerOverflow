@@ -1,10 +1,10 @@
 import React from "react";
 
-const Lane = ({position, args, opacity, color }) => {
+const Lane = ({position, args, opacity, color, active }) => {
   return (
     <mesh receiveShadow position={position}>
       <planeBufferGeometry attach="geometry" args={args} />
-      <meshStandardMaterial attach="material" color={color} opacity={opacity}/>
+      <meshStandardMaterial attach="material" color={active ? color : '#5F6060'} opacity={opacity}/>
     </mesh>
   );
 };
