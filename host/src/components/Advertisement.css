@@ -1,0 +1,49 @@
+.advertisement-0 {
+    background-color: #fcfcfc;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    text-align:center;
+    height: 100vh;
+    font-family: 'Alfa Slab One', cursive;
+    font-weight: 200 !important;
+    font-size: 3em;
+}
+
+.advertisement-0 {
+    --color: black;
+}
+
+.advertisement-text-red {
+    --color: red;
+}
+
+.advertisement-0-img {
+    height: 60vh;
+    margin:auto;
+}
+
+.advertisement-text-red {
+    color: var(--color);
+    text-shadow: 0 0 2px #333333, 0 0 4px #333333;
+}
+
+.advertisement-text-red, div.advertisement-0 > p {
+    animation: glow-shrink 2s linear infinite;
+    /* animation: shrink 2s linear infinite; */
+}
+
+@keyframes glow-shrink {
+    0% {text-shadow: 0 0 3px var(--color); transform: scale(1);}
+    50% {text-shadow: 0 0 0px var(--color); transform: scale(0.8);}
+    100% {text-shadow: 0 0 3px var(--color); transform: scale(1);}
+}
+
+.advertisement-1 {
+    background-color: rgb(252, 252, 174);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+

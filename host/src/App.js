@@ -3,6 +3,7 @@ import "./App.css";
 import { io } from "socket.io-client";
 import GameContainer from "./components/GameContainer";
 import SplashScreen from "./components/SplashScreen";
+import Advertisement from "./components/Advertisement";
 
 
 function App() {
@@ -36,8 +37,9 @@ function App() {
 
     });
 
-    socket.on('user', state => {
-      if(state === 'connected') setUserConnected(true);
+    socket.on("user", state => {
+      console.log(state)
+      if(state === "connected") setUserConnected(true);
       else setUserConnected(false);
     })
   };
@@ -59,6 +61,7 @@ function App() {
       )}
 
       {error ? <p style={{ color: "red" }}>{error}</p> : ""}
+      <Advertisement/>
     </main>
   );
 }

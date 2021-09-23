@@ -13,7 +13,6 @@ function App() {
 
 
 
-
   useEffect(() => {
     const newSocket = io("https://" + document.location.hostname + ":8080");
     setSocket(newSocket);
@@ -64,7 +63,6 @@ function App() {
           Burger OverFlow
         </div>
         <div className="mainContainer">
-
           <div className="buttonContainer">
               {!authenticated ? (
               <>
