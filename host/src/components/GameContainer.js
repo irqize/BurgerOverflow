@@ -82,13 +82,28 @@ const GameContainer = ({ socket }) => {
     setGamma(gyroData?.gamma ? gyroData?.gamma : 0)
   }, [gyroData])
 
-  const chooseLane = (alpha, x1, x2) => {
-    //function to return true if alpha is within a decided range
+  //function to compare if a value is in between two other values.
+Number.prototype.between  = function (a, b) {
+  var min = Math.min(a,b),
+      max = Math.max(a,b);
+  return this > min && this < max;
+};
 
-    //left  ??
-    //middle    ??
-    //left   ??
+  
+const chooseLane = (alpha, upper, lower) => {
+    var alpha = Math.sin(degreesToRadians(alpha))
+    var upper = Math.sin(degreesToRadians(upper))
+    var lower = Math.sin(degreesToRadians(lower))
+  //   console.log("alpha: ",alpha)
+  //  console.log("upper: ",upper)
+  //  console.log("lower: ",lower)
+    // console.log(alpha.between(lower,upper))
+  if (alpha.between(lower,upper)){
+  console.log("alpha=" + alpha + " is between ( "+ lower +" , "+ upper + " )")
   }
+  return alpha.between(lower,upper)
+  }
+// chooseLane(60,90,45)
 
 
 
@@ -125,10 +140,10 @@ const GameContainer = ({ socket }) => {
         <Spatula position={0, 0, 0} />
 
       </group>
-      <Lane position={[-1.5, 0, -1]} args={[1, 10]} opacity={0.2} color={"#FC62FC"} />
+      <Lane position={[-1.5, 0, -1]} args={[1, 10]} opacity={1} color={"#FC62FC"} active={chooseLane(alpha,90,45)} />
       {/* position = {[x,y,z]}, args={[width,height]} */}
-      <Lane position={[0, 0, -1]} args={[1, 10]} opacity={1} color={"#FCF762"} />
-      <Lane position={[1.5, 0, -1]} args={[1, 10]} opacity={0.2} color={"#62FCE6"} />
+      <Lane position={[0, 0, -1]} args={[1, 10]} opacity={1} color={"#FCF762"} active={chooseLane(alpha,44,315)}/>
+      <Lane position={[1.5, 0, -1]} args={[1, 10]} opacity={1} color={"#62FCE6"} active={chooseLane(alpha,314,270)} />
       {/* <Box position={[0, 0, 0]} color={"#FFC300"} /> */}
       <Wall />
       <Floor />
