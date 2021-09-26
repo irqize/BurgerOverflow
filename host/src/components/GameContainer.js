@@ -11,6 +11,7 @@ import Spatula from "./Spatula";
 import Lane from "./Lane";
 import { Stats } from "@react-three/drei";
 import Stack from "./Stack";
+import Advertisement from "./Advertisement";
 
 const degreesToRadians = (angle) => (angle * Math.PI) / 180;
 
@@ -75,6 +76,7 @@ const GameContainer = ({ socket }) => {
   const [alpha, setAlpha] = useState(0);
   const [beta, setBeta] = useState(0);
   const [gamma, setGamma] = useState(0);
+  const [onBoardingDone, setOnBoardingDone] = useState(false);
 
   useEffect(() => {
     console.log(socket)
@@ -116,6 +118,7 @@ const GameContainer = ({ socket }) => {
       {/* <input type='number' value={alpha.toFixed(2)} onChange={e => setAlpha(e.target.value)} />
     <input type='number' value={beta.toFixed(2)} onChange={e => setBeta(e.target.value)} />
     <input type='number' value={gamma.toFixed(2)} onChange={e => setGamma(e.target.value)} /> */}
+      {onBoardingDone ? <>
       <Canvas
         style={{ height: "100vh", width: "100vw", background: "#272727" }}
         pixelRatio={window.devicePixelRatio}
@@ -191,7 +194,8 @@ const GameContainer = ({ socket }) => {
 
         </Physics>
         {/* </Suspense> */}
-      </Canvas>
+      </Canvas></>:
+      <Advertisement socket={socket} doneOnboarding={() => { setOnBoardingDone(true)}}/>}
     </>
   );
 };
