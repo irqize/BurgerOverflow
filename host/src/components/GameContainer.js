@@ -72,6 +72,7 @@ const GameContainer = ({ socket }) => {
   const [gamma, setGamma] = useState(0)
 
   useEffect(() => {
+    console.log(socket)
     socket.on("data", (data) => setGyroData(data));
 
   }, [])

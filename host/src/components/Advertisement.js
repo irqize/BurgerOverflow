@@ -4,9 +4,24 @@ import Hamburger from './images/hamburger.jpeg'
 
 
 
-const Advertisement = () => {
+const Advertisement = ({socket}) => {
   const [screenNumber, setScreenNumber] = useState(0);
+  const [skipAhead, setSkipAhead] = useState(false);
+//   const [gyroData, setGyroData] = useState(null);
+//   const [alpha, setAlpha] = useState(0)
+//   const [beta, setBeta] = useState(0)
+//   const [gamma, setGamma] = useState(0)
 
+  useEffect(() => {
+    socket.on("skipAhead", (skip) => console.log(skip));
+
+  }, [])
+
+//   useEffect(() => {
+//     setAlpha(gyroData?.alpha ? gyroData?.alpha : 0);
+//     setBeta(gyroData?.beta ? gyroData?.beta : 0)
+//     setGamma(gyroData?.gamma ? gyroData?.gamma : 0)
+//   }, [gyroData])
 
 
 return (

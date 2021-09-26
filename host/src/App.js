@@ -57,11 +57,12 @@ function App() {
           <button onClick={authenticate}>Authenticate</button>
         </>
       ) : (
-          userConnected ? <GameContainer socket={socket} /> : <SplashScreen />
+          userConnected ? <>
+          <Advertisement socket={socket}/>
+          <GameContainer socket={socket} /></> : <SplashScreen />
       )}
 
       {error ? <p style={{ color: "red" }}>{error}</p> : ""}
-      <Advertisement/>
     </main>
   );
 }
