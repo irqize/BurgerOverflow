@@ -27,7 +27,6 @@ function App() {
   };
 
   const nextAd = ({}) => {
-    console.log("hej")
     socket.emit('skipAhead', true)
   };
   
@@ -98,9 +97,13 @@ function App() {
                   
                   }
               </div>}
-              <button onClick={nextAd}>Click me to jump ahead</button>
-              
-              
+              <div className="buttonGroup">
+              <button className="nextAdButton" onClick={nextAd}>
+                <span className="frontButton">
+                Click me to jump ahead
+                </span>
+                </button>
+              </div>
               </div>
           </div>
       </div>
