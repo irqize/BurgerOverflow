@@ -64,8 +64,19 @@ io.on("connection", (socket) => {
       io.to("host").emit("data", data);
     }
   });
+
+  socket.on("skipAhead", (skip) => {
+    if (socket.rooms.has("client")) {
+      console.log("hej" + skip);
+      io.to("host").emit("skipAhead", skip);
+    }
+  })
 });
 
 io.of("client").on("data", (data) => {
   console.log(data);
+});
+
+io.of("client").on("skipAhead", (skip) => {
+  console.log("hejsan" + skip);
 });

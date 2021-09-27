@@ -3,7 +3,6 @@ import "./App.css";
 import { io } from "socket.io-client";
 import GameContainer from "./components/GameContainer";
 import SplashScreen from "./components/SplashScreen";
-import Advertisement from "./components/Advertisement";
 
 
 function App() {
@@ -45,24 +44,25 @@ function App() {
   };
 
 
-  return (socket ? <GameContainer socket={socket} /> : null);
-    // <main>
-    //   {!authenticated ? (
-    //     <>
-    //       <input
-    //         value={password}
-    //         type="password"
-    //         onChange={(e) => setPassword(e.target.value)}
-    //       />
-    //       <button onClick={authenticate}>Authenticate</button>
-    //     </>
-    //   ) : (
-    //       userConnected ?  /> : <SplashScreen />
-    //   )}
+  return (
+    // socket ? <GameContainer socket={socket} /> : null);
+    <main>
+      {!authenticated ? (
+        <>
+          <input
+            value={password}
+            type="password"
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <button onClick={authenticate}>Authenticate</button>
+        </>
+      ) : (
+          userConnected ? <GameContainer socket={socket} />: <SplashScreen />
+      )}
 
-    //   {error ? <p style={{ color: "red" }}>{error}</p> : ""}
-    //   <Advertisement/>
-    // </main>
+      {error ? <p style={{ color: "red" }}>{error}</p> : ""}
+    </main>
+  )
   
 }
 

@@ -25,6 +25,10 @@ function App() {
     setGyroData({alpha, beta, gamma});
     socket.emit('data', {alpha, beta, gamma})
   };
+
+  const nextAd = ({}) => {
+    socket.emit('skipAhead', true)
+  };
   
 
   const startGyro = () => {
@@ -93,9 +97,13 @@ function App() {
                   
                   }
               </div>}
-          
-              
-              
+              <div className="buttonGroup">
+              <button className="nextAdButton" onClick={nextAd}>
+                <span className="frontButton">
+                Click me to jump ahead
+                </span>
+                </button>
+              </div>
               </div>
           </div>
       </div>
