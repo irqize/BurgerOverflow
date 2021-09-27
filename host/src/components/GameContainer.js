@@ -14,19 +14,6 @@ import Stack from "./Stack";
 
 const degreesToRadians = (angle) => (angle * Math.PI) / 180;
 
-const Model = () => {
-  const gltf = useLoader(GLTFLoader, "./untitled.gltf");
-  return (
-    <>
-      <primitive
-        object={gltf.scene}
-        scale={0.4}
-        rotation={[-Math.PI / 2, 0, 0]}
-      />
-    </>
-  );
-};
-
 // const Plane = () => {
 //   const [ref] = usePlane(() => ({
 //     rotation: [-Math.PI / 2, 0, 0],
@@ -184,10 +171,9 @@ const GameContainer = ({ socket }) => {
         <Wall />
         <Physics>
           <Floor />
-          <Stack x={0} z={-2}/>
+          <Stack x={0} z={0}/>
           <Stack x={-3} z={1}/>
           <Stack x={3} z={-0.5}/>
-
         </Physics>
         {/* </Suspense> */}
       </Canvas>
