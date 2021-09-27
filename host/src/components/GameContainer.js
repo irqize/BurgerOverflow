@@ -11,9 +11,21 @@ import Spatula from "./Spatula";
 import Lane from "./Lane";
 import { Stats } from "@react-three/drei";
 import Stack from "./Stack";
-import Advertisement from "./Advertisement";
 
 const degreesToRadians = (angle) => (angle * Math.PI) / 180;
+
+const Model = () => {
+  const gltf = useLoader(GLTFLoader, "./untitled.gltf");
+  return (
+    <>
+      <primitive
+        object={gltf.scene}
+        scale={0.4}
+        rotation={[-Math.PI / 2, 0, 0]}
+      />
+    </>
+  );
+};
 
 // const Plane = () => {
 //   const [ref] = usePlane(() => ({
@@ -63,10 +75,8 @@ const GameContainer = ({ socket }) => {
   const [alpha, setAlpha] = useState(0);
   const [beta, setBeta] = useState(0);
   const [gamma, setGamma] = useState(0);
-  const [onBoardingDone, setOnBoardingDone] = useState(false);
 
   useEffect(() => {
-    console.log(socket)
     socket.on("data", (data) => setGyroData(data));
   }, []);
 
@@ -105,7 +115,6 @@ const GameContainer = ({ socket }) => {
       {/* <input type='number' value={alpha.toFixed(2)} onChange={e => setAlpha(e.target.value)} />
     <input type='number' value={beta.toFixed(2)} onChange={e => setBeta(e.target.value)} />
     <input type='number' value={gamma.toFixed(2)} onChange={e => setGamma(e.target.value)} /> */}
-      {onBoardingDone ? <>
       <Canvas
         style={{ height: "100vh", width: "100vw", background: "#272727" }}
         pixelRatio={window.devicePixelRatio}
@@ -175,13 +184,13 @@ const GameContainer = ({ socket }) => {
         <Wall />
         <Physics>
           <Floor />
-          <Stack x={0} z={0}/>
+          <Stack x={0} z={-2}/>
           <Stack x={-3} z={1}/>
           <Stack x={3} z={-0.5}/>
+
         </Physics>
         {/* </Suspense> */}
-      </Canvas></>:
-      <Advertisement socket={socket} doneOnboarding={() => { setOnBoardingDone(true)}}/>}
+      </Canvas>
     </>
   );
 };

@@ -47,7 +47,7 @@ function App() {
   return (
     // socket ? <GameContainer socket={socket} /> : null);
     <main>
-      {!authenticated ? (
+      {/* {!authenticated ? (
         <>
           <input
             value={password}
@@ -58,7 +58,9 @@ function App() {
         </>
       ) : (
           userConnected ? <GameContainer socket={socket} />: <SplashScreen />
-      )}
+      )} */}
+
+      {socket && <GameContainer socket={socket} />}
 
       {error ? <p style={{ color: "red" }}>{error}</p> : ""}
     </main>
