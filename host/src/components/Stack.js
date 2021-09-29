@@ -1,28 +1,34 @@
 import React, { useState, useEffect } from "react";
-import { useLoader } from "@react-three/fiber";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { useCylinder } from "@react-three/cannon";
-import { Vector3 } from "three";
+import { Vector3, Box3 } from "three";
+import { Bacon, BreadDown, BreadUp, Cheese, Lettuce, Meat, Tomato } from "./Ingredients";
 
 const items = [
-  "bacon",
-  "bread_down",
-  "bread_up",
-  "cheese",
-  "lettuce",
-  "meat",
-  "tomato",
+  "bacon", "bread_down", "bread_up", "cheese", "lettuce", "meat", "tomato",
 ];
 
+const ingredients = {
+  meat: {r: 1, height: 0.25, Component: Meat},
+  bacon: {r: 1.02, height: 0.15, Component: Bacon},
+  bread_up: {r: 1, height: 0.71, Component: BreadUp},
+  bread_down: {r: 1, height: 0.2, Component: BreadDown},
+  cheese: {r: 1, height: 0.25, Component: Cheese},
+  lettuce: {r: 1.152, height: 0.25, Component: Lettuce},
+  tomato: {r: 1, height: 0.295, Component: Tomato}
+};
+
 const Item = ({
-  attrs: { color, shininess, mass, height },
+  attrs: {  mass, Component, height, r },
   position,
   setItemPosition,
 }) => {
-  // const gltf = useLoader(GLTFLoader, "./assets/" + name + ".gltf");
-  // const [ref] = useBox(() => ({mass: 1, position}))
-  // return <primitive object={gltf.scene} ref={ref}/>;
-  const args = [0.5, 0.5, height, 32];
+  // const gltf = useGLTF('/assets/bread_down.gltf');
+  // const box = new Box3().setFromObject(gltf.scene);
+  // const height = box.max.y - box.min.y;
+  // const r = Math.max(box.max.x - box.min.x, box.max.z - box.min.z) / 2;
+  // console.log(height, r)
+
+  const args = [r, r, height, 16];
 
   const [lastUpdate, setLastUpdate] = useState();
   const [actualPosition, setActualPosition] = useState();
@@ -53,14 +59,13 @@ const Item = ({
   });
 
   return (
-    <mesh ref={ref}>
-      <cylinderBufferGeometry attach="geometry" args={args} />
-      <meshPhongMaterial
-        attach="material"
-        color={color}
-        shininess={shininess}
-      />
-    </mesh>
+    <group ref={ref}>
+      <Component />
+      <mesh>
+        <cylinderBufferGeometry args={args} />
+        <meshBasicMaterial transparent opacity={0} />
+      </mesh>
+    </group>
   );
 };
 
@@ -68,10 +73,9 @@ const Item = ({
 const checkIfOut = (radius, x, z) => Math.sqrt(x * x + z * z) > radius;
 
 const generateStackItem = () => ({
-  color: Math.floor(Math.random() * 16777215),
-  shininess: Math.round(Math.random() * 100),
   mass: 0.3 + Math.random() * 0.3,
-  height: 0.1 + Math.random() * 0.3,
+  // ...ingredients[items[1]]
+  ...ingredients[items[Math.floor(Math.random() * items.length)]]
 });
 
 const Stack = ({ x, z }) => {
@@ -81,7 +85,7 @@ const Stack = ({ x, z }) => {
   const [isOut, setIsOut] = useState(false);
 
   const setItemPosition = (p) => {
-    if (!checkIfOut(0.7, p[0] - x, p[2] - z)) return;
+    if (!checkIfOut(1.1, p[0] - x, p[2] - z)) return;
     setIsOut(true);
     setPositions([...positions, p]);
   };
@@ -124,15 +128,17 @@ const Stack = ({ x, z }) => {
         </mesh>
       ))}
       <mesh position={[x, 0, z]}>
-        <cylinderGeometry args={[0.7, 0.7, 10, 32]} />
+        <cylinderGeometry args={[1.1, 1.1, 10, 32]} />
         <meshBasicMaterial
           color={isOut ? 0xff0000 : 0xffffff}
           transparent
-          opacity={0.3}
+          opacity={0.1}
         />
       </mesh>
     </>
   );
 };
+
+
 
 export default Stack;

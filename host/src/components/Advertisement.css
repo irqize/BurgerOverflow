@@ -1,10 +1,9 @@
 .advertisement-0 {
-    background-color: #fcfcfc;
+    background-color: #e6a22e;
     display: grid;
     justify-content: center;
     align-items: center;
     text-align:center;
-    height: 100vh;
     font-family: 'Alfa Slab One', cursive;
     font-weight: 200 !important;
     font-size: 3em;
@@ -12,10 +11,12 @@
 
 .advertisement-0 {
     --color: black;
+    --color-glow: black;
 }
 
 .advertisement-text-red {
     --color: red;
+    --color-glow: rgb(252, 202, 170);
 }
 
 .advertisement-0-img {
@@ -34,9 +35,9 @@
 }
 
 @keyframes glow-shrink {
-    0% {text-shadow: 0 0 3px var(--color); transform: scale(1);}
+    0% {text-shadow: 0 0 4px var(--color-glow); transform: scale(1);}
     50% {text-shadow: 0 0 0px var(--color); transform: scale(0.8);}
-    100% {text-shadow: 0 0 3px var(--color); transform: scale(1);}
+    100% {text-shadow: 0 0 4px var(--color-glow); transform: scale(1);}
 }
 
 .advertisement-1 {
