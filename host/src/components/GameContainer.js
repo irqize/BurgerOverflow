@@ -12,6 +12,7 @@ import Lane from "./Lane";
 import { Stats } from "@react-three/drei";
 import Stack from "./Stack";
 import Advertisement from "./Advertisement";
+import Kitchen from "./Background";
 
 const degreesToRadians = (angle) => (angle * Math.PI) / 180;
 
@@ -128,7 +129,7 @@ const GameContainer = ({ socket }) => {
         {/* <Stars /> */}
         {/* 3D background */}
 
-        <ambientLight intensity={0.2} />
+        <ambientLight intensity={0.8} />
         {/* adds ambient light to the canvas */}
 
         <spotLight position={[10, 10, 10]} angle={0.5} />
@@ -184,7 +185,9 @@ const GameContainer = ({ socket }) => {
           active={chooseLane(alpha, 314, 270)}
         /> */}
         <Stats />
-        <Wall />
+        <Suspense fallback={null}>
+          <Kitchen />
+        </Suspense>
         <Physics>
           <Floor />
           <Stack x={0} z={-2}/>
