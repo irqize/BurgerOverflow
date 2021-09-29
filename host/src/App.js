@@ -45,7 +45,26 @@ function App() {
   };
 
 
-  return (socket ? <GameContainer socket={socket} /> : null);
+  // return (socket ? <GameContainer socket={socket} /> : null);
+  return(
+      <main>
+      {!authenticated ? (
+        <>
+          <input
+            value={password}
+            type="password"
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <button onClick={authenticate}>Authenticate</button>
+        </>
+      ) : (
+          userConnected ?  <GameContainer socket={socket}/> : <SplashScreen />
+      )}
+
+      {error ? <p style={{ color: "red" }}>{error}</p> : ""}
+      <Advertisement/>
+    </main>
+  )
     // <main>
     //   {!authenticated ? (
     //     <>

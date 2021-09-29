@@ -112,9 +112,9 @@ const GameContainer = ({ socket }) => {
 
   return (
     <>
-      {/* <input type='number' value={alpha.toFixed(2)} onChange={e => setAlpha(e.target.value)} />
+      <input type='number' value={alpha.toFixed(2)} onChange={e => setAlpha(e.target.value)} />
     <input type='number' value={beta.toFixed(2)} onChange={e => setBeta(e.target.value)} />
-    <input type='number' value={gamma.toFixed(2)} onChange={e => setGamma(e.target.value)} /> */}
+    <input type='number' value={gamma.toFixed(2)} onChange={e => setGamma(e.target.value)} />
       <Canvas
         style={{ height: "100vh", width: "100vw", background: "#272727" }}
         pixelRatio={window.devicePixelRatio}
@@ -122,26 +122,23 @@ const GameContainer = ({ socket }) => {
         {/* <Suspense fallback={null}> */}
         {/* <OrbitControls /> */}
         {/* used for moving the camera */}
-        {/* <Stars /> */}
-        {/* 3D background */}
+    
 
         <ambientLight intensity={0.2} />
         {/* adds ambient light to the canvas */}
 
         <spotLight position={[10, 10, 10]} angle={0.5} />
-        {/* <Physics> */}
-        {/* <Box />
-        <Plane /> */}
-        {/* </Physics> */}
+
+      
         {/* <Box color={"#FFC300"}/> */}
         {/* adds a spotlight towards from a position towards a direction */}
-        {
-          //<group rotation={[degreesToRadians(beta),degreesToRadians(alpha),degreesToRadians(-gamma),"YXZ"]}>
-          //{/* [(gyroData?.alpha ? degreesToRadians(gyroData?.alpha) : 0),(gyroData?.beta ? degreesToRadians(gyroData?.beta) : 0) ,(gyroData?.gamma ? degreesToRadians(gyroData?.gamma) : 0) ] */}
-          //  <Model  />
-          //</group>
-        }
-        {/* <group
+        
+          {/* <group rotation={[degreesToRadians(beta),degreesToRadians(alpha),degreesToRadians(-gamma),"YXZ"]}>
+          [(gyroData?.alpha ? degreesToRadians(gyroData?.alpha) : 0),(gyroData?.beta ? degreesToRadians(gyroData?.beta) : 0) ,(gyroData?.gamma ? degreesToRadians(gyroData?.gamma) : 0) ] 
+           <Model  />
+          </group> */}
+        
+        <group
           rotation={[
             degreesToRadians(beta),
             degreesToRadians(alpha),
@@ -155,17 +152,18 @@ const GameContainer = ({ socket }) => {
             gyroData?.gamma ? degreesToRadians(gyroData?.gamma) : 0,
           ]}
 
-          <Box position={[0, 0, 0]} color={"#FFC300"} />
-          <Spatula position={(0, 0, 0)} />
+          {/* <Box position={[0, 0, 0]} color={"#FFC300"} /> */}
+          {/* <Spatula position={(0, 0, 0)} /> */}
         </group>
-        <Lane
+        <Box position={[Math.sin(degreesToRadians(gamma)), 0, Math.sin(degreesToRadians(beta))]} />
+
+        {/* <Lane
           position={[-1.5, 0, -1]}
           args={[1, 10]}
           opacity={1}
           color={"#FC62FC"}
           active={chooseLane(alpha, 90, 45)}
         />
-        position = {[x,y,z]}, args={[width,height]}
         <Lane
           position={[0, 0, -1]}
           args={[1, 10]}
@@ -180,16 +178,17 @@ const GameContainer = ({ socket }) => {
           color={"#62FCE6"}
           active={chooseLane(alpha, 314, 270)}
         /> */}
-        <Stats />
+        {/* <Stats /> */}
         <Wall />
-        <Physics>
+      
+        {/* <Physics>
           <Floor />
-          <Stack x={0} z={-2}/>
-          <Stack x={-3} z={1}/>
-          <Stack x={3} z={-0.5}/>
+          <Stack x={0} z={-2}/> 
+           <Stack x={-3} z={1}/> 
+           <Stack x={3} z={-0.5}/>
 
-        </Physics>
-        {/* </Suspense> */}
+        </Physics> */}
+        
       </Canvas>
     </>
   );
