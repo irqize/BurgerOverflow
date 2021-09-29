@@ -6,9 +6,9 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { Suspense } from "react";
 import Floor from "./Floor";
 import Wall from "./Wall";
-import Box from "./Box";
-import Spatula from "./Spatula";
-import Lane from "./Lane";
+// import Box from "./Box";
+// import Spatula from "./Spatula";
+// import Lane from "./Lane";
 import { Stats } from "@react-three/drei";
 import Stack from "./Stack";
 import Advertisement from "./Advertisement";
@@ -158,7 +158,6 @@ const GameContainer = ({ socket }) => {
             gyroData?.beta ? degreesToRadians(gyroData?.beta) : 0,
             gyroData?.gamma ? degreesToRadians(gyroData?.gamma) : 0,
           ]}
-
           <Box position={[0, 0, 0]} color={"#FFC300"} />
           <Spatula position={(0, 0, 0)} />
         </group>

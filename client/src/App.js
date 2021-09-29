@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./App.css";
 import "./Client.css";
 import { io } from "socket.io-client";
@@ -10,7 +10,14 @@ function App() {
 
   const [gyroAllowed, setGyroAllowed] = useState(false);
   const [gyroData, setGyroData] = useState(null);
+  const [prevGamma, setPrevGamma] = useState(0)
 
+  const gyroRef = useRef(gyroData)
+
+  const setMyState = (data) => {
+    gyroRef.current = data
+    setGyroData(data)
+  }
 
 
   useEffect(() => {
@@ -19,17 +26,40 @@ function App() {
 
     return () => newSocket.close();
   }, []);
+  const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
 
- 
-  const handleOrientation = ({alpha, beta, gamma}) => {
-    setGyroData({alpha, beta, gamma});
-    socket.emit('data', {alpha, beta, gamma})
+  const handleOrientation = ({ alpha, beta, gamma }) => {
+    // console.log("_______handleOrientation incoming gamma:", gamma)
+
+
+    if (gyroRef.current !== null) {
+      //initial state
+      // console.log("gyroRef.current", gyroRef.current)
+      var deltaGamma = Math.abs(gamma - gyroRef.current.gamma);
+
+      console.log("deltaGamma", deltaGamma)
+      if (deltaGamma < 50) {
+        //above this is when the sensor switches quickly at end range
+        setMyState({ alpha, beta, gamma });
+
+        socket.emit('data', { alpha, beta, gamma })
+      }
+    } else {
+      setMyState({ alpha, beta, gamma });
+
+      socket.emit('data', { alpha, beta, gamma })
+    }
+
+    // setGyroData({alpha, beta, gamma});
+    // socket.emit('data', {alpha, beta, gamma})
+
   };
 
-  const nextAd = ({}) => {
+
+  const nextAd = ({ }) => {
     socket.emit('skipAhead', true)
   };
-  
+
 
   const startGyro = () => {
     if (typeof DeviceOrientationEvent?.requestPermission === "function") {
@@ -46,6 +76,7 @@ function App() {
       // document.body.addEventListener("deviceorientation", handleOrientation);
       setGyroAllowed(true);
     }
+
   };
 
   const authenticate = () => {
@@ -58,6 +89,12 @@ function App() {
 
       // startGyro();
     });
+  };
+
+  const recalibrate = () => {
+
+    window.removeEventListener('deviceorientation')
+
   };
 
 
