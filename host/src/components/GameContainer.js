@@ -62,9 +62,9 @@ const GameContainer = ({ socket }) => {
 
   return (
     <>
-      {/* <input type='number' value={alpha.toFixed(2)} onChange={e => setAlpha(e.target.value)} />
+      <input type='number' value={alpha.toFixed(2)} onChange={e => setAlpha(e.target.value)} />
     <input type='number' value={beta.toFixed(2)} onChange={e => setBeta(e.target.value)} />
-    <input type='number' value={gamma.toFixed(2)} onChange={e => setGamma(e.target.value)} /> */}
+    <input type='number' value={gamma.toFixed(2)} onChange={e => setGamma(e.target.value)} />
     { !onBoardingDone ?
       <Canvas
         style={{ height: "100vh", width: "100vw", background: "#272727" }}
@@ -122,7 +122,7 @@ const GameContainer = ({ socket }) => {
         </Physics>
         {/* </Suspense> */}
         <Camera />
-        <Control spawn={(v) => setSpawn(v)} />
+        <Control gyroX={Math.sin(degreesToRadians(gamma))} gyroZ={Math.sin(degreesToRadians(beta))} spawn={(v) => setSpawn(v)} />
       </Canvas>
       :
       <Advertisement socket={socket} doneOnboarding={() => {setOnboardingDone(true)} }/>

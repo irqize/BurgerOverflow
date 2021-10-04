@@ -2,10 +2,20 @@ import React, { useEffect, useState } from "react";
 import { useFrame, useThree } from "react-three-fiber";
 
 const velocity = 0.1;
+const cameraMovementScale = 3;
 
 const Control = ({
-  spawn
+  spawn,gyroX,gyroZ
 }) => {
+
+  useEffect(()=>{
+    setX(gyroX*cameraMovementScale)
+  },[gyroX])
+  
+
+  useEffect(()=>{
+    setZ(gyroZ*cameraMovementScale)
+  },[gyroZ])
   const { camera } = useThree();
 
   const [wPushed, setWPushed] = useState(false);
