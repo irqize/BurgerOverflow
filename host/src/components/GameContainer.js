@@ -5,7 +5,6 @@ import { useLoader } from "@react-three/fiber";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { Suspense } from "react";
 import Floor from "./Floor";
-import Wall from "./Wall";
 import { Stats } from "@react-three/drei";
 import Stacks from "./Stacks";
 import Advertisement from "./Advertisement";
@@ -24,7 +23,7 @@ const GameContainer = ({ socket }) => {
 
   const [spawn, setSpawn] = useState(false);
 
-;
+  ;
   useEffect(() => {
     socket.on("data", (data) => setGyroData(data));
   }, []);
@@ -42,90 +41,41 @@ const GameContainer = ({ socket }) => {
     return this > min && this < max;
   };
 
-  const chooseLane = (alpha, upper, lower) => {
-    var alpha = Math.sin(degreesToRadians(alpha));
-    var upper = Math.sin(degreesToRadians(upper));
-    var lower = Math.sin(degreesToRadians(lower));
-    //   console.log("alpha: ",alpha)
-    //  console.log("upper: ",upper)
-    //  console.log("lower: ",lower)
-    // console.log(alpha.between(lower,upper))
-    if (alpha.between(lower, upper)) {
-      console.log(
-        "alpha=" + alpha + " is between ( " + lower + " , " + upper + " )"
-      );
-    }
-    return alpha.between(lower, upper);
-  };
 
-  
 
   return (
     <>
-      <input type='number' value={alpha.toFixed(2)} onChange={e => setAlpha(e.target.value)} />
+      {/* <input type='number' value={alpha.toFixed(2)} onChange={e => setAlpha(e.target.value)} />
     <input type='number' value={beta.toFixed(2)} onChange={e => setBeta(e.target.value)} />
-    <input type='number' value={gamma.toFixed(2)} onChange={e => setGamma(e.target.value)} />
-    { !onBoardingDone ?
-      <Canvas
-        style={{ height: "100vh", width: "100vw", background: "#272727" }}
-        pixelRatio={window.devicePixelRatio}
-        linear
-      >
-        {/* <Suspense fallback={null}> */}
-        {/* <OrbitControls /> */}
-        {/* used for moving the camera */}
-        {/* <Stars /> */}
-        {/* 3D background */}
-
-        <ambientLight intensity={0.8} />
-        {/* adds ambient light to the canvas */}
-
-        <spotLight position={[10, 10, 10]} angle={0.5} />
-        {/* <Physics> */}
-        {/* <Box />
-        <Plane /> */}
-        {/* </Physics> */}
-        {/* <Box color={"#FFC300"}/> */}
-        {/* adds a spotlight towards from a position towards a direction */}
-        {
-          //<group rotation={[degreesToRadians(beta),degreesToRadians(alpha),degreesToRadians(-gamma),"YXZ"]}>
-          //{/* [(gyroData?.alpha ? degreesToRadians(gyroData?.alpha) : 0),(gyroData?.beta ? degreesToRadians(gyroData?.beta) : 0) ,(gyroData?.gamma ? degreesToRadians(gyroData?.gamma) : 0) ] */}
-          //  <Model  />
-          //</group>
-        }
-        {/* <group
-          rotation={[
-            degreesToRadians(beta),
-            degreesToRadians(alpha),
-            degreesToRadians(-gamma),
-            "YXZ",
-          ]}
+    <input type='number' value={gamma.toFixed(2)} onChange={e => setGamma(e.target.value)} /> */}
+      {!onBoardingDone ?
+        <Canvas
+          style={{ height: "100vh", width: "100vw", background: "#272727" }}
+          pixelRatio={window.devicePixelRatio}
+          linear
         >
-          {[
-            gyroData?.alpha ? degreesToRadians(gyroData?.alpha) : 0,
-            gyroData?.beta ? degreesToRadians(gyroData?.beta) : 0,
-            gyroData?.gamma ? degreesToRadians(gyroData?.gamma) : 0,
-          ]}
-          <Box position={[0, 0, 0]} color={"#FFC300"} />
-          <Spatula position={(0, 0, 0)} />
-        </group>*/}
-        <Stats />
-        <Suspense fallback={null}>
-          <Kitchen />
-        </Suspense>
-        <Physics>
-          <Floor />
-          <Stacks stacksXZ={[{x: 0, z: -2}, {x: 5, z:-2}]} spawn={spawn}/>
-          {/* <Stack x={-3} z={1}/>
+
+
+          <ambientLight intensity={0.8} />
+          {/* adds ambient light to the canvas */}
+
+          <spotLight position={[10, 10, 10]} angle={0.5} />
+          <Stats />
+          <Suspense fallback={null}>
+            <Kitchen />
+          </Suspense>
+          <Physics>
+            <Floor />
+            <Stacks stacksXZ={[{ x: 0, z: -2 }, { x: 5, z: -2 }]} spawn={spawn} />
+            {/* <Stack x={-3} z={1}/>
           <Stack x={3} z={-0.5}/> */}
 
-        </Physics>
-        {/* </Suspense> */}
-        <Camera />
-        <Control gyroX={Math.sin(degreesToRadians(gamma))} gyroZ={Math.sin(degreesToRadians(beta))} spawn={(v) => setSpawn(v)} />
-      </Canvas>
-      :
-      <Advertisement socket={socket} doneOnboarding={() => {setOnboardingDone(true)} }/>
+          </Physics>
+          <Camera />
+          <Control gyroX={Math.sin(degreesToRadians(gamma))} gyroZ={Math.sin(degreesToRadians(beta))} spawn={(v) => setSpawn(v)} />
+        </Canvas>
+        :
+        <Advertisement socket={socket} doneOnboarding={() => { setOnboardingDone(true) }} />
       }
     </>
   );
