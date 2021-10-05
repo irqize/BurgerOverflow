@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useFrame, useThree } from "react-three-fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 
 const velocity = 0.1;
 const cameraMovementScale = 3;
