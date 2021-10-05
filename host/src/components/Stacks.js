@@ -1,24 +1,39 @@
 import React, { useState, useEffect } from "react";
 import { useCylinder } from "@react-three/cannon";
-import { Vector3, Box3 } from "three";
-import { Bacon, BreadDown, BreadUp, Cheese, Lettuce, Meat, Tomato } from "./Ingredients";
+import { useThree } from "react-three-fiber";
+import { Vector3 } from "three";
+import {
+  Bacon,
+  BreadDown,
+  BreadUp,
+  Cheese,
+  Lettuce,
+  Meat,
+  Tomato,
+} from "./Ingredients";
 
 const items = [
-  "bacon", "bread_down", "bread_up", "cheese", "lettuce", "meat", "tomato",
+  "bacon",
+  "bread_down",
+  "bread_up",
+  "cheese",
+  "lettuce",
+  "meat",
+  "tomato",
 ];
 
 const ingredients = {
-  meat: {r: 1, height: 0.25, Component: Meat},
-  bacon: {r: 1.02, height: 0.15, Component: Bacon},
-  bread_up: {r: 1, height: 0.71, Component: BreadUp},
-  bread_down: {r: 1, height: 0.2, Component: BreadDown},
-  cheese: {r: 1, height: 0.25, Component: Cheese},
-  lettuce: {r: 1.152, height: 0.25, Component: Lettuce},
-  tomato: {r: 1, height: 0.295, Component: Tomato}
+  meat: { r: 1, height: 0.25, Component: Meat },
+  bacon: { r: 1.02, height: 0.15, Component: Bacon },
+  bread_up: { r: 1, height: 0.71, Component: BreadUp },
+  bread_down: { r: 1, height: 0.2, Component: BreadDown },
+  cheese: { r: 1, height: 0.25, Component: Cheese },
+  lettuce: { r: 1.152, height: 0.25, Component: Lettuce },
+  tomato: { r: 1, height: 0.295, Component: Tomato },
 };
 
 const Item = ({
-  attrs: {  mass, Component, height, r },
+  attrs: { mass, Component, height, r },
   position,
   setItemPosition,
 }) => {
@@ -28,7 +43,7 @@ const Item = ({
   // const r = Math.max(box.max.x - box.min.x, box.max.z - box.min.z) / 2;
   // console.log(height, r)
 
-  const args = [r, r, height, 16];
+  const args = [r, r, height, 8];
 
   const [lastUpdate, setLastUpdate] = useState();
   const [actualPosition, setActualPosition] = useState();
@@ -74,18 +89,34 @@ const checkIfOut = (radius, x, z) => Math.sqrt(x * x + z * z) > radius;
 
 const generateStackItem = () => ({
   mass: 0.3 + Math.random() * 0.3,
-  // ...ingredients[items[1]]
-  ...ingredients[items[Math.floor(Math.random() * items.length)]]
+  ...ingredients[items[Math.floor(Math.random() * items.length)]],
 });
 
-const Stack = ({ x, z }) => {
+const Stack = ({ x, z, isOut }) => {
+  return (
+    <>
+      <mesh position={[x, 0, z]}>
+        <cylinderGeometry args={[1.1, 1.1, 10, 32]} />
+        <meshBasicMaterial
+          color={isOut ? 0xff0000 : 0x00ff00}
+          transparent
+          opacity={0.1}
+        />
+      </mesh>
+    </>
+  );
+};
+
+const Stacks = ({ spawn, stacksXZ }) => {
   const [positions, setPositions] = useState([]);
   const [items, setItems] = useState([]);
+  const { camera } = useThree();
 
   const [isOut, setIsOut] = useState(false);
 
   const setItemPosition = (p) => {
-    if (!checkIfOut(1.1, p[0] - x, p[2] - z)) return;
+    console.log(p);
+    if (!stacksXZ.reduce((prev, {x, z}) => prev && checkIfOut(1.1, p[0] - x, p[2] - z), true)) return;
     setIsOut(true);
     setPositions([...positions, p]);
   };
@@ -104,11 +135,8 @@ const Stack = ({ x, z }) => {
   }, [isOut]);
 
   useEffect(() => {
-    const id = setTimeout(() => {
-      setItems([...items, generateStackItem()]);
-    }, 1000);
-    return () => clearTimeout(id);
-  }, [items]);
+    if (spawn) setItems([...items, generateStackItem()]);
+  }, [spawn]);
 
   return (
     <>
@@ -116,7 +144,7 @@ const Stack = ({ x, z }) => {
         <Item
           attrs={attrs}
           key={i}
-          position={[x, 5, z]}
+          position={[camera.position.x, 5, camera.position.z]}
           setItemPosition={setItemPosition}
         />
       ))}
@@ -127,18 +155,11 @@ const Stack = ({ x, z }) => {
           <meshNormalMaterial />
         </mesh>
       ))}
-      <mesh position={[x, 0, z]}>
-        <cylinderGeometry args={[1.1, 1.1, 10, 32]} />
-        <meshBasicMaterial
-          color={isOut ? 0xff0000 : 0xffffff}
-          transparent
-          opacity={0.1}
-        />
-      </mesh>
+      {stacksXZ.map(({x, z}, i) => {
+        return (<Stack x={x} z={z} key={i} isOut={isOut} />)
+      })}
     </>
   );
 };
 
-
-
-export default Stack;
+export default Stacks;
