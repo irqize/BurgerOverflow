@@ -1,12 +1,10 @@
 .advertisement-0 {
     background-color: #e6a22e;
-    display: grid;
-    justify-content: center;
-    align-items: center;
-    text-align:center;
     font-family: 'Alfa Slab One', cursive;
     font-weight: 200 !important;
-    font-size: 3em;
+    flex:1;
+    text-align: left;
+    margin: 20px;
 }
 
 .advertisement-0 {
@@ -14,31 +12,11 @@
     --color-glow: black;
 }
 
-.advertisement-text-red {
-    --color: red;
-    --color-glow: rgb(252, 202, 170);
-}
-
 .advertisement-0-img {
     height: 60vh;
     margin:auto;
 }
 
-.advertisement-text-red {
-    color: var(--color);
-    text-shadow: 0 0 2px #333333, 0 0 4px #333333;
-}
-
-.advertisement-text-red, div.advertisement-0 > p {
-    animation: glow-shrink 2s linear infinite;
-    /* animation: shrink 2s linear infinite; */
-}
-
-@keyframes glow-shrink {
-    0% {text-shadow: 0 0 4px var(--color-glow); transform: scale(1);}
-    50% {text-shadow: 0 0 0px var(--color); transform: scale(0.8);}
-    100% {text-shadow: 0 0 4px var(--color-glow); transform: scale(1);}
-}
 
 .advertisement-1 {
     background-color: rgb(252, 252, 174);

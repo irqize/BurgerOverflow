@@ -2,16 +2,16 @@
   width: 100vw;
   height: 100vh;
   text-align: center;
-  margin:auto;
   display:inline-block;
   background: #e6a22e;
-
+  display: flex;
+  flex-direction: row;
   min-height: 250px;
 }
 
 .splashContainer svg {
-  height: min(40vw, 40vh);
-  width: min(40vw, 40vh);
+  height: min(60vw, 60vh);
+  width: min(60vw, 60vh);
 }
 
 img {
@@ -26,4 +26,19 @@ img#BurgerBunDown {
 
 img#BurgerBunUp {
   margin-bottom: -10px;
+}
+
+.burgerFlex {
+  flex: 0.5;
+  position: absolute;
+  bottom: 20px;
+  right: -30vw;
+}
+
+.advertisement-text-bod {
+  font-size: 3em;
+}
+
+.advertisement-text-head {
+  font-size: 5em;
 }
