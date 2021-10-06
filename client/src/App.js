@@ -49,7 +49,7 @@ function App() {
   };
 
 
-  const nextAd = ({ }) => {
+  const nextAd = () => {
     socket.emit('skipAhead', true)
   };
 
@@ -82,9 +82,6 @@ function App() {
       // startGyro();
     });
   };
-
-
-
 
   return (
     <main>

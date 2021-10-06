@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useFrame, useThree } from "react-three-fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 
 // const velocity = 0.1;
 
@@ -88,10 +88,15 @@ const Control = ({
     camera.position.set(x, 10, z);
   })
 
-  // useEffect(() => {
-  //   document.onkeydown = keyPress;
-  //   document.onkeyup = keyUp;
-  // }, [])
+  useEffect(() => {
+    const tID = setInterval(() => {
+      spawn(false);
+      spawn(true);
+    }, 3000);
+
+    return () => clearInterval(tID);
+  }, []);
+
 
   return (
     <mesh position={[x, 5, z]}>

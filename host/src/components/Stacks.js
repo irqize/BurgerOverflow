@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useCylinder } from "@react-three/cannon";
-import { useThree } from "react-three-fiber";
+import { useThree } from "@react-three/fiber";
 import { Vector3 } from "three";
 import {
   Bacon,
