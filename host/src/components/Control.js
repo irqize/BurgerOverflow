@@ -60,6 +60,16 @@ const Control = ({
   })
 
   useEffect(() => {
+    const tID = setInterval(() => {
+      spawn(false);
+      spawn(true);
+    }, 3000);
+
+    return () => clearInterval(tID);
+  }, []);
+
+
+  useEffect(() => {
     document.onkeydown = keyPress;
     document.onkeyup = keyUp;
   }, [])

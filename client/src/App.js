@@ -10,7 +10,6 @@ function App() {
 
   const [gyroAllowed, setGyroAllowed] = useState(false);
   const [gyroData, setGyroData] = useState(null);
-  const [prevGamma, setPrevGamma] = useState(0)
 
   const gyroRef = useRef(gyroData)
 
@@ -26,7 +25,6 @@ function App() {
 
     return () => newSocket.close();
   }, []);
-  const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
 
   const handleOrientation = ({ alpha, beta, gamma }) => {
     // console.log("_______handleOrientation incoming gamma:", gamma)
@@ -56,7 +54,7 @@ function App() {
   };
 
 
-  const nextAd = ({ }) => {
+  const nextAd = () => {
     socket.emit('skipAhead', true)
   };
 
@@ -90,13 +88,6 @@ function App() {
       // startGyro();
     });
   };
-
-  const recalibrate = () => {
-
-    window.removeEventListener('deviceorientation')
-
-  };
-
 
   return (
     <main>
