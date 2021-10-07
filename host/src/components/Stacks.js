@@ -11,6 +11,7 @@ import {
   Meat,
   Tomato,
 } from "./Ingredients";
+import Plate from "./Plate";
 
 const items = [
   "bacon",
@@ -52,9 +53,9 @@ const Item = ({
     setLastUpdate(Date.now());
   }, []);
 
-  useEffect(() => {
-    if (actualPosition) setItemPosition(actualPosition);
-  }, [actualPosition]);
+  // useEffect(() => {
+  //   if (actualPosition) setItemPosition(actualPosition);
+  // }, [actualPosition]);
 
   const [ref] = useCylinder(() => {
     return {
@@ -93,16 +94,18 @@ const generateStackItem = () => ({
 });
 
 const Stack = ({ x, z, isOut }) => {
+
   return (
     <>
       <mesh position={[x, 0, z]}>
-        <cylinderGeometry args={[1.1, 1.1, 10, 32]} />
+        <cylinderGeometry args={[1.1, 1.1, 15, 40]} />
         <meshBasicMaterial
           color={isOut ? 0xff0000 : 0x00ff00}
           transparent
           opacity={0.1}
         />
       </mesh>
+      <Plate x={x} y={-2.2} z={z} />
     </>
   );
 };
@@ -122,21 +125,21 @@ const Stacks = ({ spawn, stacksXZ }) => {
   };
 
   // Restart the stack when item is out of bounds
-  useEffect(() => {
-    if (!isOut) return;
+  // useEffect(() => {
+  //   if (!isOut) return;
 
-    const id = setTimeout(() => {
-      setPositions([]);
-      setItems([]);
-      setIsOut(false);
-    }, 1000);
+  //   const id = setTimeout(() => {
+  //     setPositions([]);
+  //     setItems([]);
+  //     setIsOut(false);
+  //   }, 1000);
 
-    return () => clearTimeout(id);
-  }, [isOut]);
+  //   return () => clearTimeout(id);
+  // }, [isOut]);
 
-  useEffect(() => {
-    if (spawn) setItems([...items, generateStackItem()]);
-  }, [spawn]);
+  // useEffect(() => {
+  //   if (spawn) setItems([...items, generateStackItem()]);
+  // }, [spawn]);
 
   return (
     <>
@@ -144,7 +147,8 @@ const Stacks = ({ spawn, stacksXZ }) => {
         <Item
           attrs={attrs}
           key={i}
-          position={[camera.position.x, 5, camera.position.z]}
+          // position={[camera.position.x, 5, camera.position.z]}
+          position={[0, 5, 0]}
           setItemPosition={setItemPosition}
         />
       ))}
