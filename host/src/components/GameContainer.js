@@ -116,7 +116,7 @@ const GameContainer = ({ socket }) => {
           </Suspense>
           <Physics>
             <Floor />
-            <Stacks stacksXZ={[{ x: 0, z: -2 }, { x: 5, z: -2 }]} spawn={spawn} />
+            <Stacks stacksXZ={[{ x: 0, z: -2 }, { x: 5, z: -2 }]} spawn={spawn} socket={socket} />
             {/* <Stack x={-3} z={1}/>
           <Stack x={3} z={-0.5}/> */}
 
