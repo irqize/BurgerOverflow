@@ -12,7 +12,7 @@ export const Machine = ({x,z}) => {
     <group 
       ref={group_machine}
       dispose={null}
-      position={[x, 5, z]}
+      position={[x, 6, z]}
       rotation={[0, Math.PI / 2, 0]}>
       <mesh 
         castShadow
@@ -126,7 +126,17 @@ const Control = ({
 
 
   return (
+    <>
     <Machine x={x} z={z}/>
+    <mesh position={[x, 2.5, z]}>
+      <cylinderGeometry args={[0.1, 0.1, 5, 40]} />
+      <meshBasicMaterial
+        color="#C70039"
+        transparent
+        opacity={0.2}
+      />
+    </mesh>
+    </>
     // <mesh position={[x, 5, z]}>
     //   <sphereGeometry attach="geometry" args={[0.1, 32, 32]} />
     //   <meshLambertMaterial attach="material" color="hotpink" />
