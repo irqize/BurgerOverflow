@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useCylinder } from "@react-three/cannon";
-import { useThree } from "@react-three/fiber";
+import { useGLTF } from '@react-three/drei'
 import { Vector3 } from "three";
 import {
   Bacon,
@@ -111,16 +111,42 @@ const Stack = ({ x, z, isOut }) => {
   );
 };
 
-const Stacks = ({ spawn, stacksXZ, socket }) => {
+const Stacks = ({ spawn, stacksXZ, socket, gyroX, gyroZ }) => {
   const [positions, setPositions] = useState([]);
   const [items, setItems] = useState([]);
-  const { camera } = useThree();
-
   const [nextItem, setNextItem] = useState(generateStackItem())
-
   const [isOut, setIsOut] = useState(false);
-
   const [maxScores, setMaxScores] = useState(new Array(stacksXZ.length).fill(0));
+
+  /// Control spawning position
+  const [vX, setvX] = useState(0)
+  const [vZ, setvZ] = useState(0)
+  const [xPos,setX] = useState(0)
+  const [zPos,setZ] = useState(0)
+
+  useEffect(() => {
+    setvX(gyroX * gyroX * accelerometerFactor)
+  }, [gyroX])
+
+  useEffect(() => {
+    setvZ(gyroZ * gyroZ * accelerometerFactor)
+  }, [gyroZ])
+
+  useFrame(() => {
+    if (gyroZ > 0) {
+      setZ(prevZ => prevZ + vZ)
+    }
+    if (gyroZ < 0) {
+      setZ(prevZ => prevZ - vZ)
+    }
+    if (gyroX > 0) {
+      setX(prevX => prevX + vX)
+    }
+    if (gyroX < 0) {
+      setX(prevX => prevX - vX)
+    }
+  })
+  ///
 
   useEffect(() => {
     socket.on('dismiss', () => setNextItem(generateStackItem()));
@@ -167,6 +193,11 @@ const Stacks = ({ spawn, stacksXZ, socket }) => {
     }
   }, [spawn]);
 
+  // Load machine model (to generate the burger components)
+  const group_machine = useRef();
+  const material_machine = useRef();
+  const { nodes } = useGLTF('/machine.gltf');
+
   return (
     <>
       {items.map((attrs, i) => (
@@ -174,15 +205,27 @@ const Stacks = ({ spawn, stacksXZ, socket }) => {
           attrs={attrs}
           key={i}
           //position={[camera.position.x, 5, camera.position.z]}
-          position={[0, 5, 0]}
+          position={[xPos, 5, zPos]}
           setItemPosition={setItemPosition}
         />
       ))}
       {/* Draw points that are out of bounds */}
       {positions.map((p, i) => (
         <mesh position={p} key={i}>
-          <sphereGeometry args={[0.1, 10, 10]} />
-          <meshNormalMaterial />
+          {/* <sphereGeometry args={[0.1, 10, 10]} /> */}
+          castShadow
+          receiveShadow
+          geometry={nodes.Cube017.geometry}
+          rotation={[0, Math.PI / 2, 0]}
+          <meshPhysicalMaterial
+            ref={material_machine}
+            clearcoat={1}
+            clearcoatRoughness={0}
+            transmission={1}
+            thickness={1.1}
+            roughness={0}
+            envMapIntensity={2}
+          />
         </mesh>
       ))}
       {stacksXZ.map(({x, z}, i) => {

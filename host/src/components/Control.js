@@ -84,8 +84,6 @@ const Control = ({
     if (gyroX < 0) {
       setX(prevX => prevX - vX)
     }
-
-    camera.position.set(x, 10, z);
   })
 
   useEffect(() => {
