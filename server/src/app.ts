@@ -71,6 +71,13 @@ io.on("connection", (socket) => {
       io.to("host").emit("skipAhead", skip);
     }
   })
+
+  socket.on("grantedGyro", (bool) => {
+    if (socket.rooms.has("client")) {
+      console.log("yay granted gyro")
+      io.to("host").emit("grantedGyro", bool);
+    }
+  })
 });
 
 io.of("client").on("data", (data) => {
@@ -80,3 +87,7 @@ io.of("client").on("data", (data) => {
 io.of("client").on("skipAhead", (skip) => {
   console.log("hejsan" + skip);
 });
+
+io.of("client").on("grantedGyro", (bool) => {
+  console.log("yay granted gyro")
+})

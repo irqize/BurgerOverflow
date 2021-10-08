@@ -7,6 +7,8 @@
   display: flex;
   flex-direction: row;
   min-height: 250px;
+  font-weight: 200 !important;
+  font-family: 'Alfa Slab One', cursive;
 }
 
 .splashContainer svg {

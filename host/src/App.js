@@ -56,7 +56,7 @@ function App() {
           <button onClick={authenticate}>Authenticate</button>
         </>
       ) : (
-          userConnected ? <GameContainer socket={socket} />: <SplashScreen />
+          userConnected ? <GameContainer socket={socket} />: <SplashScreen socket={socket} />
       )}
 
       {error ? <p style={{ color: "red" }}>{error}</p> : ""}

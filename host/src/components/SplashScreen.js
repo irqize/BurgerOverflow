@@ -6,7 +6,7 @@ import BurgerBunDown from './images/burger_bun_down.png'
 import BurgerBunUp from './images/burger_bun_up.png'
 
 
-const SplashScreen = () => {
+const SplashScreen = ({socket}) => {
   const [link, setLink] = useState(null);
 
   return (

@@ -48,7 +48,7 @@ const GameContainer = ({ socket }) => {
       {/* <input type='number' value={alpha.toFixed(2)} onChange={e => setAlpha(e.target.value)} />
     <input type='number' value={beta.toFixed(2)} onChange={e => setBeta(e.target.value)} />
     <input type='number' value={gamma.toFixed(2)} onChange={e => setGamma(e.target.value)} /> */}
-      {!onBoardingDone ?
+      {onBoardingDone ?
         <Canvas
           style={{ height: "100vh", width: "100vw", background: "#272727" }}
           pixelRatio={window.devicePixelRatio}
@@ -62,7 +62,7 @@ const GameContainer = ({ socket }) => {
           <spotLight position={[10, 10, 10]} angle={0.5} />
           <Stats />
           <Suspense fallback={null}>
-            <Kitchen />
+            {/* <Kitchen /> */}
           </Suspense>
           <Physics>
             <Floor />

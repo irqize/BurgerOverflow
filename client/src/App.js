@@ -44,8 +44,6 @@ function App() {
 
       socket.emit('data', { alpha, beta, gamma })
     }
-
-
   };
 
 
@@ -61,12 +59,14 @@ function App() {
           if (state === "granted") {
             window.addEventListener("deviceorientation", handleOrientation);
             setGyroAllowed(true);
+            socket.emit("grantedGyro", true)
           }
         })
         .catch((e) => console.error(e));
     } else {
       window.addEventListener("deviceorientation", handleOrientation);
       setGyroAllowed(true);
+      socket.emit("grantedGyro", true)
     }
 
   };
@@ -78,7 +78,6 @@ function App() {
     socket.on("joined", () => {
       console.log("joined");
       setAuthenticated(true);
-
       // startGyro();
     });
   };
@@ -98,13 +97,12 @@ function App() {
               <button className="authButton" onClick={authenticate} >Click to authenticate</button>
             </>
           ) : (
+            <>
             <div className="authMessage">You are authenticated ✓</div>
-          )}
-
-          <div>
             {(!gyroAllowed && !gyroData) ?
               <button className="gyroButton" onClick={startGyro}>Start gyro</button>
               :
+              <>
               <div className="gyroData">
                 <b>Gyro sensor feedback</b>
                 <br />{
@@ -121,15 +119,20 @@ function App() {
                     </div>
 
                 }
-              </div>}
-            <div className="buttonGroup">
-              <button className="nextAdButton" onClick={nextAd}>
-                <span className="frontButton">
-                  Click me to jump ahead
-                </span>
-              </button>
-            </div>
-          </div>
+              </div>
+              <div>
+                <div className="buttonGroup">
+                  <button className="nextAdButton" onClick={nextAd}>
+                    <span className="frontButton">
+                      Click me to jump ahead
+                    </span>
+                  </button>
+                </div>
+              </div>
+              </>
+              }
+            </>
+          )}
         </div>
       </div>
     </main>
