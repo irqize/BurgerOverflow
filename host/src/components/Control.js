@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
+import { useGLTF } from "@react-three/drei";
 
 // const velocity = 0.1;
 
@@ -95,12 +96,32 @@ const Control = ({
     return () => clearInterval(tID);
   }, []);
 
+  // Load machine model (to generate the burger components)
+  const group_machine = useRef();
+  const material_machine = useRef();
+  const { nodes } = useGLTF('./assets/machine.gltf');
 
   return (
-    <mesh position={[x, 5, z]}>
-      <sphereGeometry attach="geometry" args={[0.1, 32, 32]} />
-      <meshLambertMaterial attach="material" color="hotpink" />
-    </mesh>
+    <group 
+      ref={group_machine}
+      position={[x, 5, z]}
+      rotation={[0, Math.PI / 2, 0]}
+      {...props}
+      dispose={null}>
+      <mesh 
+        castShadow
+        receiveShadow
+        geometry={nodes.Cube017.geometry}>
+        <meshPhysicalMaterial
+          ref={material_machine}
+          clearcoat={1}
+          clearcoatRoughness={0}
+          transmission={1}
+          thickness={1.1}
+          roughness={0}
+          envMapIntensity={2}/>
+      </mesh>
+    </group>
   );
 };
 

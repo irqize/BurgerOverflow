@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useCylinder } from "@react-three/cannon";
-import { useGLTF } from '@react-three/drei'
 import { Vector3 } from "three";
 import {
   Bacon,
@@ -193,11 +192,6 @@ const Stacks = ({ spawn, stacksXZ, socket, gyroX, gyroZ }) => {
     }
   }, [spawn]);
 
-  // Load machine model (to generate the burger components)
-  const group_machine = useRef();
-  const material_machine = useRef();
-  const { nodes } = useGLTF('/machine.gltf');
-
   return (
     <>
       {items.map((attrs, i) => (
@@ -212,20 +206,8 @@ const Stacks = ({ spawn, stacksXZ, socket, gyroX, gyroZ }) => {
       {/* Draw points that are out of bounds */}
       {positions.map((p, i) => (
         <mesh position={p} key={i}>
-          {/* <sphereGeometry args={[0.1, 10, 10]} /> */}
-          castShadow
-          receiveShadow
-          geometry={nodes.Cube017.geometry}
-          rotation={[0, Math.PI / 2, 0]}
-          <meshPhysicalMaterial
-            ref={material_machine}
-            clearcoat={1}
-            clearcoatRoughness={0}
-            transmission={1}
-            thickness={1.1}
-            roughness={0}
-            envMapIntensity={2}
-          />
+          <sphereGeometry args={[0.1, 10, 10]} />
+          <meshNormalMaterial />
         </mesh>
       ))}
       {stacksXZ.map(({x, z}, i) => {
