@@ -11,6 +11,7 @@ import {
   Meat,
   Tomato,
 } from "./Ingredients";
+import Plate from "./Plate";
 
 const items = [
   "bacon",
@@ -94,16 +95,18 @@ const generateStackItem = () => ({
 });
 
 const Stack = ({ x, z, isOut }) => {
+
   return (
     <>
       <mesh position={[x, 0, z]}>
-        <cylinderGeometry args={[1.1, 1.1, 10, 32]} />
+        <cylinderGeometry args={[1.1, 1.1, 15, 40]} />
         <meshBasicMaterial
           color={isOut ? 0xff0000 : 0x00ff00}
           transparent
           opacity={0.1}
         />
       </mesh>
+      <Plate x={x} y={-2.2} z={z} />
     </>
   );
 };
@@ -144,7 +147,6 @@ const Stacks = ({ spawn, stacksXZ, socket }) => {
   // Restart the stack when item is out of bounds
   useEffect(() => {
     if (!isOut) return;
-
     const id = setTimeout(() => {
       setPositions([]);
       setItems([]);
@@ -171,7 +173,8 @@ const Stacks = ({ spawn, stacksXZ, socket }) => {
         <Item
           attrs={attrs}
           key={i}
-          position={[camera.position.x, 5, camera.position.z]}
+          //position={[camera.position.x, 5, camera.position.z]}
+          position={[0, 5, 0]}
           setItemPosition={setItemPosition}
         />
       ))}

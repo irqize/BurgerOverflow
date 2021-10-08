@@ -5,111 +5,207 @@ const degreesToRadians = (angle) => (angle * Math.PI) / 180;
 
 export default function Kitchen(props) {
   const group = useRef()
-  const { nodes, materials } = useGLTF('./assets/kitchen.gltf')
+  const { nodes, materials } = useGLTF('./assets/kitchen_new.gltf')
   return (
-    <group position={[-2, -12.5, 7]} 
+    <group
+            position={[0, -10.5, 4]} 
             scale={[8, 8, 8]}
-            rotation={[degreesToRadians(16), degreesToRadians(0), degreesToRadians(0)]}
-            ref={group} 
-            {...props} 
+            rotation={[degreesToRadians(0), degreesToRadians(0), degreesToRadians(0)]}
+            ref={group} {...props}
             dispose={null}>
-      <mesh castShadow receiveShadow geometry={nodes.Plane_1.geometry} material={materials.wall} />
-      <mesh castShadow receiveShadow geometry={nodes.Plane_2.geometry} material={materials.glass} />
-      <mesh castShadow receiveShadow geometry={nodes.Plane_3.geometry} material={materials.wood} />
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes.Plane_4.geometry}
-        material={materials['metal shine']}
-      />
-      <mesh castShadow receiveShadow geometry={nodes.Plane_5.geometry} material={materials.metal} />
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes.Plane_6.geometry}
-        material={materials.marble}
-      />
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes.Plane_7.geometry}
-        material={materials.emision}
-      />
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes.Plane_8.geometry}
-        material={materials.ground}
-      />
-      <mesh castShadow receiveShadow geometry={nodes.Plane_9.geometry} material={materials.glaay} />
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes.Plane_10.geometry}
-        material={materials['dark glass']}
-      />
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes.Plane_11.geometry}
-        material={materials['metal mat.001']}
-      />
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes.Plane_12.geometry}
-        material={materials.plane}
-      />
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes.Plane_13.geometry}
-        material={materials['metal mat.002']}
-      />
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes.Plane_14.geometry}
-        material={materials['metal golde']}
-      />
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes.Plane_15.geometry}
-        material={materials.ceramik}
-      />
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes.Plane_16.geometry}
-        material={materials['marble.001']}
-      />
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes.Plane_17.geometry}
-        material={materials['Material.001']}
-      />
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes.Plane_18.geometry}
-        material={materials['wood.001']}
-      />
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes.Plane_19.geometry}
-        material={materials['wood.002']}
-      />
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes.Plane_20.geometry}
-        material={materials['Material.003']}
-      />
+      <group position={[0.41, 1.08, -1.87]} scale={[0.07, 0.06, 0.07]}>
+        <mesh
+          name="Cylinder010"
+          castShadow
+          receiveShadow
+          geometry={nodes.Cylinder010.geometry}
+          material={materials['glass.001']}
+          morphTargetDictionary={nodes.Cylinder010.morphTargetDictionary}
+          morphTargetInfluences={nodes.Cylinder010.morphTargetInfluences}
+        />
+        <mesh
+          name="Cylinder010_1"
+          castShadow
+          receiveShadow
+          geometry={nodes.Cylinder010_1.geometry}
+          material={materials.wood}
+          morphTargetDictionary={nodes.Cylinder010_1.morphTargetDictionary}
+          morphTargetInfluences={nodes.Cylinder010_1.morphTargetInfluences}
+        />
+        <mesh
+          name="Cylinder010_2"
+          castShadow
+          receiveShadow
+          geometry={nodes.Cylinder010_2.geometry}
+          material={materials['metal shine']}
+          morphTargetDictionary={nodes.Cylinder010_2.morphTargetDictionary}
+          morphTargetInfluences={nodes.Cylinder010_2.morphTargetInfluences}
+        />
+        <mesh
+          name="Cylinder010_3"
+          castShadow
+          receiveShadow
+          geometry={nodes.Cylinder010_3.geometry}
+          material={materials.Material}
+          morphTargetDictionary={nodes.Cylinder010_3.morphTargetDictionary}
+          morphTargetInfluences={nodes.Cylinder010_3.morphTargetInfluences}
+        />
+        <mesh
+          name="Cylinder010_4"
+          castShadow
+          receiveShadow
+          geometry={nodes.Cylinder010_4.geometry}
+          material={materials.glaay}
+          morphTargetDictionary={nodes.Cylinder010_4.morphTargetDictionary}
+          morphTargetInfluences={nodes.Cylinder010_4.morphTargetInfluences}
+        />
+        <mesh
+          name="Cylinder010_5"
+          castShadow
+          receiveShadow
+          geometry={nodes.Cylinder010_5.geometry}
+          material={materials.ground}
+          morphTargetDictionary={nodes.Cylinder010_5.morphTargetDictionary}
+          morphTargetInfluences={nodes.Cylinder010_5.morphTargetInfluences}
+        />
+        <mesh
+          name="Cylinder010_6"
+          castShadow
+          receiveShadow
+          geometry={nodes.Cylinder010_6.geometry}
+          material={materials.plane}
+          morphTargetDictionary={nodes.Cylinder010_6.morphTargetDictionary}
+          morphTargetInfluences={nodes.Cylinder010_6.morphTargetInfluences}
+        />
+        <mesh
+          name="Cylinder010_7"
+          castShadow
+          receiveShadow
+          geometry={nodes.Cylinder010_7.geometry}
+          material={materials.ceramik}
+          morphTargetDictionary={nodes.Cylinder010_7.morphTargetDictionary}
+          morphTargetInfluences={nodes.Cylinder010_7.morphTargetInfluences}
+        />
+        <mesh
+          name="Cylinder010_8"
+          castShadow
+          receiveShadow
+          geometry={nodes.Cylinder010_8.geometry}
+          material={materials.metal}
+          morphTargetDictionary={nodes.Cylinder010_8.morphTargetDictionary}
+          morphTargetInfluences={nodes.Cylinder010_8.morphTargetInfluences}
+        />
+        <mesh
+          name="Cylinder010_9"
+          castShadow
+          receiveShadow
+          geometry={nodes.Cylinder010_9.geometry}
+          material={materials['wood.001']}
+          morphTargetDictionary={nodes.Cylinder010_9.morphTargetDictionary}
+          morphTargetInfluences={nodes.Cylinder010_9.morphTargetInfluences}
+        />
+        <mesh
+          name="Cylinder010_10"
+          castShadow
+          receiveShadow
+          geometry={nodes.Cylinder010_10.geometry}
+          material={materials['wood.002']}
+          morphTargetDictionary={nodes.Cylinder010_10.morphTargetDictionary}
+          morphTargetInfluences={nodes.Cylinder010_10.morphTargetInfluences}
+        />
+        <mesh
+          name="Cylinder010_11"
+          castShadow
+          receiveShadow
+          geometry={nodes.Cylinder010_11.geometry}
+          material={materials.table_0}
+          morphTargetDictionary={nodes.Cylinder010_11.morphTargetDictionary}
+          morphTargetInfluences={nodes.Cylinder010_11.morphTargetInfluences}
+        />
+        <mesh
+          name="Cylinder010_12"
+          castShadow
+          receiveShadow
+          geometry={nodes.Cylinder010_12.geometry}
+          material={materials['side.001']}
+          morphTargetDictionary={nodes.Cylinder010_12.morphTargetDictionary}
+          morphTargetInfluences={nodes.Cylinder010_12.morphTargetInfluences}
+        />
+        <mesh
+          name="Cylinder010_13"
+          castShadow
+          receiveShadow
+          geometry={nodes.Cylinder010_13.geometry}
+          material={materials['onion_top.001']}
+          morphTargetDictionary={nodes.Cylinder010_13.morphTargetDictionary}
+          morphTargetInfluences={nodes.Cylinder010_13.morphTargetInfluences}
+        />
+        <mesh
+          name="Cylinder010_14"
+          castShadow
+          receiveShadow
+          geometry={nodes.Cylinder010_14.geometry}
+          material={materials['ceramik.001']}
+          morphTargetDictionary={nodes.Cylinder010_14.morphTargetDictionary}
+          morphTargetInfluences={nodes.Cylinder010_14.morphTargetInfluences}
+        />
+        <mesh
+          name="Cylinder010_15"
+          castShadow
+          receiveShadow
+          geometry={nodes.Cylinder010_15.geometry}
+          material={materials['ceramik.002']}
+          morphTargetDictionary={nodes.Cylinder010_15.morphTargetDictionary}
+          morphTargetInfluences={nodes.Cylinder010_15.morphTargetInfluences}
+        />
+        <mesh
+          name="Cylinder010_16"
+          castShadow
+          receiveShadow
+          geometry={nodes.Cylinder010_16.geometry}
+          material={materials['wall.001']}
+          morphTargetDictionary={nodes.Cylinder010_16.morphTargetDictionary}
+          morphTargetInfluences={nodes.Cylinder010_16.morphTargetInfluences}
+        />
+        <mesh
+          name="Cylinder010_17"
+          castShadow
+          receiveShadow
+          geometry={nodes.Cylinder010_17.geometry}
+          material={materials['Material.001']}
+          morphTargetDictionary={nodes.Cylinder010_17.morphTargetDictionary}
+          morphTargetInfluences={nodes.Cylinder010_17.morphTargetInfluences}
+        />
+        <mesh
+          name="Cylinder010_18"
+          castShadow
+          receiveShadow
+          geometry={nodes.Cylinder010_18.geometry}
+          material={materials['Material.005']}
+          morphTargetDictionary={nodes.Cylinder010_18.morphTargetDictionary}
+          morphTargetInfluences={nodes.Cylinder010_18.morphTargetInfluences}
+        />
+        <mesh
+          name="Cylinder010_19"
+          castShadow
+          receiveShadow
+          geometry={nodes.Cylinder010_19.geometry}
+          material={materials.side}
+          morphTargetDictionary={nodes.Cylinder010_19.morphTargetDictionary}
+          morphTargetInfluences={nodes.Cylinder010_19.morphTargetInfluences}
+        />
+        <mesh
+          name="Cylinder010_20"
+          castShadow
+          receiveShadow
+          geometry={nodes.Cylinder010_20.geometry}
+          material={materials.onion_top}
+          morphTargetDictionary={nodes.Cylinder010_20.morphTargetDictionary}
+          morphTargetInfluences={nodes.Cylinder010_20.morphTargetInfluences}
+        />
+      </group>
     </group>
   )
 }
 
-useGLTF.preload('./assets//kitchen.gltf')
+useGLTF.preload('./assets//kitchen_new.gltf')
