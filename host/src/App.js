@@ -21,6 +21,23 @@ function App() {
     setSocket(newSocket);
 
     newSocket.on("error", (e) => setError(e));
+    newSocket.on('connect', () => {
+      console.log('connection')
+
+      newSocket.on("joined", (role) => {
+        console.log("joined", role);
+        setError(null);
+        setAuthenticated(true);
+      });
+
+      newSocket.on("user", state => {
+        console.log(state)
+        if(state === "connected") setUserConnected(true);
+        else setUserConnected(false);
+      })
+
+      setTimeout(() => newSocket.emit("authorization", "host", 'password'), 100);
+    });
 
     return () => newSocket.close();
   }, []);
@@ -29,18 +46,7 @@ function App() {
     if (!socket) return;
 
     socket.emit("authorization", "host", password);
-    socket.on("joined", (role) => {
-      console.log("joined", role);
-      setError(null);
-      setAuthenticated(true);
-
-    });
-
-    socket.on("user", state => {
-      console.log(state)
-      if(state === "connected") setUserConnected(true);
-      else setUserConnected(false);
-    })
+    
   };
 
 

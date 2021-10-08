@@ -24,8 +24,8 @@ server.listen(port, () => {
 
 let roomFull = false;
 io.on("connection", (socket) => {
-  console.log("Connection established");
   socket.on("authorization", (mode, password) => {
+    console.log('-------------------------');
     console.log("Authorization attempt");
     console.log("Mode: ", mode);
     console.log("Password: ", password);
@@ -39,6 +39,7 @@ io.on("connection", (socket) => {
       socket.emit("joined", "client");
       socket.join("client");
       io.to("host").emit("user", "connected");
+      console.log('Authorized as client');
 
       socket.on('disconnect', () => {
         roomFull = false;
@@ -55,27 +56,37 @@ io.on("connection", (socket) => {
 
       socket.emit("joined", "host");
       socket.join("host");
+      console.log('Authorized as host');
     }
   });
 
   socket.on("data", (data) => {
     if (socket.rooms.has("client")) {
-      console.log(data);
       io.to("host").emit("data", data);
     }
   });
 
   socket.on("skipAhead", (skip) => {
     if (socket.rooms.has("client")) {
-      console.log("hej" + skip);
       io.to("host").emit("skipAhead", skip);
     }
+  });
+
+  socket.on('dismiss', () => {
+    if (socket.rooms.has("client")) {
+      io.to("host").emit("dismiss");
+    }
   })
+
+  socket.on('dismiss available', product => {
+    if (socket.rooms.has("host")) {
+      console.log(product)
+      io.to("client").emit("dismiss available", product);
+    }
+  })
+
 });
 
-io.of("client").on("data", (data) => {
-  console.log(data);
-});
 
 io.of("client").on("skipAhead", (skip) => {
   console.log("hejsan" + skip);
