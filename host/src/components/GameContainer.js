@@ -124,46 +124,10 @@ const GameContainer = ({ socket }) => {
         // sRGB={true}
         style={{ height: "100vh", width: "100vw", background: "#272727" }}
         pixelRatio={window.devicePixelRatio}
-        // linear
       >
 
         <OrbitControls />
-        {/* used for moving the camera */}
-
-        
-        {/* adds ambient light to the canvas */}
-
-        {/* <spotLight position={[10, 10, 10]} angle={0.5} /> */}
-        {/* <Physics> */}
-        {/* <Box />
-        <Plane /> */}
-        {/* </Physics> */}
-        {/* <Box color={"#FFC300"}/> */}
-        {/* adds a spotlight towards from a position towards a direction */}
-        {
-          //<group rotation={[degreesToRadians(beta),degreesToRadians(alpha),degreesToRadians(-gamma),"YXZ"]}>
-          //{/* [(gyroData?.alpha ? degreesToRadians(gyroData?.alpha) : 0),(gyroData?.beta ? degreesToRadians(gyroData?.beta) : 0) ,(gyroData?.gamma ? degreesToRadians(gyroData?.gamma) : 0) ] */}
-          //  <Model  />
-          //</group>
-        }
-        {/* <group
-          rotation={[
-            degreesToRadians(beta),
-            degreesToRadians(alpha),
-            degreesToRadians(-gamma),
-            "YXZ",
-          ]}
-        >
-          {[
-            gyroData?.alpha ? degreesToRadians(gyroData?.alpha) : 0,
-            gyroData?.beta ? degreesToRadians(gyroData?.beta) : 0,
-            gyroData?.gamma ? degreesToRadians(gyroData?.gamma) : 0,
-          ]}
-          <Box position={[0, 0, 0]} color={"#FFC300"} />
-          <Spatula position={(0, 0, 0)} />
-        </group>*/}
         <Stats />
-        
         <Suspense fallback={null}>
           <Kitchen />
           <Environment files={'small_empty_house_2k.hdr'} path={'./assets/'}/>
@@ -178,7 +142,6 @@ const GameContainer = ({ socket }) => {
           <Stack x={3} z={-0.5}/>*/}
 
         </Physics>
-        {/* </Suspense> */}
         <Camera />
         <Control gyroX={Math.sin(degreesToRadians(gamma))} gyroZ={Math.sin(degreesToRadians(beta))} spawn={(v) => setSpawn(v)} />
       </Canvas>

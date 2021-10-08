@@ -56,7 +56,6 @@ const Control = ({
     if(sPushed) setZ(z + velocity);
     if(aPushed) setX(x - velocity);
     if(dPushed) setX(x + velocity);
-    // camera.position.set(x, 10, z);
   })
 
   useEffect(() => {
