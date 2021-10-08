@@ -9,7 +9,6 @@ import { EffectComposer, Bloom, SSAO } from '@react-three/postprocessing'
 import { KernelSize, BlendFunction } from 'postprocessing'
 
 import Floor from "./Floor";
-import Wall from "./Wall";
 import { Stats } from "@react-three/drei";
 import Stacks from "./Stacks";
 import Advertisement from "./Advertisement";
@@ -94,27 +93,11 @@ const GameContainer = ({ socket }) => {
     return this > min && this < max;
   };
 
-  const chooseLane = (alpha, upper, lower) => {
-    var alpha = Math.sin(degreesToRadians(alpha));
-    var upper = Math.sin(degreesToRadians(upper));
-    var lower = Math.sin(degreesToRadians(lower));
-    //   console.log("alpha: ",alpha)
-    //  console.log("upper: ",upper)
-    //  console.log("lower: ",lower)
-    // console.log(alpha.between(lower,upper))
-    if (alpha.between(lower, upper)) {
-      console.log(
-        "alpha=" + alpha + " is between ( " + lower + " , " + upper + " )"
-      );
-    }
-    return alpha.between(lower, upper);
-  };
 
-  
 
   return (
     <>
-      <input type='number' value={alpha.toFixed(2)} onChange={e => setAlpha(e.target.value)} />
+    <input type='number' value={alpha.toFixed(2)} onChange={e => setAlpha(e.target.value)} />
     <input type='number' value={beta.toFixed(2)} onChange={e => setBeta(e.target.value)} />
     <input type='number' value={gamma.toFixed(2)} onChange={e => setGamma(e.target.value)} />
     { !onBoardingDone ?
