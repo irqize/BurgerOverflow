@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useCylinder } from "@react-three/cannon";
+import { useFrame } from "@react-three/fiber";
 import { Vector3 } from "three";
 import {
   Bacon,
@@ -110,6 +111,7 @@ const Stack = ({ x, z, isOut }) => {
   );
 };
 
+const accelerometerFactor = 0.5
 const Stacks = ({ spawn, stacksXZ, socket, gyroX, gyroZ }) => {
   const [positions, setPositions] = useState([]);
   const [items, setItems] = useState([]);

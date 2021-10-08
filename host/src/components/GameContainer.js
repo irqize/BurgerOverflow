@@ -97,9 +97,9 @@ const GameContainer = ({ socket }) => {
 
   return (
     <>
-    <input type='number' value={alpha.toFixed(2)} onChange={e => setAlpha(e.target.value)} />
+    {/* <input type='number' value={alpha.toFixed(2)} onChange={e => setAlpha(e.target.value)} />
     <input type='number' value={beta.toFixed(2)} onChange={e => setBeta(e.target.value)} />
-    <input type='number' value={gamma.toFixed(2)} onChange={e => setGamma(e.target.value)} />
+    <input type='number' value={gamma.toFixed(2)} onChange={e => setGamma(e.target.value)} /> */}
     { !onBoardingDone ?
       <Canvas
         // shadows
@@ -115,6 +115,8 @@ const GameContainer = ({ socket }) => {
           <Kitchen />
           <Environment files={'small_empty_house_2k.hdr'} path={'./assets/'}/>
           <Animation/>
+          <Control gyroX={Math.sin(degreesToRadians(gamma))} gyroZ={Math.sin(degreesToRadians(beta))} spawn={(v) => setSpawn(v)} />
+
         </Suspense>
         <Effects />
         <Lights />
@@ -126,7 +128,6 @@ const GameContainer = ({ socket }) => {
 
         </Physics>
         <Camera />
-        <Control gyroX={Math.sin(degreesToRadians(gamma))} gyroZ={Math.sin(degreesToRadians(beta))} spawn={(v) => setSpawn(v)} />
       </Canvas>
       :
       <Advertisement socket={socket} doneOnboarding={() => {setOnboardingDone(true)} }/>
