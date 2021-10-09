@@ -122,7 +122,7 @@ const GameContainer = ({ socket }) => {
         <Lights />
         <Physics>
           <Floor />
-          <Stacks gyroX={Math.sin(degreesToRadians(gamma))} gyroZ={Math.sin(degreesToRadians(beta))} stacksXZ={[{x: 0, z: -2}, {x: 5, z:-2}]} spawn={spawn}/>
+          <Stacks gyroX={Math.sin(degreesToRadians(gamma))} gyroZ={Math.sin(degreesToRadians(beta))} stacksXZ={[{x: 0, z: -2}, {x: 5, z:-2}]} spawn={spawn} socket={socket}/>
           {/* <Stack x={-3} z={1}/>
           <Stack x={3} z={-0.5}/>*/}
 
