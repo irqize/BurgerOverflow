@@ -3,21 +3,19 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { useGLTF } from "@react-three/drei";
 
 //model
-export const Machine = ({x,z}) => {
-    // Load machine model (to generate the burger components)
-    const group_machine = useRef();
-    const material_machine = useRef();
-    const { nodes } = useGLTF('./assets/machine.gltf');
+export const Machine = ({ x, z }) => {
+  // Load machine model (to generate the burger components)
+  const group_machine = useRef();
+  const material_machine = useRef();
+  const { nodes } = useGLTF("./assets/machine.gltf");
   return (
-    <group 
+    <group
       ref={group_machine}
       dispose={null}
       position={[x, 6, z]}
-      rotation={[0, Math.PI / 2, 0]}>
-      <mesh 
-        castShadow
-        receiveShadow
-        geometry={nodes.Cube017.geometry}>
+      rotation={[0, Math.PI / 2, 0]}
+    >
+      <mesh castShadow receiveShadow geometry={nodes.Cube017.geometry}>
         <meshPhysicalMaterial
           ref={material_machine}
           clearcoat={1}
@@ -25,7 +23,8 @@ export const Machine = ({x,z}) => {
           transmission={1}
           thickness={1.1}
           roughness={0}
-          envMapIntensity={2}/>
+          envMapIntensity={2}
+        />
       </mesh>
     </group>
   );
@@ -33,87 +32,51 @@ export const Machine = ({x,z}) => {
 // const velocity = 0.1;
 
 // const cameraMovementScale = 1;
-const accelerometerFactor = 0.5
+const accelerometerFactor = 0.5;
 
-const Control = ({
-  spawn, gyroX, gyroZ
-}) => {
+const Control = ({ spawn, gyroX, gyroZ, gameBoundaries }) => {
+  console.log("gameBoundaries", gameBoundaries);
+  const { x1, x2, z1, z2 } = gameBoundaries;
+  const [vX, setvX] = useState(0);
+  const [vZ, setvZ] = useState(0);
+
+  const [controlZPos, setZ] = useState(0);
+  const [controlXPos, setX] = useState(0);
 
   useEffect(() => {
     //used to accelerate X directions
-    setvX(gyroX * gyroX * accelerometerFactor)
-
-    // console.log("velocity vX:",vX)
-
-  }, [gyroX])
-
+    setvX(gyroX * gyroX * accelerometerFactor);
+  }, [gyroX]);
 
   useEffect(() => {
     //used to accelerate Z directions
-    setvZ(gyroZ * gyroZ * accelerometerFactor)
-    // console.log("velocity vZ:",vZ)
+    setvZ(gyroZ * gyroZ * accelerometerFactor);
+  }, [gyroZ]);
 
-  }, [gyroZ])
-  const { camera } = useThree();
-  const [vX, setvX] = useState(0)
-  const [vZ, setvZ] = useState(0)
-  // const [wPushed, setWPushed] = useState(false);
-  // const [sPushed, setSPushed] = useState(false);
-  // const [aPushed, setAPushed] = useState(false);
-  // const [dPushed, setDPushed] = useState(false);
-
-  // const [spacePushed, setSpacePushed] = useState(false);
-
-  const [z, setZ] = useState(0);
-  const [x, setX] = useState(0);
-
-  // console.log("_____x: ", x)
-  // console.log("_____z: ", z)
-  // const keyPress = e => {
-  //   const { key, code } = e;
-  //   if(key === 'w') setWPushed(true);
-  //   if(key === 's') setSPushed(true);
-  //   if(key === 'a') setAPushed(true);
-  //   if(key === 'd') setDPushed(true);
-  //   if(code === 'Space') setSpacePushed(true);
-  // }
-
-  // const keyUp = e => {
-  //   const { key, code } = e;
-  //   if(key === 'w') setWPushed(false);
-  //   if(key === 's') setSPushed(false);
-  //   if(key === 'a') setAPushed(false);
-  //   if(key === 'd') setDPushed(false);
-  //   if(code === 'Space') setSpacePushed(false);
-  // }
-
-  // useEffect(() => {
-  //   if(spacePushed) spawn(true);
-  //   if(!spacePushed) spawn(false);
-  // }, [spacePushed])
-
-  // useFrame(() => {
-  //   if(wPushed) setZ(z - vZ);
-  //   if(sPushed) setZ(z + vZ);
-  //   if(aPushed) setX(x - vX);
-  //   if(dPushed) setX(x + vX);
-  //   camera.position.set(x, 10, z);
-  // },)
+  const between = (x, a, b) => {
+    var min = Math.min(a, b),
+      max = Math.max(a, b);
+    return x >= min && x <= max;
+  };
 
   useFrame(() => {
-    if (gyroZ > 0) {
-      setZ(prevZ => prevZ + vZ)
+    if (gyroZ > 0 && between(controlZPos, z1 - 0.5, z2)) {
+      //moving forwards
+      setZ((prevZ) => prevZ + vZ);
     }
-    if (gyroZ < 0) {
-      setZ(prevZ => prevZ - vZ)
+    if (gyroZ < 0 && between(controlZPos, z1, z2 + 0.5)) {
+      //moving backwards
+      setZ((prevZ) => prevZ - vZ);
     }
-    if (gyroX > 0) {
-      setX(prevX => prevX + vX)
+    if (gyroX > 0 && between(controlXPos, x1, x2 - 0.5)) {
+      //moving right
+      setX((prevX) => prevX + vX);
     }
-    if (gyroX < 0) {
-      setX(prevX => prevX - vX)
+    if (gyroX < 0 && between(controlXPos, x1 + 0.5, x2)) {
+      //moving left
+      setX((prevX) => prevX - vX);
     }
-  })
+  });
 
   useEffect(() => {
     const tID = setInterval(() => {
@@ -124,18 +87,13 @@ const Control = ({
     return () => clearInterval(tID);
   }, []);
 
-
   return (
     <>
-    <Machine x={x} z={z}/>
-    <mesh position={[x, 2.5, z]}>
-      <cylinderGeometry args={[0.1, 0.1, 5, 40]} />
-      <meshBasicMaterial
-        color="#C70039"
-        transparent
-        opacity={0.2}
-      />
-    </mesh>
+      <Machine x={controlXPos} z={controlZPos} />
+      <mesh position={[controlXPos, 2.5, controlZPos]}>
+        <cylinderGeometry args={[0.1, 0.1, 5, 40]} />
+        <meshBasicMaterial color="#C70039" transparent opacity={0.2} />
+      </mesh>
     </>
     // <mesh position={[x, 5, z]}>
     //   <sphereGeometry attach="geometry" args={[0.1, 32, 32]} />

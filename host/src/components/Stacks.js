@@ -111,19 +111,26 @@ const Stack = ({ x, z, isOut }) => {
   );
 };
 
-const accelerometerFactor = 0.5
-const Stacks = ({ spawn, stacksXZ, socket, gyroX, gyroZ }) => {
+const Stacks = ({ spawn, stacksXZ, socket, gyroX, gyroZ, gameBoundaries}) => {
+  const {x1,x2,z1,z2} = gameBoundaries;
+
   const [positions, setPositions] = useState([]);
   const [items, setItems] = useState([]);
   const [nextItem, setNextItem] = useState(generateStackItem())
   const [isOut, setIsOut] = useState(false);
   const [maxScores, setMaxScores] = useState(new Array(stacksXZ.length).fill(0));
 
-  /// Control spawning position
+  ////// Control spawning position
+      // how much the position is changed, based on gyro data.
   const [vX, setvX] = useState(0)
   const [vZ, setvZ] = useState(0)
-  const [xPos,setX] = useState(0)
-  const [zPos,setZ] = useState(0)
+  
+      // the position to spawn an ingredient
+  const [spawnPosX,setspawnPosX] = useState(0)
+  const [spawnPosZ,setspawnPosZ] = useState(0)
+
+  const accelerometerFactor = 0.5
+
 
   useEffect(() => {
     setvX(gyroX * gyroX * accelerometerFactor)
@@ -133,18 +140,28 @@ const Stacks = ({ spawn, stacksXZ, socket, gyroX, gyroZ }) => {
     setvZ(gyroZ * gyroZ * accelerometerFactor)
   }, [gyroZ])
 
+  const between = (x,a, b) => {
+    var min = Math.min(a, b),
+      max = Math.max(a, b);
+    return x > min && x < max;
+  };
+
   useFrame(() => {
-    if (gyroZ > 0) {
-      setZ(prevZ => prevZ + vZ)
+    if (gyroZ > 0 && between(spawnPosZ,z1,z2)) {
+      //moving forwards
+      setspawnPosZ(prevZ => prevZ + vZ)
     }
-    if (gyroZ < 0) {
-      setZ(prevZ => prevZ - vZ)
+    if (gyroZ < 0 && between(spawnPosZ,z1,z2)) {
+      //moving backwards
+      setspawnPosZ(prevZ => prevZ - vZ)
     }
-    if (gyroX > 0) {
-      setX(prevX => prevX + vX)
+    if (gyroX > 0 && between(spawnPosX,x1,x2)) {
+      //moving right
+      setspawnPosX(prevX => prevX + vX)
     }
-    if (gyroX < 0) {
-      setX(prevX => prevX - vX)
+    if (gyroX < 0 && between(spawnPosX,x1,x2)) {
+      //moving left
+      setspawnPosX(prevX => prevX - vX)
     }
   })
   ///
@@ -201,7 +218,7 @@ const Stacks = ({ spawn, stacksXZ, socket, gyroX, gyroZ }) => {
           attrs={attrs}
           key={i}
           //position={[camera.position.x, 5, camera.position.z]}
-          position={[xPos, 5, zPos]}
+          position={[spawnPosX, 5, spawnPosZ]}
           setItemPosition={setItemPosition}
         />
       ))}
