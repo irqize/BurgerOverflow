@@ -1,6 +1,35 @@
-import React, { useEffect, useState } from "react";
-import { useFrame, useThree } from "react-three-fiber";
+import React, { useEffect, useState, useRef } from "react";
+import { useFrame, useThree } from "@react-three/fiber";
+import { useGLTF } from "@react-three/drei";
 
+//model
+export const Machine = ({x,z}) => {
+    // Load machine model (to generate the burger components)
+    const group_machine = useRef();
+    const material_machine = useRef();
+    const { nodes } = useGLTF('./assets/machine.gltf');
+  return (
+    <group 
+      ref={group_machine}
+      dispose={null}
+      position={[x, 6, z]}
+      rotation={[0, Math.PI / 2, 0]}>
+      <mesh 
+        castShadow
+        receiveShadow
+        geometry={nodes.Cube017.geometry}>
+        <meshPhysicalMaterial
+          ref={material_machine}
+          clearcoat={1}
+          clearcoatRoughness={0}
+          transmission={1}
+          thickness={1.1}
+          roughness={0}
+          envMapIntensity={2}/>
+      </mesh>
+    </group>
+  );
+};
 // const velocity = 0.1;
 
 // const cameraMovementScale = 1;
@@ -84,20 +113,34 @@ const Control = ({
     if (gyroX < 0) {
       setX(prevX => prevX - vX)
     }
-
-    camera.position.set(x, 10, z);
   })
 
-  // useEffect(() => {
-  //   document.onkeydown = keyPress;
-  //   document.onkeyup = keyUp;
-  // }, [])
+  useEffect(() => {
+    const tID = setInterval(() => {
+      spawn(false);
+      spawn(true);
+    }, 3000);
+
+    return () => clearInterval(tID);
+  }, []);
+
 
   return (
-    <mesh position={[x, 5, z]}>
-      <sphereGeometry attach="geometry" args={[0.1, 32, 32]} />
-      <meshLambertMaterial attach="material" color="hotpink" />
+    <>
+    <Machine x={x} z={z}/>
+    <mesh position={[x, 2.5, z]}>
+      <cylinderGeometry args={[0.1, 0.1, 5, 40]} />
+      <meshBasicMaterial
+        color="#C70039"
+        transparent
+        opacity={0.2}
+      />
     </mesh>
+    </>
+    // <mesh position={[x, 5, z]}>
+    //   <sphereGeometry attach="geometry" args={[0.1, 32, 32]} />
+    //   <meshLambertMaterial attach="material" color="hotpink" />
+    // </mesh>
   );
 };
 

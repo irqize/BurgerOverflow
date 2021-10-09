@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useCylinder } from "@react-three/cannon";
-import { useThree } from "react-three-fiber";
+import { useFrame } from "@react-three/fiber";
 import { Vector3 } from "three";
 import {
   Bacon,
@@ -11,6 +11,7 @@ import {
   Meat,
   Tomato,
 } from "./Ingredients";
+import Plate from "./Plate";
 
 const items = [
   "bacon",
@@ -23,13 +24,13 @@ const items = [
 ];
 
 const ingredients = {
-  meat: { r: 1, height: 0.25, Component: Meat },
-  bacon: { r: 1.02, height: 0.15, Component: Bacon },
-  bread_up: { r: 1, height: 0.71, Component: BreadUp },
-  bread_down: { r: 1, height: 0.2, Component: BreadDown },
-  cheese: { r: 1, height: 0.25, Component: Cheese },
-  lettuce: { r: 1.152, height: 0.25, Component: Lettuce },
-  tomato: { r: 1, height: 0.295, Component: Tomato },
+  meat: { name: 'Meat', r: 1, height: 0.25, Component: Meat },
+  bacon: { name: 'Bacon', r: 1.02, height: 0.15, Component: Bacon },
+  bread_up: { name: 'Bread up', r: 1, height: 0.71, Component: BreadUp },
+  bread_down: { name: 'Bread down', r: 1, height: 0.2, Component: BreadDown },
+  cheese: { name: 'Cheese', r: 1, height: 0.25, Component: Cheese },
+  lettuce: { name: 'Lettuce', r: 1.152, height: 0.25, Component: Lettuce },
+  tomato: { name: 'Tomato', r: 1, height: 0.295, Component: Tomato },
 };
 
 const Item = ({
@@ -59,6 +60,7 @@ const Item = ({
   const [ref] = useCylinder(() => {
     return {
       mass,
+      material: {friction: 50, restitution: 0},
       position,
       args,
       onCollide: (e) => {
@@ -93,29 +95,77 @@ const generateStackItem = () => ({
 });
 
 const Stack = ({ x, z, isOut }) => {
+
   return (
     <>
       <mesh position={[x, 0, z]}>
-        <cylinderGeometry args={[1.1, 1.1, 10, 32]} />
+        <cylinderGeometry args={[1.1, 1.1, 15, 40]} />
         <meshBasicMaterial
           color={isOut ? 0xff0000 : 0x00ff00}
           transparent
           opacity={0.1}
         />
       </mesh>
+      <Plate x={x} y={-2.2} z={z} />
     </>
   );
 };
 
-const Stacks = ({ spawn, stacksXZ }) => {
+const accelerometerFactor = 0.5
+const Stacks = ({ spawn, stacksXZ, socket, gyroX, gyroZ }) => {
   const [positions, setPositions] = useState([]);
   const [items, setItems] = useState([]);
-  const { camera } = useThree();
-
+  const [nextItem, setNextItem] = useState(generateStackItem())
   const [isOut, setIsOut] = useState(false);
+  const [maxScores, setMaxScores] = useState(new Array(stacksXZ.length).fill(0));
+
+  /// Control spawning position
+  const [vX, setvX] = useState(0)
+  const [vZ, setvZ] = useState(0)
+  const [xPos,setX] = useState(0)
+  const [zPos,setZ] = useState(0)
+
+  useEffect(() => {
+    setvX(gyroX * gyroX * accelerometerFactor)
+  }, [gyroX])
+
+  useEffect(() => {
+    setvZ(gyroZ * gyroZ * accelerometerFactor)
+  }, [gyroZ])
+
+  useFrame(() => {
+    if (gyroZ > 0) {
+      setZ(prevZ => prevZ + vZ)
+    }
+    if (gyroZ < 0) {
+      setZ(prevZ => prevZ - vZ)
+    }
+    if (gyroX > 0) {
+      setX(prevX => prevX + vX)
+    }
+    if (gyroX < 0) {
+      setX(prevX => prevX - vX)
+    }
+  })
+  ///
+
+  useEffect(() => {
+    socket.on('dismiss', () => setNextItem(generateStackItem()));
+  }, []);
+
+  useEffect(() => {
+    socket.emit('dismiss available', nextItem.name);
+  }, [nextItem])
 
   const setItemPosition = (p) => {
-    console.log(p);
+    stacksXZ.forEach(({x, z}, i) => {
+      if(!checkIfOut(1.1, p[0] - x, p[2] - z && p[1]+1 > maxScores[i])){
+        const newMaxScores = [...maxScores];
+        newMaxScores[i] = p[1] + 1;
+        setMaxScores(newMaxScores);
+      }
+    });
+
     if (!stacksXZ.reduce((prev, {x, z}) => prev && checkIfOut(1.1, p[0] - x, p[2] - z), true)) return;
     setIsOut(true);
     setPositions([...positions, p]);
@@ -124,18 +174,24 @@ const Stacks = ({ spawn, stacksXZ }) => {
   // Restart the stack when item is out of bounds
   useEffect(() => {
     if (!isOut) return;
-
     const id = setTimeout(() => {
       setPositions([]);
       setItems([]);
+      console.log('Score: ' + Math.round(100* maxScores.reduce((a, b) => a + b, 0) / maxScores.length));
       setIsOut(false);
+      setMaxScores(new Array(stacksXZ.length).fill(0));
     }, 1000);
 
     return () => clearTimeout(id);
   }, [isOut]);
 
   useEffect(() => {
-    if (spawn) setItems([...items, generateStackItem()]);
+    if (spawn)  {
+      setItems([...items, nextItem]);
+      const next = generateStackItem();
+      setNextItem(next);
+      console.log('Next up: ' + next.name);
+    }
   }, [spawn]);
 
   return (
@@ -144,7 +200,8 @@ const Stacks = ({ spawn, stacksXZ }) => {
         <Item
           attrs={attrs}
           key={i}
-          position={[camera.position.x, 5, camera.position.z]}
+          //position={[camera.position.x, 5, camera.position.z]}
+          position={[xPos, 5, zPos]}
           setItemPosition={setItemPosition}
         />
       ))}
