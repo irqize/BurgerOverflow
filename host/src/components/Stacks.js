@@ -33,6 +33,17 @@ const ingredients = {
   tomato: { name: 'Tomato', r: 1, height: 0.295, Component: Tomato },
 };
 
+const ItemModel = ({Component, position}) => {
+  
+  return (
+    <group
+      position={position}
+    >
+      <Component/>
+    </group>
+  )
+}
+
 const Item = ({
   attrs: { mass, Component, height, r },
   position,
@@ -205,6 +216,7 @@ const Stacks = ({ spawn, stacksXZ, socket, gyroX, gyroZ }) => {
           setItemPosition={setItemPosition}
         />
       ))}
+      <ItemModel Component={nextItem.Component} position={[xPos, 5, zPos]}/>
       {/* Draw points that are out of bounds */}
       {positions.map((p, i) => (
         <mesh position={p} key={i}>
