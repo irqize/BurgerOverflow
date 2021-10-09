@@ -233,7 +233,7 @@ const Stacks = ({ spawn, stacksXZ, socket, gyroX, gyroZ, gameBoundaries}) => {
           setItemPosition={setItemPosition}
         />
       ))}
-      <ItemModel Component={nextItem.Component} position={[xPos, 5, zPos]}/>
+      <ItemModel Component={nextItem.Component} position={[spawnPosX, 5, spawnPosZ]}/>
       {/* Draw points that are out of bounds */}
       {positions.map((p, i) => (
         <mesh position={p} key={i}>
