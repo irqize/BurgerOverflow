@@ -3,6 +3,8 @@ import "./App.css";
 import "./Client.css";
 import { io } from "socket.io-client";
 
+const dev = process.env.NODE_ENV === 'development';
+
 function App() {
   const [socket, setSocket] = useState(null);
 
@@ -20,8 +22,9 @@ function App() {
     setGyroData(data);
   };
 
+
   useEffect(() => {
-    const newSocket = io("https://" + document.location.hostname + ":8080");
+    const newSocket = io(dev ? "https://" + document.location.hostname + ":8080" : "https://" + document.location.hostname);
     setSocket(newSocket);
 
     return () => newSocket.close();

@@ -11,20 +11,23 @@ export const Machine = ({ x, z }) => {
   return (
     <group
       ref={group_machine}
+      scale={[2,2,2]}
       dispose={null}
       position={[x, 6, z]}
-      rotation={[0, Math.PI / 2, 0]}
-    >
-      <mesh castShadow receiveShadow geometry={nodes.Cube017.geometry}>
-        <meshPhysicalMaterial
+      rotation={[0, Math.PI / 2, 0]}>
+      <mesh 
+        castShadow
+        receiveShadow
+        geometry={nodes.Cube017.geometry}>
+        <meshBasicMaterial transparent opacity={0.5}/>
+        {/* <meshPhysicalMaterial
           ref={material_machine}
           clearcoat={1}
           clearcoatRoughness={0}
           transmission={1}
           thickness={1.1}
           roughness={0}
-          envMapIntensity={2}
-        />
+          envMapIntensity={2}/> */}
       </mesh>
     </group>
   );
