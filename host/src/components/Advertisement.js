@@ -1,10 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import './Advertisement.css';
-import Hamburger from './images/hamburger.jpeg'
 
 
-
-const Advertisement = ({socket, doneOnboarding}) => {
+const Advertisement = ({socket, doneOnboarding, setTryOut}) => {
   const [screenNumber, setScreenNumber] = useState(0);
   const [skipAhead, setSkipAhead] = useState(false);
   const [authgyro, setauthgyro] = useState(false)
@@ -12,9 +10,9 @@ const Advertisement = ({socket, doneOnboarding}) => {
   useEffect(() => {
     var newScreenNumber = screenNumber + 1 
     socket.on("skipAhead", (skip) => {
-      console.log(skip)
-      if (screenNumber == 2) {
-        doneOnboarding()
+      if(screenNumber==1) {
+        setTryOut();
+        setScreenNumber(newScreenNumber)
       }
 
       else {
@@ -40,19 +38,14 @@ return (
         }
         {(authgyro && screenNumber==! 1) ? 
           <div className="advertisement-0">
-            Nicely done! Your mission is to build burgers with the help of your phone. <br/><br/>
-            You steer the burger spawn with your phone's gyroscope. <br/><br/>
-            Click the button "Next" on your phone.
+            Nicely done! Your mission is to build 2 burgers. You steer with your phone's gyroscope.<br/><br/>
+            If you succeed, you win a 20% discount on a burger of your choice!<br/><br/>
+            Click the button "Next".
           </div>:<></>}
         {screenNumber == 1 &&
             <div className="advertisement-0">
-              If you succeed, you win a 20% discount on a burger of your choice! <br/><br/>
-              Good luck, click "Next" to start!
+               Ready to try it out for 10 seconds? Click "Next"!
             </div>
-        }
-        {screenNumber == 2 &&
-            <div className="advertisement-0">This is screen 2
-        </div>
         }
     </div>
 )

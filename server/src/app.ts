@@ -78,6 +78,14 @@ io.on("connection", (socket) => {
       io.to("host").emit("grantedGyro", bool);
     }
   })
+
+  socket.on("doneOnboarding", (bool) => {
+    if (socket.rooms.has("host")) {
+      console.log("yay done" + bool)
+      io.to("client").emit("doneOnboarding", bool)
+    }
+  })
+
 });
 
 io.of("client").on("data", (data) => {
@@ -90,4 +98,8 @@ io.of("client").on("skipAhead", (skip) => {
 
 io.of("client").on("grantedGyro", (bool) => {
   console.log("yay granted gyro")
+})
+
+io.of("host").on("doneOnboarding", bool => {
+  console.log("jajjebus")
 })

@@ -11,6 +11,9 @@ import Advertisement from "./Advertisement";
 import Kitchen from "./Background";
 import Camera from "./Camera";
 import Control from "./Control";
+import Box from "./Box";
+import { Html } from "@react-three/drei";
+import './Advertisement.css'
 
 const degreesToRadians = (angle) => (angle * Math.PI) / 180;
 
@@ -22,6 +25,8 @@ const GameContainer = ({ socket }) => {
   const [onBoardingDone, setOnboardingDone] = useState(false);
 
   const [spawn, setSpawn] = useState(false);
+  const [tryOut, setTryOut] = useState(false);
+  const [countDown, setCountDown] = useState(10);
 
   ;
   useEffect(() => {
@@ -40,6 +45,19 @@ const GameContainer = ({ socket }) => {
       max = Math.max(a, b);
     return this > min && this < max;
   };
+
+  if (tryOut) {
+    setTimeout(()=> {
+      setCountDown(countDown-1)
+    }, 1000)
+  }
+
+  if (countDown==0) {
+    setCountDown(10);
+    setTryOut(false);
+    setOnboardingDone(true);
+    socket.emit("doneOnboarding", true);
+  }
 
 
 
@@ -62,20 +80,43 @@ const GameContainer = ({ socket }) => {
           <spotLight position={[10, 10, 10]} angle={0.5} />
           <Stats />
           <Suspense fallback={null}>
-            {/* <Kitchen /> */}
+            <Kitchen />
           </Suspense>
           <Physics>
             <Floor />
             <Stacks stacksXZ={[{ x: 0, z: -2 }, { x: 5, z: -2 }]} spawn={spawn} />
             {/* <Stack x={-3} z={1}/>
           <Stack x={3} z={-0.5}/> */}
-
           </Physics>
           <Camera />
           <Control gyroX={Math.sin(degreesToRadians(gamma))} gyroZ={Math.sin(degreesToRadians(beta))} spawn={(v) => setSpawn(v)} />
         </Canvas>
         :
-        <Advertisement socket={socket} doneOnboarding={() => { setOnboardingDone(true) }} />
+        <>
+        {tryOut ? <>
+        <Canvas
+                  style={{ height: "100vh", width: "100vw", background: "#272727" }}
+                  pixelRatio={window.devicePixelRatio}
+                  linear
+        >
+          <ambientLight intensity={0.8} />
+          {/* adds ambient light to the canvas */}
+
+          <spotLight position={[10, 10, 10]} angle={0.5} />
+
+          <Camera />
+              <mesh receiveShadow rotation={[5, 0, 0]} position={[0, -1, 0]}>
+              <planeBufferGeometry attach="geometry" args={[500, 500]} />
+              <meshPhysicalMaterial clearcoat={1} attach="material" color="#212529" />
+              </mesh>
+            
+          <Control gyroX={Math.sin(degreesToRadians(gamma))} gyroZ={Math.sin(degreesToRadians(beta))} spawn={(v) => setSpawn(v)} />
+          <Html>
+					<h1 className="countDown">{countDown}</h1>
+          </Html>
+        </Canvas>
+        </>:<Advertisement socket={socket} doneOnboarding={() => { setOnboardingDone(true) }} setTryOut={() => {setTryOut(true)}}/>}
+        </>
       }
     </>
   );

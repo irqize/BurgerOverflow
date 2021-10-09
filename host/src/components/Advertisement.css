@@ -28,3 +28,11 @@
     font-family: 'Alfa Slab One', cursive;
     font-size: 3em;
 }
+
+.countDown {
+    color: #e6a22e;
+    position: fixed;
+    top: -40vh;
+    left: -40vw;
+    font-size: 3em;
+}

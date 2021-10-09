@@ -10,6 +10,7 @@ function App() {
 
   const [gyroAllowed, setGyroAllowed] = useState(false);
   const [gyroData, setGyroData] = useState(null);
+  const [endGame, setEndGame] = useState(false);
 
   const gyroRef = useRef(gyroData)
 
@@ -49,6 +50,9 @@ function App() {
 
   const nextAd = ({ }) => {
     socket.emit('skipAhead', true)
+    socket.on("doneOnboarding", (bool) => {
+      setEndGame(true);
+    })
   };
 
 
@@ -83,8 +87,6 @@ function App() {
   };
 
 
-
-
   return (
     <main>
       <div className="titleTopBar" >
@@ -94,7 +96,7 @@ function App() {
         <div className="buttonContainer">
           {!authenticated ? (
             <>
-              <button className="authButton" onClick={authenticate} >Click to authenticate</button>
+              <button className="authButton" onClick={authenticate} >Click to start</button>
             </>
           ) : (
             <>
@@ -122,11 +124,17 @@ function App() {
               </div>
               <div>
                 <div className="buttonGroup">
-                  <button className="nextAdButton" onClick={nextAd}>
+                  {endGame ? 
+                  <button className="nextAdButton">
                     <span className="frontButton">
-                      Click me to jump ahead
+                      End game
                     </span>
                   </button>
+                  :<button className="nextAdButton" onClick={nextAd}>
+                    <span className="frontButton">
+                      Next
+                    </span>
+                  </button>}
                 </div>
               </div>
               </>
