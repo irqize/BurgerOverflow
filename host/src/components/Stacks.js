@@ -116,7 +116,7 @@ const Stack = ({ x, z, isOut }) => {
         <meshBasicMaterial
           color={isOut ? 0xff0000 : 0x00ff00}
           transparent
-          opacity={0.1}
+          opacity={0.2}
         />
       </mesh>
       <Plate x={x} y={-2.2} z={z} />
@@ -160,19 +160,19 @@ const Stacks = ({ spawn, stacksXZ, socket, gyroX, gyroZ, gameBoundaries}) => {
   };
 
   useFrame(() => {
-    if (gyroZ > 0 && between(spawnPosZ,z1,z2)) {
+    if (gyroZ > 0 && between(spawnPosZ,z1-0.5,z2)) {
       //moving forwards
       setspawnPosZ(prevZ => prevZ + vZ)
     }
-    if (gyroZ < 0 && between(spawnPosZ,z1,z2)) {
+    if (gyroZ < 0 && between(spawnPosZ,z1,z2+0.5)) {
       //moving backwards
       setspawnPosZ(prevZ => prevZ - vZ)
     }
-    if (gyroX > 0 && between(spawnPosX,x1,x2)) {
+    if (gyroX > 0 && between(spawnPosX,x1,x2-0.5)) {
       //moving right
       setspawnPosX(prevX => prevX + vX)
     }
-    if (gyroX < 0 && between(spawnPosX,x1,x2)) {
+    if (gyroX < 0 && between(spawnPosX,x1+0.5,x2)) {
       //moving left
       setspawnPosX(prevX => prevX - vX)
     }

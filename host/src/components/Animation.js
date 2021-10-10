@@ -29,7 +29,7 @@ function Animation({ v = new THREE.Vector3(), c = new THREE.Color() }) {
     // <mesh receiveShadow castShadow onClick={() => set(!zoom)} onPointerOver={() => setActive(true)} onPointerOut={() => setActive(false)}>
     <mesh receiveShadow castShadow onClick={() => set(!zoom)} position={[1,0,0]}>
       <sphereGeometry args={[0.8, 64, 64]} />
-      <meshBasicMaterial transparent opacity={0}/>
+      <meshBasicMaterial transparent opacity={0.1}/>
     </mesh>
   )
 }
