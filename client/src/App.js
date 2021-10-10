@@ -53,7 +53,6 @@ function App() {
         setEndGame(true);
       })
     };
-  };
 
   const authenticate = () => {
     if (!socket) return;
@@ -87,17 +86,6 @@ function App() {
       socket.emit("grantedGyro", true)
       authenticate();
     }
-  };
-
-  const authenticate = () => {
-    if (!socket) return;
-
-    socket.emit("authorization", "client");
-    socket.on("joined", () => {
-      console.log("joined");
-      setAuthenticated(true);
-      // startGyro();
-    });
   };
 
 
@@ -169,10 +157,10 @@ function App() {
               }
             </>
           )}
-          )
           </div>
         </div>
     </main>
   );
+}
 
 export default App;

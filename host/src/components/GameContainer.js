@@ -99,6 +99,7 @@ const GameContainer = ({ socket }) => {
   };
 
   if (tryOut) {
+    console.log("yay")
     setTimeout(()=> {
       setCountDown(countDown-1)
     }, 1000)
