@@ -91,8 +91,7 @@ const Lights = () => {
 };
 
 const GameContainer = ({ socket }) => {
-  var gameBoundaries = { x1: -12, x2: 12,
-     z1: -2, z2: 6 }
+  var gameBoundaries = { x1: -12, x2: 12, z1: -2, z2: 6 };
 
   const [gyroData, setGyroData] = useState(null);
   // const [alpha, setAlpha] = useState(0);
@@ -115,8 +114,16 @@ const GameContainer = ({ socket }) => {
   return (
     <>
       {/* <input type='number' value={alpha.toFixed(2)} onChange={e => setAlpha(e.target.value)} /> */}
-    <input type='number' value={beta} onChange={e => setBeta(e.target.value)} />
-    <input type='number' value={gamma} onChange={e => setGamma(e.target.value)} />
+      {/* <input
+        type="number"
+        value={beta}
+        onChange={(e) => setBeta(e.target.value)}
+      />
+      <input
+        type="number"
+        value={gamma}
+        onChange={(e) => setGamma(e.target.value)}
+      /> */}
       {!onBoardingDone ? (
         <Canvas
           // shadows
@@ -125,25 +132,27 @@ const GameContainer = ({ socket }) => {
           style={{ height: "100vh", width: "100vw", background: "#272727" }}
           pixelRatio={window.devicePixelRatio}
         >
-          <OrbitControls />
           <Stats />
           <Suspense fallback={null}>
+          
             <Kitchen />
             <Environment
               files={"small_empty_house_2k.hdr"}
               path={"./assets/"}
             />
             <Animation />
+            
             <Control
               gyroX={Math.sin(degreesToRadians(gamma))}
               gyroZ={Math.sin(degreesToRadians(beta))}
               spawn={(v) => setSpawn(v)}
               gameBoundaries={gameBoundaries}
             />
-          </Suspense>
-          <Effects />
-          <Lights />
-          <Physics>
+            </Suspense>
+            {/* <Effects /> */}
+             <Lights />
+            
+            <Physics>
             <Floor />
             <Stacks
               gyroX={Math.sin(degreesToRadians(gamma))}
@@ -156,10 +165,9 @@ const GameContainer = ({ socket }) => {
               socket={socket}
               gameBoundaries={gameBoundaries}
             />
-            {/* <Stack x={-3} z={1}/>
-          <Stack x={3} z={-0.5}/>*/}
-          </Physics>
-          <Camera />
+            </Physics> 
+            
+            <Camera />
         </Canvas>
       ) : (
         <Advertisement

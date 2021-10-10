@@ -5,7 +5,7 @@ export const Meat = ({ ...props }) => {
   const group = useRef();
   const { nodes, materials } = useGLTF("/assets/meat.gltf");
   return (
-    <group ref={group} {...props} dispose={null}>
+    <group ref={group} {...props} >
       <mesh
         geometry={nodes.Cylinder001.geometry}
         material={materials["meat.002"]}
@@ -18,7 +18,7 @@ export const Bacon = (props) => {
   const group = useRef();
   const { nodes, materials } = useGLTF("/assets/bacon.gltf");
   return (
-    <group ref={group} {...props} dispose={null}>
+    <group ref={group} {...props} >
       <mesh
         name="Plane004"
         geometry={nodes.Plane004.geometry}
@@ -44,7 +44,7 @@ export const BreadDown = (props) => {
   const group = useRef();
   const { nodes, materials } = useGLTF("/assets/bread_down.gltf");
   return (
-    <group ref={group} {...props} dispose={null}>
+    <group ref={group} {...props} >
       <mesh
         geometry={nodes.Cylinder001.geometry}
         material={materials['bread_outside._top.004']}
@@ -60,7 +60,7 @@ export const BreadUp = (props) => {
   const { nodes, materials } = useGLTF("/assets/bread_up.gltf");
 
   return (
-    <group ref={group} {...props} dispose={null}>
+    <group ref={group} {...props} >
       <mesh
         geometry={nodes.Cylinder001.geometry}
         material={materials["bread_outside._top.001"]}
@@ -73,7 +73,7 @@ export const Cheese = (props) => {
   const group = useRef();
   const { nodes, materials } = useGLTF("/assets/cheese.gltf");
   return (
-    <group ref={group} {...props} dispose={null}>
+    <group ref={group} {...props} >
       <mesh
         geometry={nodes.Cube003.geometry}
         material={materials["Material.022"]}
@@ -87,7 +87,7 @@ export const Lettuce = (props) => {
   const group = useRef();
   const { nodes, materials } = useGLTF("/assets/lettuce.gltf");
   return (
-    <group ref={group} {...props} dispose={null}>
+    <group ref={group} {...props} >
       <mesh
         name="Plane002"
         geometry={nodes.Plane002.geometry}
@@ -104,7 +104,7 @@ export const Tomato = (props) => {
   const group = useRef();
   const { nodes } = useGLTF("/assets/tomato.gltf");
   return (
-    <group ref={group} {...props} dispose={null}>
+    <group ref={group} {...props} >
       <group
         position={[0.02, 0.12, -0.01]}
         rotation={[-0.02, -0.38, -0.01]}

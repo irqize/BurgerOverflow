@@ -38,7 +38,6 @@ export const Machine = ({ x, z }) => {
 const accelerometerFactor = 0.5;
 
 const Control = ({ spawn, gyroX, gyroZ, gameBoundaries }) => {
-  console.log("gameBoundaries", gameBoundaries);
   const { x1, x2, z1, z2 } = gameBoundaries;
   const [vX, setvX] = useState(0);
   const [vZ, setvZ] = useState(0);

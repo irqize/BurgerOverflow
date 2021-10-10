@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { v4 } from 'uuid';
 import { useCylinder } from "@react-three/cannon";
 import { useFrame } from "@react-three/fiber";
 import { Vector3 } from "three";
@@ -102,6 +103,7 @@ const checkIfOut = (radius, x, z) => Math.sqrt(x * x + z * z) > radius;
 
 const generateStackItem = () => ({
   mass: 0.3 + Math.random() * 0.3,
+  id: v4(),
   ...ingredients[items[Math.floor(Math.random() * items.length)]],
 });
 
@@ -227,7 +229,7 @@ const Stacks = ({ spawn, stacksXZ, socket, gyroX, gyroZ, gameBoundaries}) => {
       {items.map((attrs, i) => (
         <Item
           attrs={attrs}
-          key={i}
+          key={attrs.id}
           //position={[camera.position.x, 5, camera.position.z]}
           position={[spawnPosX, 5, spawnPosZ]}
           setItemPosition={setItemPosition}
