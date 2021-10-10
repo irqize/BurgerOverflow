@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { v4 } from 'uuid';
 import { useCylinder } from "@react-three/cannon";
 import { useFrame } from "@react-three/fiber";
 import { Vector3 } from "three";
@@ -32,6 +33,17 @@ const ingredients = {
   lettuce: { name: 'Lettuce', r: 1.152, height: 0.25, Component: Lettuce },
   tomato: { name: 'Tomato', r: 1, height: 0.295, Component: Tomato },
 };
+
+const ItemModel = ({Component, position}) => {
+  
+  return (
+    <group
+      position={position}
+    >
+      <Component/>
+    </group>
+  )
+}
 
 const Item = ({
   attrs: { mass, Component, height, r },
@@ -91,6 +103,7 @@ const checkIfOut = (radius, x, z) => Math.sqrt(x * x + z * z) > radius;
 
 const generateStackItem = () => ({
   mass: 0.3 + Math.random() * 0.3,
+  id: v4(),
   ...ingredients[items[Math.floor(Math.random() * items.length)]],
 });
 
@@ -103,7 +116,7 @@ const Stack = ({ x, z, isOut }) => {
         <meshBasicMaterial
           color={isOut ? 0xff0000 : 0x00ff00}
           transparent
-          opacity={0.1}
+          opacity={0.2}
         />
       </mesh>
       <Plate x={x} y={-2.2} z={z} />
@@ -111,19 +124,26 @@ const Stack = ({ x, z, isOut }) => {
   );
 };
 
-const accelerometerFactor = 0.5
-const Stacks = ({ spawn, stacksXZ, socket, gyroX, gyroZ }) => {
+const Stacks = ({ spawn, stacksXZ, socket, gyroX, gyroZ, gameBoundaries, setScore}) => {
+  const {x1,x2,z1,z2} = gameBoundaries;
+
   const [positions, setPositions] = useState([]);
   const [items, setItems] = useState([]);
   const [nextItem, setNextItem] = useState(generateStackItem())
   const [isOut, setIsOut] = useState(false);
   const [maxScores, setMaxScores] = useState(new Array(stacksXZ.length).fill(0));
 
-  /// Control spawning position
+  ////// Control spawning position
+      // how much the position is changed, based on gyro data.
   const [vX, setvX] = useState(0)
   const [vZ, setvZ] = useState(0)
-  const [xPos,setX] = useState(0)
-  const [zPos,setZ] = useState(0)
+  
+      // the position to spawn an ingredient
+  const [spawnPosX,setspawnPosX] = useState(0)
+  const [spawnPosZ,setspawnPosZ] = useState(0)
+
+  const accelerometerFactor = 0.5
+
 
   useEffect(() => {
     setvX(gyroX * gyroX * accelerometerFactor)
@@ -133,18 +153,28 @@ const Stacks = ({ spawn, stacksXZ, socket, gyroX, gyroZ }) => {
     setvZ(gyroZ * gyroZ * accelerometerFactor)
   }, [gyroZ])
 
+  const between = (x,a, b) => {
+    var min = Math.min(a, b),
+      max = Math.max(a, b);
+    return x > min && x < max;
+  };
+
   useFrame(() => {
-    if (gyroZ > 0) {
-      setZ(prevZ => prevZ + vZ)
+    if (gyroZ > 0 && between(spawnPosZ,z1-0.5,z2)) {
+      //moving forwards
+      setspawnPosZ(prevZ => prevZ + vZ)
     }
-    if (gyroZ < 0) {
-      setZ(prevZ => prevZ - vZ)
+    if (gyroZ < 0 && between(spawnPosZ,z1,z2+0.5)) {
+      //moving backwards
+      setspawnPosZ(prevZ => prevZ - vZ)
     }
-    if (gyroX > 0) {
-      setX(prevX => prevX + vX)
+    if (gyroX > 0 && between(spawnPosX,x1,x2-0.5)) {
+      //moving right
+      setspawnPosX(prevX => prevX + vX)
     }
-    if (gyroX < 0) {
-      setX(prevX => prevX - vX)
+    if (gyroX < 0 && between(spawnPosX,x1+0.5,x2)) {
+      //moving left
+      setspawnPosX(prevX => prevX - vX)
     }
   })
   ///
@@ -170,6 +200,10 @@ const Stacks = ({ spawn, stacksXZ, socket, gyroX, gyroZ }) => {
     setIsOut(true);
     setPositions([...positions, p]);
   };
+
+  socket.on("endGame", () => {
+    setScore(Math.round(100* maxScores.reduce((a, b) => a + b, 0) / maxScores.length))
+  })
 
   // Restart the stack when item is out of bounds
   useEffect(() => {
@@ -199,12 +233,13 @@ const Stacks = ({ spawn, stacksXZ, socket, gyroX, gyroZ }) => {
       {items.map((attrs, i) => (
         <Item
           attrs={attrs}
-          key={i}
+          key={attrs.id}
           //position={[camera.position.x, 5, camera.position.z]}
-          position={[xPos, 5, zPos]}
+          position={[spawnPosX, 5, spawnPosZ]}
           setItemPosition={setItemPosition}
         />
       ))}
+      <ItemModel Component={nextItem.Component} position={[spawnPosX, 5, spawnPosZ]}/>
       {/* Draw points that are out of bounds */}
       {positions.map((p, i) => (
         <mesh position={p} key={i}>

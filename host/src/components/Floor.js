@@ -2,7 +2,7 @@ import React from "react";
 import { usePlane } from "@react-three/cannon";
 
 const Floor = () => {
-  const [ref] = usePlane(() => ({position: [0, -2.2, -2], rotation: [4.7, 0, 0]}))
+  const [ref] = usePlane(() => ({position: [0, -2, -2], rotation: [4.7, 0, 0]}))
 
   return (
     

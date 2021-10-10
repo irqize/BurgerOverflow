@@ -87,29 +87,27 @@ io.on("connection", (socket) => {
 
   socket.on("grantedGyro", (bool) => {
     if (socket.rooms.has("client")) {
-      console.log("yay granted gyro")
       io.to("host").emit("grantedGyro", bool);
     }
   })
 
   socket.on("doneOnboarding", (bool) => {
+    if(bool == true) {
+      if (socket.rooms.has("host")) {
+        io.to("client").emit("doneOnboarding", bool)
+      }
+    }
+  })
+
+  socket.on("endGame", () => {
+    if (socket.rooms.has("client"))
+    {io.to("host").emit("endGame");}
+  })
+
+  socket.on("finishScore", finishScore => {
     if (socket.rooms.has("host")) {
-      console.log("yay done" + bool)
-      io.to("client").emit("doneOnboarding", bool)
+      io.to("client").emit("finishScore", finishScore)
     }
   })
 
 });
-
-
-io.of("client").on("skipAhead", (skip) => {
-  console.log("hejsan" + skip);
-});
-
-io.of("client").on("grantedGyro", (bool) => {
-  console.log("yay granted gyro")
-})
-
-io.of("host").on("doneOnboarding", bool => {
-  console.log("jajjebus")
-})

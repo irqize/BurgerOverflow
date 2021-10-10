@@ -6,7 +6,7 @@ const Camera = () => {
 
 
   useEffect(() => {
-    camera.position.set(0,10,10);
+    camera.position.set(0,12,9);
     camera.lookAt(0, 0, 0);
     camera.fov = 50;
     camera.updateProjectionMatrix();

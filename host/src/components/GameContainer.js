@@ -4,9 +4,9 @@ import { Physics, usePlane, useBox } from "@react-three/cannon";
 import { useLoader } from "@react-three/fiber";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { Suspense } from "react";
-import { Environment, OrbitControls } from '@react-three/drei'
-import { EffectComposer, Bloom, SSAO } from '@react-three/postprocessing'
-import { KernelSize, BlendFunction } from 'postprocessing'
+import { Environment, OrbitControls } from "@react-three/drei";
+import { EffectComposer, Bloom, SSAO } from "@react-three/postprocessing";
+import { KernelSize, BlendFunction } from "postprocessing";
 
 import Floor from "./Floor";
 import { Stats } from "@react-three/drei";
@@ -23,35 +23,40 @@ import Animation from "./Animation"
 const degreesToRadians = (angle) => (angle * Math.PI) / 180;
 
 function Effects() {
-  const ref = useRef()
+  const ref = useRef();
   // useFrame((state) => {
   //   // Disable SSAO on regress
   //   ref.current.blendMode.setBlendFunction(state.performance.current < 1 ? BlendFunction.SKIP : BlendFunction.MULTIPLY)
   // }, [])
   return (
-    <EffectComposer >
-      <SSAO ref={ref}
-          intensity={10}
-          // blendFunction={BlendFunction.MULTIPLY} // blend mode
-          samples={30} // amount of samples per pixel (shouldn't be a multiple of the ring count)
-          // rings={4} // amount of rings in the occlusion sampling pattern
-          // distanceThreshold={1.0} // global distance threshold at which the occlusion effect starts to fade out. min: 0, max: 1
-          // distanceFalloff={0.0} // distance falloff. min: 0, max: 1
-          // rangeThreshold={0.5} // local occlusion range threshold at which the occlusion starts to fade out. min: 0, max: 1
-          // rangeFalloff={0.1} // occlusion range falloff. min: 0, max: 1
-          luminanceInfluence={0.5} // how much the luminance of the scene influences the ambient occlusion
-          radius={15} // occlusion sampling radius
-          // scale={0.5} // scale of the ambient occlusion
-          bias={0.035} // occlusion bias
-        />      
+    <EffectComposer>
+      <SSAO
+        ref={ref}
+        intensity={10}
+        // blendFunction={BlendFunction.MULTIPLY} // blend mode
+        samples={30} // amount of samples per pixel (shouldn't be a multiple of the ring count)
+        // rings={4} // amount of rings in the occlusion sampling pattern
+        // distanceThreshold={1.0} // global distance threshold at which the occlusion effect starts to fade out. min: 0, max: 1
+        // distanceFalloff={0.0} // distance falloff. min: 0, max: 1
+        // rangeThreshold={0.5} // local occlusion range threshold at which the occlusion starts to fade out. min: 0, max: 1
+        // rangeFalloff={0.1} // occlusion range falloff. min: 0, max: 1
+        luminanceInfluence={0.5} // how much the luminance of the scene influences the ambient occlusion
+        radius={15} // occlusion sampling radius
+        // scale={0.5} // scale of the ambient occlusion
+        bias={0.035} // occlusion bias
+      />
       {/* <SSAO ref={ref} intensity={15} radius={10} luminanceInfluence={0} bias={0.035} /> */}
 
-      <Bloom kernelSize={KernelSize.LARGE} luminanceThreshold={0.9} luminanceSmoothing={0.2} />
+      <Bloom
+        kernelSize={KernelSize.LARGE}
+        luminanceThreshold={0.9}
+        luminanceSmoothing={0.2}
+      />
     </EffectComposer>
-  )
+  );
 }
 const Lights = () => {
-  const lights = useRef()
+  const lights = useRef();
   // const mouse = useLerpedMouse()
   // useFrame((state) => {
   //   lights.current.rotation.x = (mouse.current.x * Math.PI) / 2
@@ -60,19 +65,39 @@ const Lights = () => {
   return (
     <>
       {/* <ambientLight intensity={0.5} /> */}
-      <directionalLight castShadow intensity={0.4} position={[0, 20, 10]} color="#FFDA7E" distance={5} />
+      <directionalLight
+        castShadow
+        intensity={0.4}
+        position={[0, 20, 10]}
+        color="#FFDA7E"
+        distance={5}
+      />
       {/* <spotLight intensity={2} position={[-5, 10, 2]} angle={0.2} penumbra={1} castShadow shadow-mapSize={[2048, 2048]} /> */}
       <group ref={lights}>
-        <rectAreaLight intensity={0.4} position={[20, 20, 10]} width={50} height={50} onUpdate={(self) => self.lookAt(0, 0, 0)} />
-        <rectAreaLight intensity={0.3} position={[-10, 15, 10]} width={30} height={30} onUpdate={(self) => self.lookAt(0, 0, 0)} />
+        <rectAreaLight
+          intensity={0.4}
+          position={[20, 20, 10]}
+          width={50}
+          height={50}
+          onUpdate={(self) => self.lookAt(0, 0, 0)}
+        />
+        <rectAreaLight
+          intensity={0.3}
+          position={[-10, 15, 10]}
+          width={30}
+          height={30}
+          onUpdate={(self) => self.lookAt(0, 0, 0)}
+        />
       </group>
     </>
-  )
-}
+  );
+};
 
 const GameContainer = ({ socket }) => {
+  var gameBoundaries = { x1: -12, x2: 12, z1: -2, z2: 6 };
+
   const [gyroData, setGyroData] = useState(null);
-  const [alpha, setAlpha] = useState(0);
+  // const [alpha, setAlpha] = useState(0);
   const [beta, setBeta] = useState(0);
   const [gamma, setGamma] = useState(0);
   const [onBoardingDone, setOnboardingDone] = useState(false);
@@ -80,13 +105,14 @@ const GameContainer = ({ socket }) => {
   const [spawn, setSpawn] = useState(false);
   const [tryOut, setTryOut] = useState(false);
   const [countDown, setCountDown] = useState(10);
+  const [finishScore, setFinishScore] = useState(undefined);
 
   useEffect(() => {
     socket.on("data", (data) => setGyroData(data));
   }, []);
 
   useEffect(() => {
-    setAlpha(gyroData?.alpha ? gyroData?.alpha : 0);
+    // setAlpha(gyroData?.alpha ? gyroData?.alpha : 0);
     setBeta(gyroData?.beta ? gyroData?.beta : 0);
     setGamma(gyroData?.gamma ? gyroData?.gamma : 0);
   }, [gyroData]);
@@ -99,7 +125,6 @@ const GameContainer = ({ socket }) => {
   };
 
   if (tryOut) {
-    console.log("yay")
     setTimeout(()=> {
       setCountDown(countDown-1)
     }, 1000)
@@ -110,6 +135,13 @@ const GameContainer = ({ socket }) => {
     setTryOut(false);
     setOnboardingDone(true);
     socket.emit("doneOnboarding", true);
+    setTimeout(()=> {
+      socket.emit("doneOnboarding", false)
+    }, 2000)
+  }
+
+  if(finishScore !== undefined) {
+    socket.emit("finishScore", finishScore)
   }
 
 
@@ -120,34 +152,59 @@ const GameContainer = ({ socket }) => {
     <input type='number' value={beta.toFixed(2)} onChange={e => setBeta(e.target.value)} />
     <input type='number' value={gamma.toFixed(2)} onChange={e => setGamma(e.target.value)} /> */}
       {onBoardingDone ?
-        <Canvas
-        // shadows
-        // colorManagement={false}
-        // sRGB={true}
-        style={{ height: "100vh", width: "100vw", background: "#272727" }}
-        pixelRatio={window.devicePixelRatio}
-      >
-
-        <OrbitControls />
-        <Stats />
-        <Suspense fallback={null}>
-          <Kitchen />
-          <Environment files={'small_empty_house_2k.hdr'} path={'./assets/'}/>
-          <Animation/>
-          <Control gyroX={Math.sin(degreesToRadians(gamma))} gyroZ={Math.sin(degreesToRadians(beta))} spawn={(v) => setSpawn(v)} />
-
-        </Suspense>
-        <Effects />
-        <Lights />
-        <Physics>
-          <Floor />
-          <Stacks gyroX={Math.sin(degreesToRadians(gamma))} gyroZ={Math.sin(degreesToRadians(beta))} stacksXZ={[{x: 0, z: -2}, {x: 5, z:-2}]} spawn={spawn} socket={socket}/>
-          {/* <Stack x={-3} z={1}/>
-          <Stack x={3} z={-0.5}/>*/}
-
-        </Physics>
-        <Camera />
-      </Canvas>
+      (finishScore == undefined? 
+      <Canvas
+          // shadows
+          // colorManagement={false}
+          // sRGB={true}
+          style={{ height: "100vh", width: "100vw", background: "#272727" }}
+          pixelRatio={window.devicePixelRatio}
+        >
+          <Stats />
+          <Suspense fallback={null}>
+          
+            <Kitchen />
+            <Environment
+              files={"small_empty_house_2k.hdr"}
+              path={"./assets/"}
+            />
+            <Animation />
+            
+            <Control
+              gyroX={Math.sin(degreesToRadians(gamma))}
+              gyroZ={Math.sin(degreesToRadians(beta))}
+              spawn={(v) => setSpawn(v)}
+              gameBoundaries={gameBoundaries}
+            />
+            </Suspense>
+            {/* <Effects /> */}
+             <Lights />
+            
+            <Physics>
+            <Floor />
+            <Stacks
+              gyroX={Math.sin(degreesToRadians(gamma))}
+              gyroZ={Math.sin(degreesToRadians(beta))}
+              stacksXZ={[
+                { x: 0, z: -2 },
+                { x: 5, z: -2 },
+              ]}
+              spawn={spawn}
+              socket={socket}
+              gameBoundaries={gameBoundaries}
+              setScore={(score) => { setFinishScore(score) }}
+            />
+            </Physics> 
+            
+            <Camera />
+        </Canvas>
+        :
+        <div className="advertisement">
+          <div className="advertisement-0">
+            Congratulations! You scored {finishScore} points, which means {finishScore/10} SEK off your next order!
+          </div>
+        </div>
+        )
         :
         <>
         {tryOut ? <>
@@ -167,7 +224,7 @@ const GameContainer = ({ socket }) => {
               <meshPhysicalMaterial clearcoat={1} attach="material" color="#212529" />
               </mesh>
             
-          <Control gyroX={Math.sin(degreesToRadians(gamma))} gyroZ={Math.sin(degreesToRadians(beta))} spawn={(v) => setSpawn(v)} />
+          <Control gyroX={Math.sin(degreesToRadians(gamma))} gyroZ={Math.sin(degreesToRadians(beta))} spawn={(v) => setSpawn(v)} gameBoundaries={gameBoundaries}/>
           <Html>
 					<h1 className="countDown">{countDown}</h1>
           </Html>

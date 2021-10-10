@@ -3,6 +3,8 @@ import "./App.css";
 import "./Client.css";
 import { io } from "socket.io-client";
 
+const dev = process.env.NODE_ENV === 'development';
+
 function App() {
   const [socket, setSocket] = useState(null);
 
@@ -11,6 +13,7 @@ function App() {
   const [gyroAllowed, setGyroAllowed] = useState(false);
   const [gyroData, setGyroData] = useState(null);
   const [endGame, setEndGame] = useState(false);
+  const [finishScore, setFinishScore] = useState(undefined);
 
   const [dismiss, setDismiss] = useState(null);
 
@@ -21,8 +24,9 @@ function App() {
     setGyroData(data);
   };
 
+
   useEffect(() => {
-    const newSocket = io("https://" + document.location.hostname + ":8080");
+    const newSocket = io(dev ? "https://" + document.location.hostname + ":8080" : "https://" + document.location.hostname);
     setSocket(newSocket);
 
     return () => newSocket.close();
@@ -66,6 +70,9 @@ function App() {
     });
 
     socket.on("dismiss available", (product) => setDismiss(product));
+    socket.on("finishScore", (finishScore) => {
+      setFinishScore(finishScore)
+    })
   };
 
   const startGyro = () => {
@@ -93,6 +100,7 @@ function App() {
     <main>
       <div className="titleTopBar">Burger OverFlow</div>
       <div className="mainContainer">
+      {finishScore == undefined ?
         <div className="buttonContainer">
           {!authenticated ? (
             <>
@@ -128,7 +136,9 @@ function App() {
                 <div className="buttonGroup">
                   {endGame ? 
                   <>
-                  <button className="nextAdButton">
+                  <button className="nextAdButton"
+                  onClick={() => socket.emit("endGame")}
+                  >
                     <span className="frontButton">
                       End game
                     </span>
@@ -158,6 +168,11 @@ function App() {
             </>
           )}
           </div>
+          :
+          <div className="finishScreen">
+          Congratulations! Your discount is {finishScore/10}
+          </div>
+          }
         </div>
     </main>
   );
