@@ -124,13 +124,13 @@ const Stack = ({ x, z, isOut }) => {
   );
 };
 
-const Stacks = ({ spawn, stacksXZ, socket, gyroX, gyroZ, gameBoundaries}) => {
+const Stacks = ({ spawn, stacksXZ, socket, gyroX, gyroZ, gameBoundaries, isOut, setIsOut}) => {
   const {x1,x2,z1,z2} = gameBoundaries;
 
   const [positions, setPositions] = useState([]);
   const [items, setItems] = useState([]);
   const [nextItem, setNextItem] = useState(generateStackItem())
-  const [isOut, setIsOut] = useState(false);
+  //const [isOut, setIsOut] = useState(false);
   const [maxScores, setMaxScores] = useState(new Array(stacksXZ.length).fill(0));
 
   ////// Control spawning position
@@ -208,7 +208,7 @@ const Stacks = ({ spawn, stacksXZ, socket, gyroX, gyroZ, gameBoundaries}) => {
       setPositions([]);
       setItems([]);
       console.log('Score: ' + Math.round(100* maxScores.reduce((a, b) => a + b, 0) / maxScores.length));
-      setIsOut(false);
+      // setIsOut(false);
       setMaxScores(new Array(stacksXZ.length).fill(0));
     }, 1000);
 
@@ -216,7 +216,7 @@ const Stacks = ({ spawn, stacksXZ, socket, gyroX, gyroZ, gameBoundaries}) => {
   }, [isOut]);
 
   useEffect(() => {
-    if (spawn)  {
+    if (spawn && !isOut)  {
       setItems([...items, nextItem]);
       const next = generateStackItem();
       setNextItem(next);

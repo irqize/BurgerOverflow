@@ -101,6 +101,9 @@ const GameContainer = ({ socket }) => {
 
   const [spawn, setSpawn] = useState(false);
 
+  // End game flag
+  const [isEnd, setIsEnd] = useState(false);
+
   useEffect(() => {
     socket.on("data", (data) => setGyroData(data));
   }, []);
@@ -134,13 +137,16 @@ const GameContainer = ({ socket }) => {
         >
           <Stats />
           <Suspense fallback={null}>
-          
+            <mesh receiveShadow castShadow onClick={() => setIsEnd(!isEnd)} position={[1,0,0]}>
+              <sphereGeometry args={[0.8, 64, 64]} />
+              <meshBasicMaterial transparent opacity={0.1}/>
+            </mesh>
             <Kitchen />
             <Environment
               files={"small_empty_house_2k.hdr"}
               path={"./assets/"}
             />
-            <Animation />
+            <Animation isEnd={isEnd}/>
             
             <Control
               gyroX={Math.sin(degreesToRadians(gamma))}
@@ -164,6 +170,8 @@ const GameContainer = ({ socket }) => {
               spawn={spawn}
               socket={socket}
               gameBoundaries={gameBoundaries}
+              isOut={isEnd}
+              setIsOut={setIsEnd}
             />
             </Physics> 
             
