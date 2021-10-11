@@ -1,7 +1,7 @@
 .advertisement-0 {
-    flex:1;
+    flex: 1;
     display: flex;
-    flex-direction:column;
+    flex-direction: column;
     text-align: left;
     margin: 20px;
 }
@@ -18,14 +18,14 @@
     width: 100vw;
     height: 100vh;
     text-align: center;
-    display:inline-block;
+    display: inline-block;
     background: #e6a22e;
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
     min-height: 250px;
-    font-family: 'Alfa Slab One', cursive;
+    font-family: "Alfa Slab One", cursive;
     font-size: 3em;
 }
 
@@ -35,4 +35,17 @@
     top: -40vh;
     left: -40vw;
     font-size: 3em;
+}
+
+.doneScreen {
+    width: 100vw;
+    height: 100vh;
+    color: black;
+    font-size: 3em;
+    position: absolute;
+    top: -10vh;
+    left: -40vw;
+    text-shadow: 4px 0 0 #e6a22e, -4px 0 0 #e6a22e, 0 4px 0 #e6a22e,
+        0 -4px 0 #e6a22e, 1px 1px #e6a22e, -1px -1px 0 #e6a22e,
+        1px -1px 0 #e6a22e, -1px 1px 0 #e6a22e;
 }

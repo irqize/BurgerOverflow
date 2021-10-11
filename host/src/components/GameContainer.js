@@ -106,6 +106,7 @@ const GameContainer = ({ socket }) => {
     const [tryOut, setTryOut] = useState(false);
     const [countDown, setCountDown] = useState(10);
     const [finishScore, setFinishScore] = useState(undefined);
+    const [isEnd, setIsEnd] = useState(false);
 
     useEffect(() => {
         socket.on("data", (data) => setGyroData(data));
@@ -116,6 +117,12 @@ const GameContainer = ({ socket }) => {
         setBeta(gyroData?.beta ? gyroData?.beta : 0);
         setGamma(gyroData?.gamma ? gyroData?.gamma : 0);
     }, [gyroData]);
+
+    useEffect(() => {
+        socket.on("finishScore", (finishScore) => {
+            setTimeout(() => setFinishScore(finishScore), 3000);
+        });
+    }, []);
 
     //function to compare if a value is in between two other values.
     Number.prototype.between = function (a, b) {
@@ -140,77 +147,96 @@ const GameContainer = ({ socket }) => {
         }, 2000);
     }
 
-    if (finishScore !== undefined) {
-        socket.emit("finishScore", finishScore);
-    }
-
     return (
         <>
             {/* <input type='number' value={alpha.toFixed(2)} onChange={e => setAlpha(e.target.value)} />
     <input type='number' value={beta.toFixed(2)} onChange={e => setBeta(e.target.value)} />
     <input type='number' value={gamma.toFixed(2)} onChange={e => setGamma(e.target.value)} /> */}
             {onBoardingDone ? (
-                finishScore == undefined ? (
-                    <Canvas
-                        // shadows
-                        // colorManagement={false}
-                        // sRGB={true}
-                        style={{
-                            height: "100vh",
-                            width: "100vw",
-                            background: "#272727",
-                        }}
-                        pixelRatio={window.devicePixelRatio}
-                    >
-                        <Stats />
-                        <Suspense fallback={null}>
-                            <Kitchen />
-                            <Environment
-                                files={"small_empty_house_2k.hdr"}
-                                path={"./assets/"}
-                            />
-                            <Animation />
+                // finishScore == undefined ? (
+                <Canvas
+                    // shadows
+                    // colorManagement={false}
+                    // sRGB={true}
+                    style={{
+                        height: "100vh",
+                        width: "100vw",
+                        background: "#272727",
+                    }}
+                    pixelRatio={window.devicePixelRatio}
+                >
+                    <Stats />
+                    <Suspense fallback={null}>
+                        <mesh
+                            receiveShadow
+                            castShadow
+                            onClick={() => setIsEnd(!isEnd)}
+                            position={[1, 0, 0]}
+                        >
+                            <sphereGeometry args={[0.8, 64, 64]} />
+                            <meshBasicMaterial transparent opacity={0.1} />
+                        </mesh>
+                        <Kitchen />
+                        <Environment
+                            files={"small_empty_house_2k.hdr"}
+                            path={"./assets/"}
+                        />
+                        <Animation isEnd={isEnd} />
+                        {finishScore !== undefined ? (
+                            <Html>
+                                <h1 className="doneScreen">
+                                    Contgratulations to your score of{" "}
+                                    {finishScore}!
+                                </h1>
+                            </Html>
+                        ) : (
+                            <></>
+                        )}
 
-                            <Control
-                                gyroX={Math.sin(degreesToRadians(gamma))}
-                                gyroZ={Math.sin(degreesToRadians(beta))}
-                                spawn={(v) => setSpawn(v)}
-                                gameBoundaries={gameBoundaries}
-                            />
-                        </Suspense>
-                        {/* <Effects /> */}
-                        <Lights />
+                        <Control
+                            gyroX={Math.sin(degreesToRadians(gamma))}
+                            gyroZ={Math.sin(degreesToRadians(beta))}
+                            spawn={(v) => setSpawn(v)}
+                            gameBoundaries={gameBoundaries}
+                        />
+                    </Suspense>
+                    {/* <Effects /> */}
+                    <Lights />
 
-                        <Physics>
-                            <Floor />
-                            <Stacks
-                                gyroX={Math.sin(degreesToRadians(gamma))}
-                                gyroZ={Math.sin(degreesToRadians(beta))}
-                                stacksXZ={[
-                                    { x: 0, z: -2 },
-                                    { x: 5, z: -2 },
-                                ]}
-                                spawn={spawn}
-                                socket={socket}
-                                gameBoundaries={gameBoundaries}
-                                setScore={(score) => {
-                                    setFinishScore(score);
-                                }}
-                            />
-                        </Physics>
+                    <Physics>
+                        <Floor />
+                        <Stacks
+                            gyroX={Math.sin(degreesToRadians(gamma))}
+                            gyroZ={Math.sin(degreesToRadians(beta))}
+                            stacksXZ={[
+                                { x: 0, z: -2 },
+                                { x: 5, z: -2 },
+                            ]}
+                            spawn={spawn}
+                            socket={socket}
+                            gameBoundaries={gameBoundaries}
+                            setScore={(score) => {
+                                setFinishScore(score);
+                            }}
+                            isOut={isEnd}
+                            setIsOut={setIsEnd}
+                        />
+                    </Physics>
 
-                        <Camera />
-                    </Canvas>
-                ) : (
-                    <div className="advertisement">
-                        <div className="advertisement-0">
-                            Congratulations! You scored {finishScore} points,
-                            which means {finishScore / 10} SEK off your next
-                            order!
-                        </div>
-                    </div>
-                )
+                    <Camera />
+                </Canvas>
             ) : (
+                // )
+                // :
+                // (
+                //     <div className="advertisement">
+                //         <div className="advertisement-0">
+                //             Congratulations! You scored {finishScore} points,
+                //             which means {finishScore / 10} SEK off your next
+                //             order!
+                //         </div>
+                //     </div>
+                // )
                 <>
                     {tryOut ? (
                         <>

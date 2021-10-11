@@ -128,13 +128,15 @@ const Stacks = ({
     gyroZ,
     gameBoundaries,
     setScore,
+    isOut,
+    setIsOut,
 }) => {
     const { x1, x2, z1, z2 } = gameBoundaries;
 
     const [positions, setPositions] = useState([]);
     const [items, setItems] = useState([]);
     const [nextItem, setNextItem] = useState(generateStackItem());
-    const [isOut, setIsOut] = useState(false);
+    // const [isOut, setIsOut] = useState(false);
     const [maxScores, setMaxScores] = useState(
         new Array(stacksXZ.length).fill(0)
     );
@@ -214,14 +216,6 @@ const Stacks = ({
         setPositions([...positions, p]);
     };
 
-    socket.on("endGame", () => {
-        setScore(
-            Math.round(
-                (100 * maxScores.reduce((a, b) => a + b, 0)) / maxScores.length
-            )
-        );
-    });
-
     // Restart the stack when item is out of bounds
     useEffect(() => {
         if (!isOut) return;
@@ -235,7 +229,14 @@ const Stacks = ({
                             maxScores.length
                     )
             );
-            setIsOut(false);
+            socket.emit(
+                "finishScore",
+                Math.round(
+                    (100 * maxScores.reduce((a, b) => a + b, 0)) /
+                        maxScores.length
+                )
+            );
+            // setIsOut(false);
             setMaxScores(new Array(stacksXZ.length).fill(0));
         }, 1000);
 
@@ -243,7 +244,7 @@ const Stacks = ({
     }, [isOut]);
 
     useEffect(() => {
-        if (spawn) {
+        if (spawn && !isOut) {
             setItems([...items, nextItem]);
             const next = generateStackItem();
             setNextItem(next);
