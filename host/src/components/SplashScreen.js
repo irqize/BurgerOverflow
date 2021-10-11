@@ -5,7 +5,7 @@ import "./Advertisement.css";
 import BurgerBunDown from "./images/burger_bun_down.png";
 import BurgerBunUp from "./images/burger_bun_up.png";
 
-const URL = "https://" + document.location.hostname + ":3080";
+const URL = "https://" + document.location.hostname + ":3000";
 
 const SplashScreen = ({ socket }) => {
     const [link, setLink] = useState(null);
