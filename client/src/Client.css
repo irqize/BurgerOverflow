@@ -1,97 +1,91 @@
-.titleTopBar{
-
-  background:#dee2e0;
+.titleTopBar {
+  background: #dee2e0;
   color: #000000;
   text-align: center;
-  height:"10vh";
-  font-size:50px;
-  padding:10px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+  height: "10vh";
+  font-size: 50px;
+  padding: 10px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.buttonContainer{
-  display:grid;
-  grid-column:2;
+.buttonContainer {
+  display: grid;
+  grid-column: 2;
   grid-gap: 10px;
   justify-content: center;
   padding: 10px;
-
 }
 
-.gyroData{
-  width:200px;
+.gyroData {
+  width: 200px;
   border: 1px solid black;
   border-radius: 1px;
-  padding:2px;
-
+  padding: 2px;
 }
 
-.authMessage{
-  width:200px;
-  background:linear-gradient(to right, #44c767 5%, #44c790 100%); 
-  display:inline-block;
+.authMessage {
+  width: 200px;
+  background: linear-gradient(to right, #44c767 5%, #44c790 100%);
+  display: inline-block;
   text-align: center;
-  background-color: #43AA8B;
-  color:#ffffff;
-  font-family:Arial;
-	font-size:17px;
-	font-weight:bold;
-	padding:12px 0px;
-	text-decoration:none;
- 
-
+  background-color: #43aa8b;
+  color: #ffffff;
+  font-family: Arial;
+  font-size: 17px;
+  font-weight: bold;
+  padding: 12px 0px;
+  text-decoration: none;
 }
 
 .authButton {
-  width:200px;
-	background-color:#44c767;
-	border:none;
-	display:inline-block;
-	cursor:pointer;
-	color:#ffffff;
-	font-family:Arial;
-	font-size:17px;
-	font-weight:bold;
-	padding:12px 10px;
-	text-decoration:none;
+  width: 200px;
+  background-color: #44c767;
+  border: none;
+  display: inline-block;
+  cursor: pointer;
+  color: #ffffff;
+  font-family: Arial;
+  font-size: 17px;
+  font-weight: bold;
+  padding: 12px 10px;
+  text-decoration: none;
 }
 
 .authButton:active {
-	position:relative;
-	top:1px;
+  position: relative;
+  top: 1px;
 }
-.gyroButton{
-  width:200px;
+.gyroButton {
+  width: 200px;
   background-color: #135e91;
   border-radius: 2px;
   border: 2px solid #215693;
-	display:inline-block;
-	cursor:pointer;
-	color:#ffffff;
-	font-family:Arial;
-	font-size:17px;
-	font-weight:bold;
-	padding:12px 10px;
-	text-decoration:none;
-
+  display: inline-block;
+  cursor: pointer;
+  color: #ffffff;
+  font-family: Arial;
+  font-size: 17px;
+  font-weight: bold;
+  padding: 12px 10px;
+  text-decoration: none;
 }
-.mainContainer{
-  display:grid;
+.mainContainer {
+  display: grid;
   justify-content: center;
   grid-template-columns: 1fr 4fr 1fr;
 }
 
 .finishScreen {
-    width: 100vw;
-    height: 100vh;
-    text-align: center;
-    display:inline-block;
-    background: #e6a22e;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    min-height: 250px;
-    font-family: 'Alfa Slab One', cursive;
-    font-size: 3em;
+  width: 100vw;
+  height: 100vh;
+  text-align: center;
+  display: inline-block;
+  background: #e6a22e;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 250px;
+  font-family: "Alfa Slab One", cursive;
+  font-size: 3em;
 }

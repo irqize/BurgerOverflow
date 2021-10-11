@@ -105,7 +105,7 @@ const GameContainer = ({ socket }) => {
     const [spawn, setSpawn] = useState(false);
     const [tryOut, setTryOut] = useState(false);
     const [countDown, setCountDown] = useState(10);
-    const [finishScore, setFinishScore] = useState(undefined);
+    const [finishScore, setFinishScore] = useState();
     const [isEnd, setIsEnd] = useState(false);
 
     useEffect(() => {
@@ -182,7 +182,7 @@ const GameContainer = ({ socket }) => {
                             path={"./assets/"}
                         />
                         <Animation isEnd={isEnd} />
-                        {finishScore !== undefined ? (
+                        {typeof finishScore === "number" ? (
                             <Html>
                                 <h1 className="doneScreen">
                                     Contgratulations to your score of{" "}
@@ -209,8 +209,9 @@ const GameContainer = ({ socket }) => {
                             gyroX={Math.sin(degreesToRadians(gamma))}
                             gyroZ={Math.sin(degreesToRadians(beta))}
                             stacksXZ={[
-                                { x: 0, z: -2 },
-                                { x: 5, z: -2 },
+                                { x: -5, z: -1 },
+                                { x: 0, z: -3 },
+                                { x: 5, z: -1 },
                             ]}
                             spawn={spawn}
                             socket={socket}
@@ -274,7 +275,6 @@ const GameContainer = ({ socket }) => {
                                 <Control
                                     gyroX={Math.sin(degreesToRadians(gamma))}
                                     gyroZ={Math.sin(degreesToRadians(beta))}
-                                    spawn={(v) => setSpawn(v)}
                                     gameBoundaries={gameBoundaries}
                                 />
                                 <Html>

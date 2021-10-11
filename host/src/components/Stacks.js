@@ -200,7 +200,7 @@ const Stacks = ({
                 !checkIfOut(1.1, p[0] - x, p[2] - z && p[1] + 1 > maxScores[i])
             ) {
                 const newMaxScores = [...maxScores];
-                newMaxScores[i] = p[1] + 1;
+                newMaxScores[i] = p[1] + 2;
                 setMaxScores(newMaxScores);
             }
         });
@@ -224,16 +224,22 @@ const Stacks = ({
             setItems([]);
             console.log(
                 "Score: " +
-                    Math.round(
-                        (100 * maxScores.reduce((a, b) => a + b, 0)) /
-                            maxScores.length
+                    Math.max(
+                        Math.round(
+                            (100 * maxScores.reduce((a, b) => a + b, 0)) /
+                                maxScores.length
+                        ),
+                        0
                     )
             );
             socket.emit(
                 "finishScore",
-                Math.round(
-                    (100 * maxScores.reduce((a, b) => a + b, 0)) /
-                        maxScores.length
+                Math.max(
+                    Math.round(
+                        (100 * maxScores.reduce((a, b) => a + b, 0)) /
+                            maxScores.length
+                    ),
+                    0
                 )
             );
             // setIsOut(false);

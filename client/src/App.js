@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import "./App.css";
 import "./Client.css";
 import { io } from "socket.io-client";
+import { v4 as uuidv4 } from "uuid";
 
 const dev = process.env.NODE_ENV === "development";
 
@@ -13,9 +14,11 @@ function App() {
   const [gyroAllowed, setGyroAllowed] = useState(false);
   const [gyroData, setGyroData] = useState(null);
   const [endGame, setEndGame] = useState(false);
-  const [finishScore, setFinishScore] = useState(undefined);
+  const [finishScore, setFinishScore] = useState();
 
   const [dismiss, setDismiss] = useState(null);
+
+  const [discountCode, setDiscountCode] = useState();
 
   const gyroRef = useRef(gyroData);
 
@@ -34,6 +37,10 @@ function App() {
 
     return () => newSocket.close();
   }, []);
+
+  useEffect(() => {
+    setDiscountCode(uuidv4().slice(4, 12));
+  }, [finishScore]);
 
   const handleOrientation = ({ alpha, beta, gamma }) => {
     if (gyroRef.current !== null) {
@@ -79,7 +86,9 @@ function App() {
   };
 
   const startGyro = () => {
-    if (typeof DeviceOrientationEvent?.requestPermission === "function") {
+    if (
+      typeof window?.DeviceOrientationEvent?.requestPermission === "function"
+    ) {
       DeviceOrientationEvent.requestPermission()
         .then((state) => {
           if (state === "granted") {
@@ -102,7 +111,7 @@ function App() {
     <main>
       <div className="titleTopBar">Burger OverFlow</div>
       <div className="mainContainer">
-        {finishScore == undefined ? (
+        {typeof finishScore !== "number" ? (
           <div className="buttonContainer">
             {!authenticated ? (
               <>
@@ -171,7 +180,8 @@ function App() {
           </div>
         ) : (
           <div className="finishScreen">
-            Congratulations! Your discount is {finishScore / 10}
+            <div>Congratulations! Your discount is {finishScore / 10} SEK</div>
+            {finishScore > 0 && <div>Your discount code is {discountCode}</div>}
           </div>
         )}
       </div>

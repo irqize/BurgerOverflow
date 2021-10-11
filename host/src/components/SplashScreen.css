@@ -1,46 +1,46 @@
 .splashContainer {
-  width: 100vw;
-  height: 100vh;
-  text-align: center;
-  display:inline-block;
-  background: #e6a22e;
-  display: flex;
-  flex-direction: row;
-  min-height: 250px;
-  font-weight: 200 !important;
-  font-family: 'Alfa Slab One', cursive;
+    width: 100vw;
+    height: 100vh;
+    text-align: center;
+    display: inline-block;
+    background: #e6a22e;
+    display: flex;
+    flex-direction: row;
+    min-height: 250px;
+    font-weight: 200 !important;
+    font-family: "Alfa Slab One", cursive;
+    overflow: hidden;
 }
 
 .splashContainer svg {
-  height: min(60vw, 60vh);
-  width: min(60vw, 60vh);
+    height: min(60vw, 60vh);
+    width: min(60vw, 60vh);
 }
 
 img {
-  width: 30%;
-  margin: auto;
-  display: block;
+    width: 30%;
+    margin: auto;
+    display: block;
 }
 
 img#BurgerBunDown {
-  margin-top: -10px;
+    margin-top: -10px;
 }
 
 img#BurgerBunUp {
-  margin-bottom: -10px;
+    margin-bottom: -10px;
 }
 
 .burgerFlex {
-  flex: 0.5;
-  position: absolute;
-  bottom: 20px;
-  right: -30vw;
+    position: absolute;
+    bottom: 20px;
+    right: -30vw;
 }
 
 .advertisement-text-bod {
-  font-size: 3em;
+    font-size: 3em;
 }
 
 .advertisement-text-head {
-  font-size: 5em;
+    font-size: 5em;
 }
