@@ -1,43 +1,9 @@
 .advertisement-0 {
-    background-color: #e6a22e;
-    display: grid;
-    justify-content: center;
-    align-items: center;
-    text-align:center;
-    font-family: 'Alfa Slab One', cursive;
-    font-weight: 200 !important;
-    font-size: 3em;
-}
-
-.advertisement-0 {
-    --color: black;
-    --color-glow: black;
-}
-
-.advertisement-text-red {
-    --color: red;
-    --color-glow: rgb(252, 202, 170);
-}
-
-.advertisement-0-img {
-    height: 60vh;
-    margin:auto;
-}
-
-.advertisement-text-red {
-    color: var(--color);
-    text-shadow: 0 0 2px #333333, 0 0 4px #333333;
-}
-
-.advertisement-text-red, div.advertisement-0 > p {
-    animation: glow-shrink 2s linear infinite;
-    /* animation: shrink 2s linear infinite; */
-}
-
-@keyframes glow-shrink {
-    0% {text-shadow: 0 0 4px var(--color-glow); transform: scale(1);}
-    50% {text-shadow: 0 0 0px var(--color); transform: scale(0.8);}
-    100% {text-shadow: 0 0 4px var(--color-glow); transform: scale(1);}
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    margin: 20px;
 }
 
 .advertisement-1 {
@@ -48,3 +14,38 @@
     height: 100vh;
 }
 
+.advertisement {
+    width: 100vw;
+    height: 100vh;
+    text-align: center;
+    display: inline-block;
+    background: #e6a22e;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    min-height: 250px;
+    font-family: "Alfa Slab One", cursive;
+    font-size: 3em;
+}
+
+.countDown {
+    color: #e6a22e;
+    position: fixed;
+    top: -40vh;
+    left: -40vw;
+    font-size: 3em;
+}
+
+.doneScreen {
+    width: 100vw;
+    height: 100vh;
+    color: black;
+    font-size: 3em;
+    position: absolute;
+    top: -10vh;
+    left: -40vw;
+    text-shadow: 4px 0 0 #e6a22e, -4px 0 0 #e6a22e, 0 4px 0 #e6a22e,
+        0 -4px 0 #e6a22e, 1px 1px #e6a22e, -1px -1px 0 #e6a22e,
+        1px -1px 0 #e6a22e, -1px 1px 0 #e6a22e;
+}

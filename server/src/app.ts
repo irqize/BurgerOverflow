@@ -4,12 +4,12 @@ import { Server } from "socket.io";
 import { port } from "./config";
 import fs from "fs";
 
-const privateKey  = fs.readFileSync(__dirname +  '/ssl/key.key', 'utf8');
-const certificate = fs.readFileSync(__dirname +  '/ssl/crt.crt', 'utf8');
+const privateKey = fs.readFileSync(__dirname + "/ssl/key.key", "utf8");
+const certificate = fs.readFileSync(__dirname + "/ssl/crt.crt", "utf8");
 
 const server = https.createServer({
   key: privateKey,
-  cert: certificate
+  cert: certificate,
 });
 const io = new Server(server, {
   cors: {
@@ -25,7 +25,7 @@ server.listen(port, () => {
 let roomFull = false;
 io.on("connection", (socket) => {
   socket.on("authorization", (mode, password) => {
-    console.log('-------------------------');
+    console.log("-------------------------");
     console.log("Authorization attempt");
     console.log("Mode: ", mode);
     console.log("Password: ", password);
@@ -39,24 +39,24 @@ io.on("connection", (socket) => {
       socket.emit("joined", "client");
       socket.join("client");
       io.to("host").emit("user", "connected");
-      console.log('Authorized as client');
+      console.log("Authorized as client");
 
-      socket.on('disconnect', () => {
+      socket.on("disconnect", () => {
         roomFull = false;
         io.to("host").emit("user", "disconnected");
-      })
+      });
     }
 
     if (mode === "host") {
       if (password !== "password")
         return socket.emit("error", "The password is wrong");
 
-      if(roomFull) io.to("host").emit("user", "connected");
+      if (roomFull) io.to("host").emit("user", "connected");
       else io.to("host").emit("user", "disconnected");
 
       socket.emit("joined", "host");
       socket.join("host");
-      console.log('Authorized as host');
+      console.log("Authorized as host");
     }
   });
 
@@ -72,22 +72,35 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on('dismiss', () => {
+  socket.on("dismiss", () => {
     if (socket.rooms.has("client")) {
       io.to("host").emit("dismiss");
     }
-  })
+  });
 
-  socket.on('dismiss available', product => {
+  socket.on("dismiss available", (product) => {
     if (socket.rooms.has("host")) {
-      console.log(product)
+      console.log(product);
       io.to("client").emit("dismiss available", product);
     }
-  })
+  });
 
-});
+  socket.on("grantedGyro", (bool) => {
+    if (socket.rooms.has("client")) {
+      io.to("host").emit("grantedGyro", bool);
+    }
+  });
 
+  socket.on("doneOnboarding", (bool) => {
+    if (bool == true) {
+      if (socket.rooms.has("host")) {
+        io.to("client").emit("doneOnboarding", bool);
+      }
+    }
+  });
 
-io.of("client").on("skipAhead", (skip) => {
-  console.log("hejsan" + skip);
+  socket.on("finishScore", (finishScore) => {
+    io.to("client").emit("finishScore", finishScore);
+    io.to("host").emit("finishScore", finishScore);
+  });
 });

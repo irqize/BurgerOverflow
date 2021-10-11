@@ -80,3 +80,18 @@
   justify-content: center;
   grid-template-columns: 1fr 4fr 1fr;
 }
+
+.finishScreen {
+    width: 100vw;
+    height: 100vh;
+    text-align: center;
+    display:inline-block;
+    background: #e6a22e;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    min-height: 250px;
+    font-family: 'Alfa Slab One', cursive;
+    font-size: 3em;
+}
