@@ -4,7 +4,7 @@ import "./Client.css";
 import { io } from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
 
-const dev = process.env.NODE_ENV === "development";
+const URL = "https://" + document.location.hostname + ":8080";
 
 function App() {
   const [socket, setSocket] = useState(null);
@@ -28,11 +28,7 @@ function App() {
   };
 
   useEffect(() => {
-    const newSocket = io(
-      dev
-        ? "https://" + document.location.hostname + ":8080"
-        : "https://" + document.location.hostname
-    );
+    const newSocket = io(URL);
     setSocket(newSocket);
 
     return () => newSocket.close();

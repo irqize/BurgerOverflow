@@ -4,7 +4,7 @@ import { io } from "socket.io-client";
 import GameContainer from "./components/GameContainer";
 import SplashScreen from "./components/SplashScreen";
 
-const dev = process.env.NODE_ENV === "development";
+const URL = "https://" + document.location.hostname + ":8080";
 
 function App() {
     const [socket, setSocket] = useState(null);
@@ -18,11 +18,7 @@ function App() {
     const [userConnected, setUserConnected] = useState(false);
 
     useEffect(() => {
-        const newSocket = io(
-            dev
-                ? "https://" + document.location.hostname + ":8080"
-                : "https://" + document.location.hostname
-        );
+        const newSocket = io(URL);
         setSocket(newSocket);
 
         newSocket.on("error", (e) => setError(e));
