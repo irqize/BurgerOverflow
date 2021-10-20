@@ -5,10 +5,12 @@ export const Meat = ({ ...props }) => {
   const group = useRef();
   const { nodes, materials } = useGLTF("/assets/meat.gltf");
   return (
-    <group ref={group} {...props} >
+    <group ref={group} {...props} dispose={null}>
       <mesh
+        castShadow
+        receiveShadow
         geometry={nodes.Cylinder001.geometry}
-        material={materials["meat.002"]}
+        material={materials['meat.002']}
       />
     </group>
   );
@@ -20,6 +22,8 @@ export const Bacon = (props) => {
   return (
     <group ref={group} {...props} >
       <mesh
+        castShadow
+        receiveShadow
         name="Plane004"
         geometry={nodes.Plane004.geometry}
         material={materials["Material.001"]}
@@ -44,15 +48,18 @@ export const BreadDown = (props) => {
   const group = useRef();
   const { nodes, materials } = useGLTF("/assets/bread_down.gltf");
   return (
-    <group ref={group} {...props} >
+    <group ref={group} {...props} dispose={null}>
       <mesh
-        geometry={nodes.Cylinder001.geometry}
+        castShadow
+        receiveShadow
+        geometry={nodes.Cylinder002.geometry}
         material={materials['bread_outside._top.004']}
-        position={[0, -0, 0]}
+        position={[0, 0, 0]}
         scale={[1.03, 0.74, 1.03]}
       />
     </group>
-  );
+  )
+    ;
 };
 
 export const BreadUp = (props) => {
@@ -60,10 +67,14 @@ export const BreadUp = (props) => {
   const { nodes, materials } = useGLTF("/assets/bread_up.gltf");
 
   return (
-    <group ref={group} {...props} >
+    <group ref={group} {...props} dispose={null}>
       <mesh
+        castShadow
+        receiveShadow
         geometry={nodes.Cylinder001.geometry}
-        material={materials["bread_outside._top.001"]}
+        material={materials['bread_outside._top.002']}
+        position={[0, 0, 0]}
+        rotation={[-Math.PI / 2, -1.53, -Math.PI / 2]}
       />
     </group>
   );
@@ -73,14 +84,10 @@ export const Cheese = (props) => {
   const group = useRef();
   const { nodes, materials } = useGLTF("/assets/cheese.gltf");
   return (
-    <group ref={group} {...props} >
-      <mesh
-        geometry={nodes.Cube003.geometry}
-        material={materials["Material.022"]}
-        scale={[0.9, 0.01, 0.9]}
-      />
+    <group ref={group} {...props} dispose={null}>
+      <mesh castShadow receiveShadow geometry={nodes.Cube.geometry} material={materials.Material} />
     </group>
-  );
+  )
 };
 
 export const Lettuce = (props) => {
@@ -89,6 +96,8 @@ export const Lettuce = (props) => {
   return (
     <group ref={group} {...props} >
       <mesh
+        castShadow
+        receiveShadow
         name="Plane002"
         geometry={nodes.Plane002.geometry}
         material={materials["Material.002"]}
@@ -111,20 +120,28 @@ export const Tomato = (props) => {
         scale={[0.8, 0.8, 0.8]}
       >
         <mesh
+          castShadow
+          receiveShadow
           geometry={nodes.Cylinder007_1.geometry}
           material={nodes.Cylinder007_1.material}
         />
         <mesh
+          castShadow
+          receiveShadow
           geometry={nodes.Cylinder007_2.geometry}
           material={nodes.Cylinder007_2.material}
         />
       </group>
       <group position={[-0.1, 0, 0.21]} scale={[0.8, 0.8, 0.8]}>
         <mesh
+          castShadow
+          receiveShadow
           geometry={nodes.Cylinder008_1.geometry}
           material={nodes.Cylinder008_1.material}
         />
         <mesh
+          castShadow
+          receiveShadow
           geometry={nodes.Cylinder008_2.geometry}
           material={nodes.Cylinder008_2.material}
         />

@@ -8,11 +8,11 @@ export default function Kitchen(props) {
   const { nodes, materials } = useGLTF('./assets/kitchen_new.gltf')
   return (
     <group
-            position={[0, -10.5, 4]} 
-            scale={[8, 8, 8]}
-            rotation={[degreesToRadians(0), degreesToRadians(0), degreesToRadians(0)]}
-            ref={group} {...props}
-            dispose={null}>
+      position={[0, -10.5, 4]}
+      scale={[8, 8, 8]}
+      rotation={[degreesToRadians(0), degreesToRadians(0), degreesToRadians(0)]}
+      ref={group} {...props}
+      dispose={null}>
       <group position={[0.41, 1.08, -1.87]} scale={[0.07, 0.06, 0.07]}>
         <mesh
           name="Cylinder010"

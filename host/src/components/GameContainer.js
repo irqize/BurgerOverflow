@@ -155,7 +155,7 @@ const GameContainer = ({ socket }) => {
             {onBoardingDone ? (
                 // finishScore == undefined ? (
                 <Canvas
-                    // shadows
+                    shadows
                     // colorManagement={false}
                     // sRGB={true}
                     style={{

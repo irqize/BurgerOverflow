@@ -97,8 +97,8 @@ const Control = ({ spawn, gyroX, gyroZ, gameBoundaries }) => {
     return (
         <>
             {/* <Machine x={controlXPos} z={controlZPos} /> */}
-            <mesh position={[controlXPos, 2.5, controlZPos]}>
-                <cylinderGeometry args={[0.1, 0.1, 5, 40]} />
+            <mesh position={[controlXPos, 1.5, controlZPos]}>
+                <cylinderGeometry args={[0.1, 0.1, 6, 10]} />
                 <meshBasicMaterial color="#C70039" transparent opacity={0.2} />
             </mesh>
         </>
