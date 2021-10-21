@@ -38,14 +38,24 @@
 }
 
 .doneScreen {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    transform: translate(-50%, -50%);
     width: 100vw;
     height: 100vh;
+}
+
+.doneScreen > * {
     color: black;
-    font-size: 3em;
-    position: absolute;
-    top: -10vh;
-    left: -40vw;
     text-shadow: 4px 0 0 #e6a22e, -4px 0 0 #e6a22e, 0 4px 0 #e6a22e,
         0 -4px 0 #e6a22e, 1px 1px #e6a22e, -1px -1px 0 #e6a22e,
         1px -1px 0 #e6a22e, -1px 1px 0 #e6a22e;
+}
+
+.doneScreen h1 {
+    font-size: 3em;
 }

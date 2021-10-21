@@ -9,11 +9,18 @@
 }
 
 .buttonContainer {
-  display: grid;
-  grid-column: 2;
-  grid-gap: 10px;
+  display: flex;
+  gap: 10px;
   justify-content: center;
+  align-items: center;
+  flex-direction: column;
   padding: 10px;
+  width: 100%;
+}
+
+.buttonContainer h2 {
+  text-align: center;
+  color: rgb(147, 18, 18);
 }
 
 .gyroData {
@@ -69,11 +76,6 @@
   padding: 12px 10px;
   text-decoration: none;
 }
-.mainContainer {
-  display: grid;
-  justify-content: center;
-  grid-template-columns: 1fr 4fr 1fr;
-}
 
 .finishScreen {
   width: 100vw;
@@ -87,5 +89,20 @@
   align-items: center;
   min-height: 250px;
   font-family: "Alfa Slab One", cursive;
-  font-size: 3em;
+  font-size: 2em;
+}
+
+.resetButton {
+  width: 130px;
+  height: 130px;
+  margin-top: 20px;
+  border-radius: 50%;
+  background: red;
+  border: 5px solid black;
+  font-size: 25px;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
 }

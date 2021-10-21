@@ -20,6 +20,10 @@ function App() {
 
   const [discountCode, setDiscountCode] = useState();
 
+  const [disconnected, setDisconnected] = useState(false);
+
+  const [error, setError] = useState(null);
+
   const gyroRef = useRef(gyroData);
 
   const setGyroState = (data) => {
@@ -28,7 +32,26 @@ function App() {
   };
 
   useEffect(() => {
-    const newSocket = io(URL);
+    const generateNewSocket = () => {
+      const newSocket = io(URL);
+
+      newSocket.on("disconnect", () => {
+        setDisconnected(true);
+        setAuthenticated(false);
+        setFinishScore();
+        setDismiss(null);
+        setEndGame(false);
+
+        setSocket(generateNewSocket());
+      });
+
+      newSocket.on("error", (e) => setError(e));
+
+      return newSocket;
+    };
+
+    const newSocket = generateNewSocket();
+
     setSocket(newSocket);
 
     return () => newSocket.close();
@@ -111,6 +134,8 @@ function App() {
           <div className="buttonContainer">
             {!authenticated ? (
               <>
+                {disconnected && <h2>You have been disconnected</h2>}
+                {error && <h2>{error}</h2>}
                 <button className="authButton" onClick={startGyro}>
                   Click to start the game
                 </button>
@@ -135,9 +160,6 @@ function App() {
                           <br />
                           <b>Gamma:</b> {Math.round(gyroData.gamma)}
                           <br />
-                          <button onClick={() => handleOrientation(0, 0, 0)}>
-                            Re-calibrate
-                          </button>
                         </div>
                       ) : (
                         <div>
@@ -176,8 +198,24 @@ function App() {
           </div>
         ) : (
           <div className="finishScreen">
-            <div>Congratulations! Your discount is {finishScore / 10} SEK</div>
+            {finishScore > 0 ? (
+              <div>
+                Congratulations! Your discount is {finishScore / 10} SEK
+              </div>
+            ) : (
+              <div>Try again!</div>
+            )}
             {finishScore > 0 && <div>Your discount code is {discountCode}</div>}
+            <div
+              className="resetButton"
+              onClick={() => {
+                socket.emit("reset");
+                setFinishScore();
+                setEndGame(false);
+              }}
+            >
+              Reset
+            </div>
           </div>
         )}
       </div>

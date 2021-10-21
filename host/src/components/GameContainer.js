@@ -1,10 +1,9 @@
+/* eslint-disable no-extend-native */
 import { useRef, useState, useEffect } from "react";
-import { Canvas, extend } from "@react-three/fiber";
+import { Canvas, extend, useFrame } from "@react-three/fiber";
 import { Physics, usePlane, useBox } from "@react-three/cannon";
-import { useLoader } from "@react-three/fiber";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { Suspense } from "react";
-import { Environment, OrbitControls } from "@react-three/drei";
+import { Environment, Html } from "@react-three/drei";
 import { EffectComposer, Bloom, SSAO } from "@react-three/postprocessing";
 import { KernelSize, BlendFunction } from "postprocessing";
 
@@ -15,12 +14,18 @@ import Advertisement from "./Advertisement";
 import Kitchen from "./Background";
 import Camera from "./Camera";
 import Control from "./Control";
-import Box from "./Box";
-import { Html } from "@react-three/drei";
 import "./Advertisement.css";
 import Animation from "./Animation";
+import CountDownToStart from "./CountDownToStart";
 
 const degreesToRadians = (angle) => (angle * Math.PI) / 180;
+
+//function to compare if a value is in between two other values.
+Number.prototype.between = function (a, b) {
+    var min = Math.min(a, b),
+        max = Math.max(a, b);
+    return this > min && this < max;
+};
 
 function Effects() {
     const ref = useRef();
@@ -94,23 +99,48 @@ const Lights = () => {
 };
 
 const GameContainer = ({ socket }) => {
-    var gameBoundaries = { x1: -12, x2: 12, z1: -2, z2: 6 };
+    var gameBoundaries = { x1: -12, x2: 12, z1: -4, z2: 6 };
 
     const [gyroData, setGyroData] = useState(null);
-    // const [alpha, setAlpha] = useState(0);
     const [beta, setBeta] = useState(0);
     const [gamma, setGamma] = useState(0);
     const [onBoardingDone, setOnboardingDone] = useState(false);
 
     const [spawn, setSpawn] = useState(false);
     const [tryOut, setTryOut] = useState(false);
-    const [countDown, setCountDown] = useState(10);
     const [finishScore, setFinishScore] = useState();
     const [isEnd, setIsEnd] = useState(false);
 
+    const [dropTID, setDropTID] = useState(null);
+
     useEffect(() => {
         socket.on("data", (data) => setGyroData(data));
+
+        socket.on("finishScore", (finishScore) => {
+            setFinishScore(finishScore);
+        });
     }, []);
+
+    useEffect(() => {
+        if (!dropTID) return;
+
+        socket.once("reset", () => {
+            clearTimeout(dropTID);
+            setTryOut(false);
+            setOnboardingDone(true);
+            setIsEnd(false);
+            setFinishScore();
+        });
+    }, [dropTID, socket]);
+
+    useEffect(() => {
+        if (!isEnd) return;
+        const tID = setTimeout(() => {
+            socket.emit("drop");
+        }, 10000);
+
+        setDropTID(tID);
+    }, [isEnd]);
 
     useEffect(() => {
         // setAlpha(gyroData?.alpha ? gyroData?.alpha : 0);
@@ -118,34 +148,36 @@ const GameContainer = ({ socket }) => {
         setGamma(gyroData?.gamma ? gyroData?.gamma : 0);
     }, [gyroData]);
 
+    const [countDown, setCountDown] = useState(10);
+
     useEffect(() => {
-        socket.on("finishScore", (finishScore) => {
-            setTimeout(() => setFinishScore(finishScore), 3000);
-        });
-    }, []);
+        const tId = setTimeout(() => {
+            if (countDown < 0) return;
 
-    //function to compare if a value is in between two other values.
-    Number.prototype.between = function (a, b) {
-        var min = Math.min(a, b),
-            max = Math.max(a, b);
-        return this > min && this < max;
-    };
-
-    if (tryOut) {
-        setTimeout(() => {
             setCountDown(countDown - 1);
-        }, 1000);
-    }
 
-    if (countDown == 0) {
+            if (countDown === 1) {
+                setTryOut(false);
+                setOnboardingDone(true);
+                socket.emit("doneOnboarding", true);
+                setTimeout(() => {
+                    socket.emit("doneOnboarding", false);
+                }, 2000);
+            }
+        }, 1000);
+
+        return () => clearTimeout(tId);
+    }, [countDown]);
+
+    useEffect(() => {
+        if (!tryOut) return;
         setCountDown(10);
-        setTryOut(false);
-        setOnboardingDone(true);
-        socket.emit("doneOnboarding", true);
-        setTimeout(() => {
-            socket.emit("doneOnboarding", false);
-        }, 2000);
-    }
+        const tId = setTimeout(() => {
+            setCountDown(9);
+        }, 1000);
+
+        return () => clearTimeout(tId);
+    }, [tryOut]);
 
     return (
         <>
@@ -184,25 +216,29 @@ const GameContainer = ({ socket }) => {
                         <Animation isEnd={isEnd} />
                         {typeof finishScore === "number" ? (
                             <Html>
-                                <h1 className="doneScreen">
-                                    Contgratulations to your score of{" "}
-                                    {finishScore}!
-                                </h1>
+                                <div className="doneScreen">
+                                    <h1>
+                                        Congratulations to your score of{" "}
+                                        {finishScore}!
+                                    </h1>
+                                    <h2>
+                                        Click reset button on the phone to
+                                        restart the game{" "}
+                                    </h2>
+                                </div>
                             </Html>
-                        ) : (
-                            <></>
+                        ) : null}
+                        {!isEnd && (
+                            <Control
+                                gyroX={Math.sin(degreesToRadians(gamma))}
+                                gyroZ={Math.sin(degreesToRadians(beta))}
+                                spawn={(v) => setSpawn(v)}
+                                gameBoundaries={gameBoundaries}
+                            />
                         )}
-
-                        <Control
-                            gyroX={Math.sin(degreesToRadians(gamma))}
-                            gyroZ={Math.sin(degreesToRadians(beta))}
-                            spawn={(v) => setSpawn(v)}
-                            gameBoundaries={gameBoundaries}
-                        />
                     </Suspense>
                     {/* <Effects /> */}
                     <Lights />
-
                     <Physics>
                         <Floor />
                         <Stacks
@@ -227,17 +263,6 @@ const GameContainer = ({ socket }) => {
                     <Camera />
                 </Canvas>
             ) : (
-                // )
-                // :
-                // (
-                //     <div className="advertisement">
-                //         <div className="advertisement-0">
-                //             Congratulations! You scored {finishScore} points,
-                //             which means {finishScore / 10} SEK off your next
-                //             order!
-                //         </div>
-                //     </div>
-                // )
                 <>
                     {tryOut ? (
                         <>
@@ -258,7 +283,6 @@ const GameContainer = ({ socket }) => {
                                 />
                                 <Camera />
                                 <mesh
-                                    receiveShadow
                                     rotation={[5, 0, 0]}
                                     position={[0, -1, 0]}
                                 >
@@ -277,9 +301,8 @@ const GameContainer = ({ socket }) => {
                                     gyroZ={Math.sin(degreesToRadians(beta))}
                                     gameBoundaries={gameBoundaries}
                                 />
-                                <Html>
-                                    <h1 className="countDown">{countDown}</h1>
-                                </Html>
+
+                                <CountDownToStart time={countDown} />
                             </Canvas>
                         </>
                     ) : (
