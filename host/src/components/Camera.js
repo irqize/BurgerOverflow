@@ -1,18 +1,17 @@
-import React, { useEffect } from 'react'
-import { useThree } from '@react-three/fiber'
+import { useEffect } from "react";
+import { useThree } from "@react-three/fiber";
 
 const Camera = () => {
-  const { camera } = useThree()
+    const { camera } = useThree();
 
+    useEffect(() => {
+        camera.position.set(0, 12, 9);
+        camera.lookAt(0, 0, 0);
+        camera.fov = 50;
+        camera.updateProjectionMatrix();
+    }, [camera]);
 
-  useEffect(() => {
-    camera.position.set(0,12,9);
-    camera.lookAt(0, 0, 0);
-    camera.fov = 50;
-    camera.updateProjectionMatrix();
-  }, [camera]);
+    return null;
+};
 
-  return null;
-}
-
-export default Camera
+export default Camera;

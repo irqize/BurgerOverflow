@@ -91,11 +91,9 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("doneOnboarding", (bool) => {
-    if (bool == true) {
-      if (socket.rooms.has("host")) {
-        io.to("client").emit("doneOnboarding", bool);
-      }
+  socket.on("game stage", (stage) => {
+    if (socket.rooms.has("host")) {
+      io.to("client").emit("game stage", stage);
     }
   });
 

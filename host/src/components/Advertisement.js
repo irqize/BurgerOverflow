@@ -1,23 +1,33 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import "./Advertisement.css";
+import { STAGES } from "./GameContainer";
 
-const Advertisement = ({ socket, doneOnboarding, setTryOut }) => {
-    const [screenNumber, setScreenNumber] = useState(0);
-
+const Advertisement = ({
+    socket,
+    currentStage,
+    setTryOut,
+    setNextInstruction,
+}) => {
     useEffect(() => {
-        var newScreenNumber = screenNumber + 1;
-        socket.on("skipAhead", (skip) => {
-            if (screenNumber == 1) {
+        socket.off("skipAhead");
+
+        const listener = () => {
+            if (currentStage === STAGES.INSTRUCTION2) {
                 setTryOut();
-            } else {
-                setScreenNumber(newScreenNumber);
             }
-        });
-    }, [screenNumber]);
+            if (currentStage === STAGES.INSTRUCTION1) {
+                setNextInstruction();
+            }
+        };
+
+        socket.once("skipAhead", listener);
+
+        return () => socket.off("skipAhead", listener);
+    }, [currentStage]);
 
     return (
         <div className="advertisement">
-            {screenNumber == 0 && (
+            {currentStage === STAGES.INSTRUCTION1 && (
                 <div className="advertisement-0">
                     Your mission is to build 2 burgers as high as possible. You
                     steer with your phone's gyroscope.
@@ -29,7 +39,7 @@ const Advertisement = ({ socket, doneOnboarding, setTryOut }) => {
                     Click the button "Next".
                 </div>
             )}
-            {screenNumber == 1 && (
+            {currentStage === STAGES.INSTRUCTION2 && (
                 <div className="advertisement-0">
                     Ready to try the controls for 10 seconds? Click "Next"!
                 </div>

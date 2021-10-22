@@ -1,6 +1,5 @@
 import * as THREE from "three";
-import React, { useState, useRef, Suspense } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { useFrame } from "@react-three/fiber";
 // import {softShadows} from '@react-three/drei'
 
 // Soft shadows are expensive, uncomment and refresh when it's too slow
@@ -15,10 +14,6 @@ function damp(target, to, step, delta, v = new THREE.Vector3()) {
 }
 
 function Animation({ isEnd }) {
-    const [active, setActive] = useState(false);
-    const [zoom, set] = useState(true);
-    //   useCursor(active)
-    // set(!isEnd);
     useFrame((state, delta) => {
         const step = 4;
         state.camera.fov = THREE.MathUtils.damp(
