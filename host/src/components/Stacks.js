@@ -13,6 +13,7 @@ import {
     Tomato,
 } from "./Ingredients";
 import Plate from "./Plate";
+import { STAGES } from "./GameContainer";
 
 const items = [
     "bacon",
@@ -121,7 +122,6 @@ const Stack = ({ x, z, isOut }) => {
 };
 
 const Stacks = ({
-    spawn,
     stacksXZ,
     socket,
     gyroX,
@@ -130,16 +130,20 @@ const Stacks = ({
     setScore,
     isOut,
     setIsOut,
+    currentStage,
 }) => {
     const { x1, x2, z1, z2 } = gameBoundaries;
 
     const [positions, setPositions] = useState([]);
     const [items, setItems] = useState([]);
     const [nextItem, setNextItem] = useState(generateStackItem());
+
     // const [isOut, setIsOut] = useState(false);
     const [maxScores, setMaxScores] = useState(
         new Array(stacksXZ.length).fill(0)
     );
+
+    const [spawnTID, setSpawnTID] = useState(null);
 
     ////// Control spawning position
     // how much the position is changed, based on gyro data.
@@ -149,6 +153,9 @@ const Stacks = ({
     // the position to spawn an ingredient
     const [spawnPosX, setspawnPosX] = useState(0);
     const [spawnPosZ, setspawnPosZ] = useState(0);
+
+    // check if user is over the drop zone
+    const [isOver, setIsOver] = useState(false);
 
     const accelerometerFactor = 0.5;
 
@@ -167,6 +174,14 @@ const Stacks = ({
     };
 
     useFrame(() => {
+        setIsOver(
+            stacksXZ.reduce(
+                (prev, { x, z }) =>
+                    prev || !checkIfOut(1.1, spawnPosX - x, spawnPosZ - z),
+                false
+            )
+        );
+
         if (gyroZ > 0 && between(spawnPosZ, z1 - 0.5, z2)) {
             //moving forwards
             setspawnPosZ((prevZ) => prevZ + vZ);
@@ -184,11 +199,11 @@ const Stacks = ({
             setspawnPosX((prevX) => prevX - vX);
         }
     });
-    ///
 
     useEffect(() => {
+        socket.off("dismiss");
         socket.on("dismiss", () => setNextItem(generateStackItem()));
-    }, []);
+    }, [socket]);
 
     useEffect(() => {
         socket.emit("dismiss available", nextItem.name);
@@ -196,9 +211,7 @@ const Stacks = ({
 
     const setItemPosition = (p) => {
         stacksXZ.forEach(({ x, z }, i) => {
-            if (
-                !checkIfOut(1.1, p[0] - x, p[2] - z && p[1] + 1 > maxScores[i])
-            ) {
+            if (!checkIfOut(1.1, p[0] - x, p[2] - z)) {
                 const newMaxScores = [...maxScores];
                 newMaxScores[i] = p[1] + 2;
                 setMaxScores(newMaxScores);
@@ -213,58 +226,63 @@ const Stacks = ({
         )
             return;
         setIsOut(true);
+        clearTimeout(spawnTID);
         setPositions([...positions, p]);
     };
 
     // Restart the stack when item is out of bounds
     useEffect(() => {
         if (!isOut) return;
-        const id = setTimeout(() => {
-            setPositions([]);
-            setItems([]);
-            console.log(
-                "Score: " +
-                    Math.max(
-                        Math.round(
-                            (100 * maxScores.reduce((a, b) => a + b, 0)) /
-                                maxScores.length
-                        ),
-                        0
-                    )
-            );
-            socket.emit(
-                "finishScore",
-                Math.max(
-                    Math.round(
-                        (100 * maxScores.reduce((a, b) => a + b, 0)) /
-                            maxScores.length
-                    ),
-                    0
-                )
-            );
-            // setIsOut(false);
-            setMaxScores(new Array(stacksXZ.length).fill(0));
-        }, 1000);
+        setPositions([]);
 
-        return () => clearTimeout(id);
+        const score = Math.max(
+            Math.round(
+                (2 * (100 * maxScores.reduce((a, b) => a + b, 0))) /
+                    maxScores.length
+            ),
+            0
+        );
+
+        console.log("Score:", score);
+        socket.emit("finishScore", score);
+
+        setScore(score);
+        setMaxScores(new Array(stacksXZ.length).fill(0));
     }, [isOut]);
 
     useEffect(() => {
-        if (spawn && !isOut) {
+        if (currentStage !== STAGES.GAME) return;
+        setItems([]);
+        setIsOut(false);
+
+        setvX(0);
+        setvZ(0);
+
+        setspawnPosX(0);
+        setspawnPosZ(0);
+    }, [currentStage]);
+
+    useEffect(() => {
+        if (currentStage !== STAGES.GAME) return;
+        const next = generateStackItem();
+        setNextItem(next);
+        console.log("Next up: " + next.name);
+
+        const tID = setTimeout(() => {
             setItems([...items, nextItem]);
-            const next = generateStackItem();
-            setNextItem(next);
-            console.log("Next up: " + next.name);
-        }
-    }, [spawn]);
+        }, 3000);
+
+        setSpawnTID(tID);
+
+        return () => clearTimeout(tID);
+    }, [items]);
 
     return (
         <>
-            {items.map((attrs, i) => (
+            {items.map((attrs) => (
                 <Item
                     attrs={attrs}
                     key={attrs.id}
-                    //position={[camera.position.x, 5, camera.position.z]}
                     position={[spawnPosX, 5, spawnPosZ]}
                     setItemPosition={setItemPosition}
                 />
@@ -273,13 +291,19 @@ const Stacks = ({
                 Component={nextItem.Component}
                 position={[spawnPosX, 5, spawnPosZ]}
             />
+            {currentStage === STAGES.GAME && (
+                <mesh position={[spawnPosX, 0, spawnPosZ]}>
+                    <cylinderGeometry args={[0.1, 0.1, 10, 40]} />
+                    <meshBasicMaterial color={isOver ? 0x00ff00 : 0xc70039} />
+                </mesh>
+            )}
             {/* Draw points that are out of bounds */}
-            {positions.map((p, i) => (
+            {/* {positions.map((p, i) => (
                 <mesh position={p} key={i}>
                     <sphereGeometry args={[0.1, 10, 10]} />
                     <meshNormalMaterial />
                 </mesh>
-            ))}
+            ))} */}
             {stacksXZ.map(({ x, z }, i) => {
                 return <Stack x={x} z={z} key={i} isOut={isOut} />;
             })}

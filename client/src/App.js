@@ -6,6 +6,14 @@ import { v4 as uuidv4 } from "uuid";
 
 const URL = "https://" + document.location.hostname + ":8080";
 
+export const STAGES = {
+  INSTRUCTION1: 1,
+  INSTRUCTION2: 2,
+  TRY_OUT: 3,
+  GAME: 4,
+  END_SCREEN: 5,
+};
+
 function App() {
   const [socket, setSocket] = useState(null);
 
@@ -13,12 +21,19 @@ function App() {
 
   const [gyroAllowed, setGyroAllowed] = useState(false);
   const [gyroData, setGyroData] = useState(null);
-  const [endGame, setEndGame] = useState(false);
+
   const [finishScore, setFinishScore] = useState();
 
   const [dismiss, setDismiss] = useState(null);
 
   const [discountCode, setDiscountCode] = useState();
+
+  const [disconnected, setDisconnected] = useState(false);
+
+  const [error, setError] = useState(null);
+
+  const [currentStage, setCurrentStage] = useState(null);
+  console.log(currentStage);
 
   const gyroRef = useRef(gyroData);
 
@@ -28,7 +43,28 @@ function App() {
   };
 
   useEffect(() => {
-    const newSocket = io(URL);
+    const generateNewSocket = () => {
+      const newSocket = io(URL);
+
+      newSocket.on("disconnect", () => {
+        setDisconnected(true);
+        setAuthenticated(false);
+        setFinishScore();
+        setDismiss(null);
+        setCurrentStage(0);
+
+        setSocket(generateNewSocket());
+      });
+
+      newSocket.on("game stage", setCurrentStage);
+
+      newSocket.on("error", (e) => setError(e));
+
+      return newSocket;
+    };
+
+    const newSocket = generateNewSocket();
+
     setSocket(newSocket);
 
     return () => newSocket.close();
@@ -59,9 +95,6 @@ function App() {
 
   const nextAd = () => {
     socket.emit("skipAhead", true);
-    socket.on("doneOnboarding", (bool) => {
-      setEndGame(true);
-    });
   };
 
   const authenticate = () => {
@@ -71,8 +104,6 @@ function App() {
     socket.on("joined", () => {
       console.log("joined");
       setAuthenticated(true);
-
-      // startGyro();
     });
 
     socket.on("dismiss available", (product) => setDismiss(product));
@@ -103,19 +134,24 @@ function App() {
     }
   };
 
+  const startScreen = (
+    <>
+      {disconnected && <h2>You have been disconnected</h2>}
+      {error && <h2>{error}</h2>}
+      <button className="authButton" onClick={startGyro}>
+        Click to start the game
+      </button>
+    </>
+  );
+
   return (
     <main>
       <div className="titleTopBar">Burger OverFlow</div>
       <div className="mainContainer">
-        {typeof finishScore !== "number" ? (
+        {currentStage !== STAGES.END_SCREEN && (
           <div className="buttonContainer">
-            {!authenticated ? (
-              <>
-                <button className="authButton" onClick={startGyro}>
-                  Click to start the game
-                </button>
-              </>
-            ) : (
+            {!authenticated && startScreen}
+            {authenticated && (
               <>
                 <div className="authMessage">You are authenticated ✓</div>
                 {!gyroAllowed && !gyroData ? (
@@ -135,9 +171,6 @@ function App() {
                           <br />
                           <b>Gamma:</b> {Math.round(gyroData.gamma)}
                           <br />
-                          <button onClick={() => handleOrientation(0, 0, 0)}>
-                            Re-calibrate
-                          </button>
                         </div>
                       ) : (
                         <div>
@@ -150,19 +183,22 @@ function App() {
                     </div>
                     <div>
                       <div className="buttonGroup">
-                        <div className="buttonGroup">
-                          {dismiss && (
-                            <button
-                              className="nextAdButton"
-                              onClick={() => socket.emit("dismiss")}
-                            >
-                              <span className="frontButton">
-                                Click to dismiss {dismiss}
-                              </span>
-                            </button>
-                          )}
-                        </div>
-                        {!endGame && (
+                        {currentStage === STAGES.GAME && (
+                          <div className="buttonGroup">
+                            {dismiss && (
+                              <button
+                                className="nextAdButton"
+                                onClick={() => socket.emit("dismiss")}
+                              >
+                                <span className="frontButton">
+                                  Click to dismiss {dismiss}
+                                </span>
+                              </button>
+                            )}
+                          </div>
+                        )}
+                        {(currentStage === STAGES.INSTRUCTION1 ||
+                          currentStage === STAGES.INSTRUCTION2) && (
                           <button className="nextAdButton" onClick={nextAd}>
                             <span className="frontButton">Next</span>
                           </button>
@@ -174,10 +210,26 @@ function App() {
               </>
             )}
           </div>
-        ) : (
+        )}
+        {currentStage === STAGES.END_SCREEN && (
           <div className="finishScreen">
-            <div>Congratulations! Your discount is {finishScore / 10} SEK</div>
+            {finishScore > 0 ? (
+              <div>
+                Congratulations! Your discount is {finishScore / 10} SEK
+              </div>
+            ) : (
+              <div>Try again!</div>
+            )}
             {finishScore > 0 && <div>Your discount code is {discountCode}</div>}
+            <div
+              className="resetButton"
+              onClick={() => {
+                socket.emit("reset");
+                setFinishScore();
+              }}
+            >
+              Reset
+            </div>
           </div>
         )}
       </div>

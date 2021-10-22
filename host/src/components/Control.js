@@ -1,12 +1,11 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useFrame, useThree } from "@react-three/fiber";
+import { useFrame } from "@react-three/fiber";
 import { useGLTF } from "@react-three/drei";
 
 //model
 export const Machine = ({ x, z }) => {
     // Load machine model (to generate the burger components)
     const group_machine = useRef();
-    const material_machine = useRef();
     const { nodes } = useGLTF("./assets/machine.gltf");
     return (
         <group
@@ -35,7 +34,7 @@ export const Machine = ({ x, z }) => {
 // const cameraMovementScale = 1;
 const accelerometerFactor = 0.5;
 
-const Control = ({ spawn, gyroX, gyroZ, gameBoundaries }) => {
+const Control = ({ spawn, gyroX, gyroZ, gameBoundaries, gameID }) => {
     const { x1, x2, z1, z2 } = gameBoundaries;
     const [vX, setvX] = useState(0);
     const [vZ, setvZ] = useState(0);
@@ -43,10 +42,13 @@ const Control = ({ spawn, gyroX, gyroZ, gameBoundaries }) => {
     const [controlZPos, setZ] = useState(0);
     const [controlXPos, setX] = useState(0);
 
-    const [gameStarted, setGameStarted] = useState(false);
     useEffect(() => {
-        if (spawn) setGameStarted(true);
-    }, [spawn]);
+        console.log("RESET CONTROLS");
+        setX(0);
+        setZ(0);
+        setvX(0);
+        setvZ(0);
+    }, [gameID]);
 
     useEffect(() => {
         //used to accelerate X directions
@@ -67,32 +69,21 @@ const Control = ({ spawn, gyroX, gyroZ, gameBoundaries }) => {
     useFrame(() => {
         if (gyroZ > 0 && between(controlZPos, z1 - 0.5, z2)) {
             //moving forwards
-            setZ((prevZ) => prevZ + vZ);
+            setZ(controlZPos + vZ);
         }
         if (gyroZ < 0 && between(controlZPos, z1, z2 + 0.5)) {
             //moving backwards
-            setZ((prevZ) => prevZ - vZ);
+            setZ(controlZPos - vZ);
         }
         if (gyroX > 0 && between(controlXPos, x1, x2 - 0.5)) {
             //moving right
-            setX((prevX) => prevX + vX);
+            setX(controlZPos + vX);
         }
         if (gyroX < 0 && between(controlXPos, x1 + 0.5, x2)) {
             //moving left
-            setX((prevX) => prevX - vX);
+            setX(controlXPos - vX);
         }
     });
-
-    useEffect(() => {
-        if (gameStarted) {
-            const tID = setInterval(() => {
-                spawn(false);
-                spawn(true);
-            }, 3000);
-
-            return () => clearInterval(tID);
-        }
-    }, [gameStarted]);
 
     return (
         <>

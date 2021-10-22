@@ -31,7 +31,7 @@ io.on("connection", (socket) => {
     console.log("Password: ", password);
     if (mode === "client") {
       if (roomFull) {
-        socket.emit("error", "The room is full");
+        socket.emit("error", "Game station is busy. Please try again later.");
         return socket.disconnect();
       }
 
@@ -91,16 +91,25 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("doneOnboarding", (bool) => {
-    if (bool == true) {
-      if (socket.rooms.has("host")) {
-        io.to("client").emit("doneOnboarding", bool);
-      }
+  socket.on("game stage", (stage) => {
+    if (socket.rooms.has("host")) {
+      io.to("client").emit("game stage", stage);
     }
   });
 
   socket.on("finishScore", (finishScore) => {
     io.to("client").emit("finishScore", finishScore);
     io.to("host").emit("finishScore", finishScore);
+  });
+
+  socket.on("reset", () => {
+    console.log("------ RESET ------");
+    io.to("host").emit("reset");
+  });
+
+  socket.on("drop", () => {
+    if (socket.rooms.has("host")) {
+      io.to("client").disconnectSockets();
+    }
   });
 });
