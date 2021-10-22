@@ -100,6 +100,9 @@ const GameContainer = ({ socket }) => {
             {(currentStage === STAGES.GAME ||
                 currentStage === STAGES.END_SCREEN) && (
                 <Canvas
+                    shadows
+                    // colorManagement={false}
+                    // sRGB={true}
                     style={{
                         height: "100vh",
                         width: "100vw",
