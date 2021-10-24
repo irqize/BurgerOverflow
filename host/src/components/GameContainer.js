@@ -114,10 +114,9 @@ const GameContainer = ({ socket }) => {
                     <Suspense fallback={null}>
                         <Kitchen />
                         <Environment
-                            files={"small_empty_house_2k_new_0.hdr"}
+                            files={"small_empty_house_2k_new_1.hdr"}
                             path={"./assets/"}
                         />
-                        {/* <Environment preset={'night'} /> */}
                         <Animation isEnd={currentStage === STAGES.END_SCREEN} />
                         {currentStage === STAGES.END_SCREEN && (
                             <Html>

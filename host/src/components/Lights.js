@@ -6,16 +6,16 @@ const Lights = () => {
         <>
             <directionalLight
                 castShadow
-                intensity={0.8}
-                position={[0, 100, 300]}
+                intensity={0.6}
+                position={[0, 200, 300]}
                 shadow-mapSize-width={2048}
                 shadow-mapSize-height={2048}
                 shadow-camera-left={-20}
                 shadow-camera-right={20}
                 shadow-camera-top={10}
                 shadow-camera-bottom={-10}
+                shadow-bias={-0.0001}
             />
-            {/* <ambientLight intensity={0.3} /> */}
             {/* <spotLight
                 penumbra={1}
                 position={[0, 200, 400]}
