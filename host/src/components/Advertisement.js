@@ -41,7 +41,7 @@ const Advertisement = ({
             )}
             {currentStage === STAGES.INSTRUCTION2 && (
                 <div className="advertisement-0">
-                    Ready to try the controls for 10 seconds? Click "Next"!
+                    Ready to try the controls for 3 seconds? Click "Next"!
                 </div>
             )}
         </div>
