@@ -14,6 +14,8 @@ import {
 } from "./Ingredients";
 import Plate from "./Plate";
 import { STAGES } from "./GameContainer";
+import UseSound from "./UseSound";
+import { Tube } from "@react-three/drei";
 
 const items = [
     "bacon",
@@ -59,6 +61,8 @@ const Item = ({
     const [lastUpdate, setLastUpdate] = useState();
     const [actualPosition, setActualPosition] = useState();
 
+    // Calculate sound playback rate with different height
+
     useEffect(() => {
         setLastUpdate(Date.now());
     }, []);
@@ -66,6 +70,9 @@ const Item = ({
     useEffect(() => {
         if (actualPosition) setItemPosition(actualPosition);
     }, [actualPosition]);
+
+
+    const [playDropSound, setDropSound] = useState(false);
 
     const [ref] = useCylinder(() => {
         return {
@@ -81,12 +88,16 @@ const Item = ({
                     e.target.getWorldPosition(target);
                     setActualPosition([target.x, target.y, target.z]);
                 }
+
+                // Set drop sound flag
+                setDropSound(true);
             },
         };
     });
 
     return (
         <group ref={ref}>
+            <UseSound isPlaying={playDropSound} sound={"toned"} />
             <Component />
             <mesh>
                 <cylinderBufferGeometry args={args} />
@@ -280,12 +291,15 @@ const Stacks = ({
     return (
         <>
             {items.map((attrs) => (
+                <>
+                <UseSound sound={"sweep"} isPlaying={true} playbackRate={2} />
                 <Item
                     attrs={attrs}
                     key={attrs.id}
                     position={[spawnPosX, 5, spawnPosZ]}
                     setItemPosition={setItemPosition}
                 />
+                </>
             ))}
             <ItemModel
                 Component={nextItem.Component}

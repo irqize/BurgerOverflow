@@ -16,6 +16,7 @@ import Lights from "./Lights";
 import "./Advertisement.css";
 import Animation from "./Animation";
 import CountDownToStart from "./CountDownToStart";
+import UseSound from './UseSound';
 
 const degreesToRadians = (angle) => (angle * Math.PI) / 180;
 
@@ -95,10 +96,14 @@ const GameContainer = ({ socket }) => {
         return () => clearTimeout(tId);
     }, [countDown]);
 
+
     return (
-        <>
+        <> 
             {(currentStage === STAGES.GAME ||
                 currentStage === STAGES.END_SCREEN) && (
+                <>
+                <UseSound sound={"melody"} loop={false} isPlaying={currentStage === STAGES.GAME} volume={0.2}/>
+                <UseSound sound={"kitchen"} loop={false} isPlaying={currentStage === STAGES.GAME} volume={0.2}/>
                 <Canvas
                     shadows
                     // colorManagement={false}
@@ -119,6 +124,10 @@ const GameContainer = ({ socket }) => {
                         />
                         <Animation isEnd={currentStage === STAGES.END_SCREEN} />
                         {currentStage === STAGES.END_SCREEN && (
+                            <>
+                                {finishScore > 0
+                                            ? <UseSound sound={"fanfare"}/>
+                                            : <UseSound sound={""}/>}
                             <Html>
                                 <div className="doneScreen">
                                     <h1>
@@ -134,6 +143,7 @@ const GameContainer = ({ socket }) => {
                                     </h2>
                                 </div>
                             </Html>
+                            </>
                         )}
                     </Suspense>
                     <Lights />
@@ -164,6 +174,7 @@ const GameContainer = ({ socket }) => {
 
                     <Camera />
                 </Canvas>
+                </>
             )}
 
             {currentStage === STAGES.TRY_OUT && (

@@ -4,11 +4,15 @@ import toneD from "../sounds/toned.mp3";
 import sweep from "../sounds/sweep.mp3";
 import melody from "../sounds/melody_looped.mp3";
 import kitchen from "../sounds/kitchen.mp3";
+import fanfare from "../sounds/fanfare.mp3";
+import coinwithdrawal from "../sounds/coinwithdrawal.mp3";
+
+
 
 const translatePath = (song) => {
     var path = "";
     switch (song) {
-        case "d-Tone":
+        case "toned":
             path = toneD;
             break;
         case "sweep":
@@ -20,10 +24,16 @@ const translatePath = (song) => {
         case "kitchen":
             path = kitchen;
             break;
+        case "fanfare":
+            path = fanfare;
+            break;
+        case "coinwithdrawal":
+            path = coinwithdrawal;
+            break;    
         default:
             path = toneD;
     }
-    console.log("translatedPath:", path);
+    // console.log("translatedPath:", path);
     return path;
 };
 const UseSound = ({
