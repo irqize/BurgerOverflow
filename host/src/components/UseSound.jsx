@@ -6,8 +6,7 @@ import melody from "../sounds/melody_looped.mp3";
 import kitchen from "../sounds/kitchen.mp3";
 import fanfare from "../sounds/fanfare.mp3";
 import coinwithdrawal from "../sounds/coinwithdrawal.mp3";
-
-
+import lose from "../sounds/lose.mp3";
 
 const translatePath = (song) => {
     var path = "";
@@ -29,7 +28,10 @@ const translatePath = (song) => {
             break;
         case "coinwithdrawal":
             path = coinwithdrawal;
-            break;    
+            break;
+        case "lose":
+            path = lose;
+            break;
         default:
             path = toneD;
     }
