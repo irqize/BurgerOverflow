@@ -41,7 +41,10 @@ const Advertisement = ({
             )}
             {currentStage === STAGES.INSTRUCTION2 && (
                 <div className="advertisement-0">
-                    Ready to try the controls for 3 seconds? Click "Next"!
+                    Your task will be to move the ball over 4 platforms.
+                    <br />
+                    <br />
+                    Ready to try the controls Click "Next"!
                 </div>
             )}
         </div>

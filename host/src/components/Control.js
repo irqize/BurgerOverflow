@@ -34,7 +34,7 @@ export const Machine = ({ x, z }) => {
 // const cameraMovementScale = 1;
 const accelerometerFactor = 0.5;
 
-const Control = ({ spawn, gyroX, gyroZ, gameBoundaries, gameID }) => {
+const Control = ({ gyroX, gyroZ, gameBoundaries, onPositionChange }) => {
     const { x1, x2, z1, z2 } = gameBoundaries;
     const [vX, setvX] = useState(0);
     const [vZ, setvZ] = useState(0);
@@ -43,12 +43,8 @@ const Control = ({ spawn, gyroX, gyroZ, gameBoundaries, gameID }) => {
     const [controlXPos, setX] = useState(0);
 
     useEffect(() => {
-        console.log("RESET CONTROLS");
-        setX(0);
-        setZ(0);
-        setvX(0);
-        setvZ(0);
-    }, [gameID]);
+        onPositionChange(controlXPos, controlZPos);
+    }, [controlXPos, controlZPos]);
 
     useEffect(() => {
         //used to accelerate X directions
@@ -86,17 +82,10 @@ const Control = ({ spawn, gyroX, gyroZ, gameBoundaries, gameID }) => {
     });
 
     return (
-        <>
-            {/* <Machine x={controlXPos} z={controlZPos} /> */}
-            <mesh position={[controlXPos, 1.5, controlZPos]}>
-                <cylinderGeometry args={[0.1, 0.1, 6, 10]} />
-                <meshBasicMaterial color="#C70039" transparent opacity={0.2} />
-            </mesh>
-        </>
-        // <mesh position={[x, 5, z]}>
-        //   <sphereGeometry attach="geometry" args={[0.1, 32, 32]} />
-        //   <meshLambertMaterial attach="material" color="hotpink" />
-        // </mesh>
+        <mesh position={[controlXPos, 1.5, controlZPos]}>
+            <cylinderGeometry args={[0.1, 0.1, 6, 10]} />
+            <meshBasicMaterial color="#C70039" transparent opacity={0.2} />
+        </mesh>
     );
 };
 
