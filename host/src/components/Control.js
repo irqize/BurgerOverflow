@@ -2,6 +2,12 @@ import React, { useEffect, useState, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { useGLTF } from "@react-three/drei";
 
+const between = (x, a, b) => {
+    var min = Math.min(a, b),
+        max = Math.max(a, b);
+    return x >= min && x <= max;
+};
+
 //model
 export const Machine = ({ x, z }) => {
     // Load machine model (to generate the burger components)
@@ -17,14 +23,6 @@ export const Machine = ({ x, z }) => {
         >
             <mesh castShadow receiveShadow geometry={nodes.Cube017.geometry}>
                 <meshBasicMaterial transparent opacity={0.5} />
-                {/* <meshPhysicalMaterial
-          ref={material_machine}
-          clearcoat={1}
-          clearcoatRoughness={0}
-          transmission={1}
-          thickness={1.1}
-          roughness={0}
-          envMapIntensity={2}/> */}
             </mesh>
         </group>
     );
@@ -34,7 +32,7 @@ export const Machine = ({ x, z }) => {
 // const cameraMovementScale = 1;
 const accelerometerFactor = 0.5;
 
-const Control = ({ spawn, gyroX, gyroZ, gameBoundaries, gameID }) => {
+const Control = ({ gyroX, gyroZ, gameBoundaries, onPositionChange }) => {
     const { x1, x2, z1, z2 } = gameBoundaries;
     const [vX, setvX] = useState(0);
     const [vZ, setvZ] = useState(0);
@@ -43,12 +41,8 @@ const Control = ({ spawn, gyroX, gyroZ, gameBoundaries, gameID }) => {
     const [controlXPos, setX] = useState(0);
 
     useEffect(() => {
-        console.log("RESET CONTROLS");
-        setX(0);
-        setZ(0);
-        setvX(0);
-        setvZ(0);
-    }, [gameID]);
+        onPositionChange(controlXPos, controlZPos);
+    }, [controlXPos, controlZPos]);
 
     useEffect(() => {
         //used to accelerate X directions
@@ -60,43 +54,30 @@ const Control = ({ spawn, gyroX, gyroZ, gameBoundaries, gameID }) => {
         setvZ(gyroZ * gyroZ * accelerometerFactor);
     }, [gyroZ]);
 
-    const between = (x, a, b) => {
-        var min = Math.min(a, b),
-            max = Math.max(a, b);
-        return x >= min && x <= max;
-    };
-
     useFrame(() => {
         if (gyroZ > 0 && between(controlZPos, z1 - 0.5, z2)) {
             //moving forwards
-            setZ(controlZPos + vZ);
+            setZ((prevZ) => prevZ + vZ);
         }
         if (gyroZ < 0 && between(controlZPos, z1, z2 + 0.5)) {
             //moving backwards
-            setZ(controlZPos - vZ);
+            setZ((prevZ) => prevZ - vZ);
         }
         if (gyroX > 0 && between(controlXPos, x1, x2 - 0.5)) {
             //moving right
-            setX(controlZPos + vX);
+            setX((prevX) => prevX + vX);
         }
         if (gyroX < 0 && between(controlXPos, x1 + 0.5, x2)) {
             //moving left
-            setX(controlXPos - vX);
+            setX((prevX) => prevX - vX);
         }
     });
 
     return (
-        <>
-            {/* <Machine x={controlXPos} z={controlZPos} /> */}
-            <mesh position={[controlXPos, 1.5, controlZPos]}>
-                <cylinderGeometry args={[0.1, 0.1, 6, 10]} />
-                <meshBasicMaterial color="#C70039" transparent opacity={0.2} />
-            </mesh>
-        </>
-        // <mesh position={[x, 5, z]}>
-        //   <sphereGeometry attach="geometry" args={[0.1, 32, 32]} />
-        //   <meshLambertMaterial attach="material" color="hotpink" />
-        // </mesh>
+        <mesh position={[controlXPos, 1.5, controlZPos]}>
+            <cylinderGeometry args={[0.1, 0.1, 6, 10]} />
+            <meshBasicMaterial color="#C70039" transparent opacity={0.2} />
+        </mesh>
     );
 };
 

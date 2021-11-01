@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from "uuid";
 const URL = "https://" + document.location.hostname + ":8080";
 
 export const STAGES = {
+  START: 0,
   INSTRUCTION1: 1,
   INSTRUCTION2: 2,
   TRY_OUT: 3,
@@ -33,7 +34,6 @@ function App() {
   const [error, setError] = useState(null);
 
   const [currentStage, setCurrentStage] = useState(null);
-  console.log(currentStage);
 
   const gyroRef = useRef(gyroData);
 
@@ -56,7 +56,7 @@ function App() {
         setSocket(generateNewSocket());
       });
 
-      newSocket.on("game stage", setCurrentStage);
+      newSocket.on("game stage", (s) => setCurrentStage(s));
 
       newSocket.on("error", (e) => setError(e));
 

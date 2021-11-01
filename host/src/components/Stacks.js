@@ -71,7 +71,6 @@ const Item = ({
         if (actualPosition) setItemPosition(actualPosition);
     }, [actualPosition]);
 
-
     const [playDropSound, setDropSound] = useState(false);
 
     const [ref] = useCylinder(() => {
@@ -213,7 +212,10 @@ const Stacks = ({
 
     useEffect(() => {
         socket.off("dismiss");
-        socket.on("dismiss", () => setNextItem(generateStackItem()));
+        socket.on("dismiss", () => {
+            setNextItem(generateStackItem());
+            clearTimeout(spawnTID);
+        });
     }, [socket]);
 
     useEffect(() => {
@@ -274,11 +276,6 @@ const Stacks = ({
     }, [currentStage]);
 
     useEffect(() => {
-        if (currentStage !== STAGES.GAME) return;
-        const next = generateStackItem();
-        setNextItem(next);
-        console.log("Next up: " + next.name);
-
         const tID = setTimeout(() => {
             setItems([...items, nextItem]);
         }, 3000);
@@ -286,19 +283,30 @@ const Stacks = ({
         setSpawnTID(tID);
 
         return () => clearTimeout(tID);
+    }, [nextItem]);
+
+    useEffect(() => {
+        if (currentStage !== STAGES.GAME) return;
+        const next = generateStackItem();
+        setNextItem(next);
+        console.log("Next up: " + next.name);
     }, [items]);
 
     return (
         <>
             {items.map((attrs) => (
                 <>
-                <UseSound sound={"sweep"} isPlaying={true} playbackRate={2} />
-                <Item
-                    attrs={attrs}
-                    key={attrs.id}
-                    position={[spawnPosX, 5, spawnPosZ]}
-                    setItemPosition={setItemPosition}
-                />
+                    <UseSound
+                        sound={"sweep"}
+                        isPlaying={true}
+                        playbackRate={2}
+                    />
+                    <Item
+                        attrs={attrs}
+                        key={attrs.id}
+                        position={[spawnPosX, 5, spawnPosZ]}
+                        setItemPosition={setItemPosition}
+                    />
                 </>
             ))}
             <ItemModel

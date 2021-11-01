@@ -37,10 +37,9 @@ function App() {
                 else setUserConnected(false);
             });
 
-            setTimeout(
-                () => newSocket.emit("authorization", "host", "password"),
-                100
-            );
+            setTimeout(() => {
+                newSocket.emit("authorization", "host", "password");
+            }, 100);
         });
 
         return () => newSocket.close();

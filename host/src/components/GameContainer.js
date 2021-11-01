@@ -11,16 +11,16 @@ import Stacks from "./Stacks";
 import Advertisement from "./Advertisement";
 import Kitchen from "./Background";
 import Camera from "./Camera";
-import Control from "./Control";
 import Lights from "./Lights";
 import "./Advertisement.css";
 import Animation from "./Animation";
-import CountDownToStart from "./CountDownToStart";
-import UseSound from './UseSound';
+import UseSound from "./UseSound";
+import TryOut from "./TryOut";
 
 const degreesToRadians = (angle) => (angle * Math.PI) / 180;
 
 export const STAGES = {
+    START: 0,
     INSTRUCTION1: 1,
     INSTRUCTION2: 2,
     TRY_OUT: 3,
@@ -43,6 +43,7 @@ const GameContainer = ({ socket }) => {
 
     useEffect(() => {
         socket.on("data", (data) => setGyroData(data));
+        socket.emit("game stage", null);
     }, []);
 
     useEffect(() => {
@@ -56,10 +57,6 @@ const GameContainer = ({ socket }) => {
 
     useEffect(() => {
         socket.emit("game stage", currentStage);
-
-        if (currentStage === STAGES.TRY_OUT) {
-            setCountDown(2);
-        }
 
         if (currentStage === STAGES.END_SCREEN) {
             const tID = setTimeout(() => {
@@ -76,140 +73,124 @@ const GameContainer = ({ socket }) => {
         setGamma(gyroData?.gamma ? gyroData?.gamma : 0);
     }, [gyroData]);
 
-    const [countDown, setCountDown] = useState(10);
-
-    useEffect(() => {
-        const tId = setTimeout(() => {
-            if (countDown < 0) return;
-
-            setCountDown(countDown - 1);
-
-            if (countDown === 1) {
-                setCurrentStage(STAGES.GAME);
-                socket.emit("doneOnboarding", true);
-                setTimeout(() => {
-                    socket.emit("doneOnboarding", false);
-                }, 2000);
-            }
-        }, 1000);
-
-        return () => clearTimeout(tId);
-    }, [countDown]);
-
-
     return (
-        <> 
+        <>
             {(currentStage === STAGES.GAME ||
-                currentStage === STAGES.END_SCREEN) && (
+                currentStage === STAGES.END_SCREEN ||
+                currentStage === STAGES.TRY_OUT) && (
                 <>
-                <UseSound sound={"melody"} loop={false} isPlaying={currentStage === STAGES.GAME} volume={0.2}/>
-                <UseSound sound={"kitchen"} loop={false} isPlaying={currentStage === STAGES.GAME} volume={0.2}/>
-                <Canvas
-                    shadows
-                    // colorManagement={false}
-                    // sRGB={true}
-                    style={{
-                        height: "100vh",
-                        width: "100vw",
-                        background: "#272727",
-                    }}
-                    pixelRatio={window.devicePixelRatio}
-                >
-                    <Stats />
-                    <Suspense fallback={null}>
-                        <Kitchen />
-                        <Environment
-                            files={"small_empty_house_2k_new_1.hdr"}
-                            path={"./assets/"}
-                        />
-                        <Animation isEnd={currentStage === STAGES.END_SCREEN} />
-                        {currentStage === STAGES.END_SCREEN && (
+                    <Canvas
+                        shadows={
+                            currentStage === STAGES.GAME ||
+                            currentStage === STAGES.END_SCREEN
+                        }
+                        // colorManagement={false}
+                        // sRGB={true}
+                        style={{
+                            height: "100vh",
+                            width: "100vw",
+                            background: "#272727",
+                        }}
+                        pixelRatio={window.devicePixelRatio}
+                    >
+                        {currentStage === STAGES.TRY_OUT && (
+                            <TryOut
+                                gameBoundaries={gameBoundaries}
+                                gamma={gamma}
+                                beta={beta}
+                                onEnd={() => setCurrentStage(STAGES.GAME)}
+                            />
+                        )}
+                        {(currentStage === STAGES.GAME ||
+                            currentStage === STAGES.END_SCREEN) && (
                             <>
-                                {finishScore > 0
-                                            ? <UseSound sound={"fanfare"}/>
-                                            : <UseSound sound={""}/>}
-                            <Html>
-                                <div className="doneScreen">
-                                    <h1>
-                                        {finishScore > 0
-                                            ? "Congratulations! Your score is " +
-                                              finishScore +
-                                              "!"
-                                            : "Oops! Try again!"}
-                                    </h1>
-                                    <h2>
-                                        Click reset button on the phone to
-                                        restart the game{" "}
-                                    </h2>
-                                </div>
-                            </Html>
+                                <UseSound
+                                    sound={"melody"}
+                                    loop={false}
+                                    isPlaying={currentStage === STAGES.GAME}
+                                    volume={0.2}
+                                />
+                                <UseSound
+                                    sound={"kitchen"}
+                                    loop={false}
+                                    isPlaying={currentStage === STAGES.GAME}
+                                    volume={0.2}
+                                />
+                                <Stats />
+                                <Suspense fallback={null}>
+                                    <Kitchen />
+                                    <Environment
+                                        files={"small_empty_house_2k_new_1.hdr"}
+                                        path={"./assets/"}
+                                    />
+                                    <Animation
+                                        isEnd={
+                                            currentStage === STAGES.END_SCREEN
+                                        }
+                                    />
+                                    {currentStage === STAGES.END_SCREEN && (
+                                        <>
+                                            {finishScore > 0 ? (
+                                                <UseSound sound={"fanfare"} />
+                                            ) : (
+                                                <UseSound sound={""} />
+                                            )}
+                                            <Html>
+                                                <div className="doneScreen">
+                                                    <h1>
+                                                        {finishScore > 0
+                                                            ? "Congratulations! Your score is " +
+                                                              finishScore +
+                                                              "!"
+                                                            : "Oops! Try again!"}
+                                                    </h1>
+                                                    <h2>
+                                                        Click reset button on
+                                                        the phone to restart the
+                                                        game{" "}
+                                                    </h2>
+                                                </div>
+                                            </Html>
+                                        </>
+                                    )}
+                                </Suspense>
+                                <Lights />
+                                <Physics>
+                                    <Floor />
+                                    <Stacks
+                                        gyroX={Math.sin(
+                                            degreesToRadians(gamma)
+                                        )}
+                                        gyroZ={Math.sin(degreesToRadians(beta))}
+                                        stacksXZ={[
+                                            { x: -5, z: -1 },
+                                            { x: 0, z: -3 },
+                                            { x: 5, z: -1 },
+                                        ]}
+                                        socket={socket}
+                                        gameBoundaries={gameBoundaries}
+                                        setScore={(score) => {
+                                            setFinishScore(score);
+                                        }}
+                                        isOut={
+                                            currentStage === STAGES.END_SCREEN
+                                        }
+                                        setIsOut={(isOut) =>
+                                            !isOut
+                                                ? setCurrentStage(STAGES.GAME)
+                                                : setCurrentStage(
+                                                      STAGES.END_SCREEN
+                                                  )
+                                        }
+                                        currentStage={currentStage}
+                                    />
+                                </Physics>
+
+                                <Camera />
                             </>
                         )}
-                    </Suspense>
-                    <Lights />
-                    <Physics>
-                        <Floor />
-                        <Stacks
-                            gyroX={Math.sin(degreesToRadians(gamma))}
-                            gyroZ={Math.sin(degreesToRadians(beta))}
-                            stacksXZ={[
-                                { x: -5, z: -1 },
-                                { x: 0, z: -3 },
-                                { x: 5, z: -1 },
-                            ]}
-                            socket={socket}
-                            gameBoundaries={gameBoundaries}
-                            setScore={(score) => {
-                                setFinishScore(score);
-                            }}
-                            isOut={currentStage === STAGES.END_SCREEN}
-                            setIsOut={(isOut) =>
-                                !isOut
-                                    ? setCurrentStage(STAGES.GAME)
-                                    : setCurrentStage(STAGES.END_SCREEN)
-                            }
-                            currentStage={currentStage}
-                        />
-                    </Physics>
-
-                    <Camera />
-                </Canvas>
+                    </Canvas>
                 </>
-            )}
-
-            {currentStage === STAGES.TRY_OUT && (
-                <Canvas
-                    style={{
-                        height: "100vh",
-                        width: "100vw",
-                        background: "#272727",
-                    }}
-                    pixelRatio={window.devicePixelRatio}
-                    linear
-                >
-                    <ambientLight intensity={0.8} />
-                    {/* adds ambient light to the canvas */}
-                    <spotLight position={[10, 10, 10]} angle={0.5} />
-                    <Camera />
-                    <mesh rotation={[5, 0, 0]} position={[0, -1, 0]}>
-                        <planeBufferGeometry
-                            attach="geometry"
-                            args={[500, 500]}
-                        />
-                        <meshPhysicalMaterial
-                            clearcoat={1}
-                            attach="material"
-                            color="#212529"
-                        />
-                    </mesh>
-                    <Control
-                        gyroX={Math.sin(degreesToRadians(gamma))}
-                        gyroZ={Math.sin(degreesToRadians(beta))}
-                        gameBoundaries={gameBoundaries}
-                    />
-
-                    <CountDownToStart time={countDown} />
-                </Canvas>
             )}
 
             {(currentStage === STAGES.INSTRUCTION1 ||
