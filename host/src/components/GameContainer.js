@@ -20,6 +20,7 @@ import TryOut from "./TryOut";
 const degreesToRadians = (angle) => (angle * Math.PI) / 180;
 
 export const STAGES = {
+    START: 0,
     INSTRUCTION1: 1,
     INSTRUCTION2: 2,
     TRY_OUT: 3,
@@ -42,6 +43,7 @@ const GameContainer = ({ socket }) => {
 
     useEffect(() => {
         socket.on("data", (data) => setGyroData(data));
+        socket.emit("game stage", null);
     }, []);
 
     useEffect(() => {
@@ -55,10 +57,6 @@ const GameContainer = ({ socket }) => {
 
     useEffect(() => {
         socket.emit("game stage", currentStage);
-
-        if (currentStage === STAGES.TRY_OUT) {
-            setCountDown(2);
-        }
 
         if (currentStage === STAGES.END_SCREEN) {
             const tID = setTimeout(() => {
@@ -74,8 +72,6 @@ const GameContainer = ({ socket }) => {
         setBeta(gyroData?.beta ? gyroData?.beta : 0);
         setGamma(gyroData?.gamma ? gyroData?.gamma : 0);
     }, [gyroData]);
-
-    const [countDown, setCountDown] = useState(10);
 
     return (
         <>
@@ -100,7 +96,6 @@ const GameContainer = ({ socket }) => {
                         {currentStage === STAGES.TRY_OUT && (
                             <TryOut
                                 gameBoundaries={gameBoundaries}
-                                countDown={countDown}
                                 gamma={gamma}
                                 beta={beta}
                                 onEnd={() => setCurrentStage(STAGES.GAME)}

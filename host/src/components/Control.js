@@ -2,6 +2,12 @@ import React, { useEffect, useState, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { useGLTF } from "@react-three/drei";
 
+const between = (x, a, b) => {
+    var min = Math.min(a, b),
+        max = Math.max(a, b);
+    return x >= min && x <= max;
+};
+
 //model
 export const Machine = ({ x, z }) => {
     // Load machine model (to generate the burger components)
@@ -17,14 +23,6 @@ export const Machine = ({ x, z }) => {
         >
             <mesh castShadow receiveShadow geometry={nodes.Cube017.geometry}>
                 <meshBasicMaterial transparent opacity={0.5} />
-                {/* <meshPhysicalMaterial
-          ref={material_machine}
-          clearcoat={1}
-          clearcoatRoughness={0}
-          transmission={1}
-          thickness={1.1}
-          roughness={0}
-          envMapIntensity={2}/> */}
             </mesh>
         </group>
     );
@@ -56,28 +54,22 @@ const Control = ({ gyroX, gyroZ, gameBoundaries, onPositionChange }) => {
         setvZ(gyroZ * gyroZ * accelerometerFactor);
     }, [gyroZ]);
 
-    const between = (x, a, b) => {
-        var min = Math.min(a, b),
-            max = Math.max(a, b);
-        return x >= min && x <= max;
-    };
-
     useFrame(() => {
         if (gyroZ > 0 && between(controlZPos, z1 - 0.5, z2)) {
             //moving forwards
-            setZ(controlZPos + vZ);
+            setZ((prevZ) => prevZ + vZ);
         }
         if (gyroZ < 0 && between(controlZPos, z1, z2 + 0.5)) {
             //moving backwards
-            setZ(controlZPos - vZ);
+            setZ((prevZ) => prevZ - vZ);
         }
         if (gyroX > 0 && between(controlXPos, x1, x2 - 0.5)) {
             //moving right
-            setX(controlZPos + vX);
+            setX((prevX) => prevX + vX);
         }
         if (gyroX < 0 && between(controlXPos, x1 + 0.5, x2)) {
             //moving left
-            setX(controlXPos - vX);
+            setX((prevX) => prevX - vX);
         }
     });
 

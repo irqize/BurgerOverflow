@@ -41,7 +41,7 @@ const Advertisement = ({
             )}
             {currentStage === STAGES.INSTRUCTION2 && (
                 <div className="advertisement-0">
-                    Your task will be to move the ball over 4 platforms.
+                    Your task will be to move the ball over 5 platforms.
                     <br />
                     <br />
                     Ready to try the controls Click "Next"!

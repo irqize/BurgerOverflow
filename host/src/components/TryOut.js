@@ -5,6 +5,7 @@ import OverPlatform from "./OverPlatform";
 
 const degreesToRadians = (angle) => (angle * Math.PI) / 180;
 
+var gameBoundaries = { x1: -12, x2: 12, z1: -9, z2: 4 };
 const platformsPositions = [
     {
         x: 0,
@@ -18,9 +19,17 @@ const platformsPositions = [
         x: 4,
         z: 0,
     },
+    {
+        x: -7,
+        z: -6,
+    },
+    {
+        x: 7,
+        z: -6,
+    },
 ];
 
-const TryOut = ({ gameBoundaries, gamma, beta, onEnd }) => {
+const TryOut = ({ gamma, beta, onEnd }) => {
     const [pos, setPos] = useState({ curX: 0, curZ: 0 });
     const [visited, setVisited] = useState(0);
     useEffect(() => {
