@@ -80,10 +80,7 @@ const GameContainer = ({ socket }) => {
                 currentStage === STAGES.TRY_OUT) && (
                 <>
                     <Canvas
-                        shadows={
-                            currentStage === STAGES.GAME ||
-                            currentStage === STAGES.END_SCREEN
-                        }
+                        shadows={true}
                         // colorManagement={false}
                         // sRGB={true}
                         style={{
