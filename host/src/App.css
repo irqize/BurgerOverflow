@@ -40,3 +40,124 @@
 #gameContainer{
   background-color: #c09ada;
 }
+
+:root {
+  --yellow: #e6a22e;
+}
+
+body {
+  font-family: "Zen Antique", serif;
+}
+
+.custom-shape-divider-top-1635227694 {
+  width: 100%;
+  height: 10vh;
+  overflow:hidden;
+  line-height: 0;
+}
+
+.custom-shape-divider-top-1635227694 svg {
+  position: relative;
+  display: block;
+  width: calc(122% + 1.3px);
+  height: 100px;
+}
+
+.custom-shape-divider-top-1635227694 .shape-fill {
+  fill: #e6a22e;
+}
+
+.section-1 {
+  background-color: var(--yellow);
+  height: 30vh;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Alfa Slab One", cursive !important;
+  font-size:1.5vw
+}
+
+.section-p {
+  margin: auto;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Alfa Slab One", cursive !important;
+  font-size:1vw
+}
+
+p span {
+  display: flex;
+}
+
+.logoImg {
+  height: 100px;
+  width: 100px;
+  margin: auto;
+  margin-bottom: 10px;
+  display: inherit;
+}
+
+.logoImg2 {
+  width: 200px;
+  margin: auto;
+  margin-bottom: 10px;
+  display: inherit;
+}
+
+.section__title {
+  font-family: "Alfa Slab One", cursive !important;
+  text-align: center;
+}
+
+.section__row {
+  display: flex;
+  flex-direction: row;
+}
+
+.section__column {
+  margin: 10px;
+  display: grid;
+  text-align: center;
+  width: 20% !important;
+  font-size: 12px;
+}
+
+.section__column img {
+  width: 100%;
+}
+
+.section-divider {
+  height: 100%;
+  width: 100%;
+  margin-top: 20px;
+  margin-bottom: 40px;
+  transform: none !important;
+}
+
+.image-100 {
+  /* height: 200px; */
+  margin: auto;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border-radius: 6px;
+  box-shadow: grey 6px 6px 7px 0px;
+  overflow: hidden;
+}
+
+img {
+  transition: transform 0.5s ease;
+}
+
+img:hover {
+  transform: scale(1.2);
+}
+
+.burgerImage {
+  width: 20vw;
+  margin: auto;
+  margin-bottom: 10px;
+  display: inherit;
+}

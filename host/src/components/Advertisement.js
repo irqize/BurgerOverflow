@@ -29,7 +29,7 @@ const Advertisement = ({
         <div className="advertisement">
             {currentStage === STAGES.INSTRUCTION1 && (
                 <div className="advertisement-0">
-                    Your mission is to build 2 burgers as high as possible. You
+                    Your mission is to build 3 burgers as high as possible. You
                     steer with your phone's gyroscope.
                     <br />
                     <br />
