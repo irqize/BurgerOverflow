@@ -161,3 +161,10 @@ img:hover {
   margin-bottom: 10px;
   display: inherit;
 }
+
+.InstructionImage {
+  width: 45vw;
+  margin: auto;
+  margin-bottom: 10px;
+  display: inherit;
+}

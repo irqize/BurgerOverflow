@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import "./Advertisement.css";
 import { STAGES } from "./GameContainer";
+import Instruction from "./images/Instruction.png";
 
 const Advertisement = ({
     socket,
@@ -40,11 +41,15 @@ const Advertisement = ({
                 </div>
             )}
             {currentStage === STAGES.INSTRUCTION2 && (
-                <div className="advertisement-0">
-                    Your task will be to move the ball over 5 platforms.
+                <div className="advertisement-2">
+                    Your task for trying out the controls will be to move a ball over 5 platforms.
                     <br />
+                    You are supposed to have your phone parallel to the ground.
                     <br />
-                    Ready to try the controls Click "Next"!
+                    Ready to try it out? Click "Next" on your phone.
+                    <span>
+                        <img className="InstructionImage" src={Instruction} />
+                    </span>
                 </div>
             )}
         </div>
