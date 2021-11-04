@@ -6,8 +6,21 @@ const Lights = () => {
         <>
             <directionalLight
                 castShadow
-                intensity={0.6}
+                intensity={0.3}
                 position={[0, 200, 300]}
+                shadow-mapSize-width={2048}
+                shadow-mapSize-height={2048}
+                shadow-camera-left={-20}
+                shadow-camera-right={20}
+                shadow-camera-top={10}
+                shadow-camera-bottom={-10}
+                shadow-bias={-0.0001}
+            />
+            <directionalLight
+                castShadow
+                color={"#FFFF00"}
+                intensity={0.3}
+                position={[0, 200, 0]}
                 shadow-mapSize-width={2048}
                 shadow-mapSize-height={2048}
                 shadow-camera-left={-20}

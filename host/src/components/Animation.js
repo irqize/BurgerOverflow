@@ -1,9 +1,5 @@
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
-// import {softShadows} from '@react-three/drei'
-
-// Soft shadows are expensive, uncomment and refresh when it's too slow
-// softShadows()
 
 function damp(target, to, step, delta, v = new THREE.Vector3()) {
     if (target instanceof THREE.Vector3) {
@@ -32,13 +28,6 @@ function Animation({ isEnd }) {
         state.camera.updateProjectionMatrix();
     });
     return null;
-    // (
-    //   // <mesh receiveShadow castShadow onClick={() => set(!zoom)} onPointerOver={() => setActive(true)} onPointerOut={() => setActive(false)}>
-    //   <mesh receiveShadow castShadow onClick={() => set(!zoom)} position={[1,0,0]}>
-    //     <sphereGeometry args={[0.8, 64, 64]} />
-    //     <meshBasicMaterial transparent opacity={0.1}/>
-    //   </mesh>
-    // )
 }
 
 export default Animation;

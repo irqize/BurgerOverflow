@@ -43,7 +43,7 @@ const SplashScreen = ({ socket }) => {
                 <span>
                     <img className="burgerImage" src={Burger} />
                 </span>
-                <h1 className="section__title">Win your launch with just a scan! &nbsp;&nbsp; </h1>
+                <h1 className="section__title">Win your lunch with just a scan! &nbsp;&nbsp; </h1>
                 <span>
                     <QRCode value={URL} renderAs="svg" />
                 </span>
